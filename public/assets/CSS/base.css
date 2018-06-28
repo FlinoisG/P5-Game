@@ -12,7 +12,7 @@ body {
 }
 
 div{
-    border: 2px solid green;
+    border: 1px solid fuchsia;
 }
 
 .center {
@@ -27,4 +27,23 @@ div{
 
 .form-validate {
     border: 2px solid green;
+}
+
+#mapid { 
+    height: 750px; 
+    width: 100%;
+}
+
+#board{
+    display: flex;
+    margin: 15px;
+}
+
+#panel {
+    width: 350px;
+    height: 100%;
+}
+
+.leaflet-control{
+    display: none;
 }

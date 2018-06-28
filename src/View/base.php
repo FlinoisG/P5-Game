@@ -25,15 +25,18 @@
           <li class="nav-item">
             <a class="nav-link" href="?p=home">Home</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="?p=login">Connection</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="?p=login.register">S'inscrire</a>
-          </li>
+          
           <?php
             if (isset($_SESSION['auth'])) {
                 echo '<a class="btn btn-danger btn-logout" href="?p=home&logout=true">Déconnextion</a>';
+            } else {
+                echo '
+                <li class="nav-item">
+                  <a class="nav-link" href="?p=login">Connection</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="?p=login.register">S\'inscrire</a>
+                </li>';
             }
             ?>
         </ul>
