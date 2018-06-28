@@ -6,3 +6,18 @@ body {
     background-color: #1F1F1F;
     text-align: center;
 }
+
+.center {
+    margin: auto;
+    width: 50%;
+    border: 3px solid green;
+    padding: 10px;
+}
+
+.form-deny {
+    border: 2px solid red;
+}
+
+.form-validate {
+    border: 2px solid green;
+}

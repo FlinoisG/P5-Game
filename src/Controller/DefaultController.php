@@ -12,7 +12,7 @@ class DefaultController
      * @param string $error HTTP status code
      * @return void
      */
-    public function error($error)
+    public function error ($error)
     {
         $errorNo = $error;
         switch ($error):
@@ -29,20 +29,26 @@ class DefaultController
             $errorNo = 500;
             $errorDesc = "Erreur interne du serveur";
         endswitch;  
-        require('../src/View/error.php');
+        require('../src/View/ErrorView.php');
     }
 
     /**
-     * if $_GET['params'] is not set, die with a 404 error
+     * if $_GET['p'] is not set, die with a 404 error
      *
      * @return void
      */
-    public function checkParams()
+    public function checkP ()
     {
-        if (!isset($_GET['params'])) {
+        if (!isset($_GET['p'])) {
             die($this->error('404'));
         } else {
-            $id = $_GET['params'];
+            $id = $_GET['p'];
         }
+    }
+
+    public function setScript ($getScript)
+    {
+        $script = "<script src=\"assets/js/" . $getScript . ".js\"></script>";
+        return $script;
     }
 }

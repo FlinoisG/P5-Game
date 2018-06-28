@@ -20,24 +20,25 @@ if (isset($_GET['p'])) {
     ];
 }
 
-$getParams = isset($_GET['params']) ? $_GET['params'] : null;
-$postParams = isset($_POST['params']) ? $_POST['params'] : null;
-$params = [
-    "get" => $getParams,
-    "post" => $postParams
-];
+if (sizeOf($routeTemp) == 1) {
+    $controller = $routeTemp[0];
+    $routeTemp = [
+        "controller" => $controller,
+        "action" => $controller
+    ];
+};
 
 $controller = "\\App\\Controller\\" . ucfirst($routeTemp['controller']) . "Controller";
 if (class_exists($controller, true)) {
     $controller = new $controller();
     if (in_array($routeTemp["action"], get_class_methods($controller))) {
-        call_user_func_array([$controller, $routeTemp["action"]], $params);
+        call_user_func([$controller, $routeTemp["action"]]);
     } else {
         $controller->error('404');
     }
 } else {
     $controller = new DefaultController();
-    $controller->error('500');
+    $controller->error('404');
 }
 
 $titre = 'Blog de Jean Forteroche';

@@ -11,9 +11,31 @@
         <link href="https://fonts.googleapis.com/css?family=Roboto|Ubuntu" rel="stylesheet">
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
         <link href="assets/CSS/base.css" rel="stylesheet">
+        <?= $scriptHead ?>
     </head>
     <body>
-        <?= $content ?>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+      <a class="navbar-brand" href="#">Navbar</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="?p=home">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="?p=login">Connection</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="?p=login.register">S'inscrire</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <?= $content ?>
+    <?= $scriptBody ?>
     </body>    
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
