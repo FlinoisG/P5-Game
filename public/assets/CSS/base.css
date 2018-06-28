@@ -7,10 +7,17 @@ body {
     text-align: center;
 }
 
+#main{
+    margin-top: 20px;
+}
+
+div{
+    border: 2px solid green;
+}
+
 .center {
     margin: auto;
     width: 50%;
-    border: 3px solid green;
     padding: 10px;
 }
 

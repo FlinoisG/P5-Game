@@ -31,10 +31,17 @@
           <li class="nav-item">
             <a class="nav-link" href="?p=login.register">S'inscrire</a>
           </li>
+          <?php
+            if (isset($_SESSION['auth'])) {
+                echo '<a class="btn btn-danger btn-logout" href="?p=home&logout=true">Déconnextion</a>';
+            }
+            ?>
         </ul>
       </div>
     </nav>
-    <?= $content ?>
+    <div id="main">
+      <?= $content ?>
+    </div>
     <?= $scriptBody ?>
     </body>    
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"></script>

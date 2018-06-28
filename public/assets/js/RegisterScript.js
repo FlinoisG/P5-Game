@@ -13,12 +13,6 @@ var emailConf    = document.getElementById('registerEmailConf');
 var password     = document.getElementById('registerPassword');
 var passwordConf = document.getElementById('registerPasswordConf');
 
-username.setCustomValidity(messages.empty);
-email.setCustomValidity(messages.empty);
-emailConf.setCustomValidity(messages.empty);
-password.setCustomValidity(messages.empty);
-passwordConf.setCustomValidity(messages.empty);
-
 username.onfocusout = function(){validateUsername(this.value)};
 email.onfocusout = function(){validateEmail(this.value)};
 emailConf.onfocusout = function(){validateEmailConf(this.value)};
