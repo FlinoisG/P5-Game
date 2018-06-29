@@ -28,7 +28,13 @@
           
           <?php
             if (isset($_SESSION['auth'])) {
-                echo '<a class="btn btn-danger btn-logout" href="?p=home&logout=true">Déconnextion</a>';
+                echo '
+                <li class="nav-item">
+                  <a class="nav-link" href="?p=home.settings">User Settings</a>
+                </li>
+                <li class="nav-item">
+                  <a class="btn btn-danger btn-logout" href="?p=home&logout=true">Déconnextion</a>
+                </li>';
             } else {
                 echo '
                 <li class="nav-item">

@@ -40,6 +40,3 @@ if (class_exists($controller, true)) {
     $controller = new DefaultController();
     $controller->error('404');
 }
-
-$titre = 'Blog de Jean Forteroche';
-$header = '';
