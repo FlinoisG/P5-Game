@@ -5,6 +5,7 @@
         <?= $panel ?>
     </div>
     <div id="mapid"></div>
+    <div id="minimapid"></div>
 </div>
 
 <?php

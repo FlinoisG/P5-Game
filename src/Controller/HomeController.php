@@ -20,6 +20,7 @@ class HomeController extends DefaultController
             integrity=\"sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw==\"
             crossorigin=\"\"></script>";
         $scriptBody = $this->setScript('map');
+        $scriptBody = $scriptBody . $this->setScript('miniMap');
         $title = 'Home';
         if (isset($_GET['logout'])) {
             session_destroy(); 

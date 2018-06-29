@@ -6,6 +6,7 @@
     <input type="file" name="fileToUpload" id="fileToUpload">
     <input type="submit" value="Upload Image" name="submit">
 </form>
+<a href="">Changer de mot de passe</a>
 
 <?php
 $content = ob_get_clean();

@@ -61,13 +61,13 @@ class Auth
         $getUser = $sqlQuery->sqlQuery("SELECT username FROM game_users WHERE username='".$username."'");
         if ($getUser) {
             $available = false;
-            $content = '<h1>user</h1>';
+            $content = '<h1>Ce nom d\'utilisateur existe déjà</h1>';
             die(require('../src/View/base.php'));
         }
         $getEmail = $sqlQuery->sqlQuery("SELECT username FROM game_users WHERE email='".$email."'");
         if ($getEmail) {
             $available = false;
-            $content = '<h1>email</h1>';
+            $content = '<h1>Un compte avec cet e-mail existe déjà</h1>';
             die(require('../src/View/base.php'));
         }
         if ($available == null) {
@@ -82,6 +82,7 @@ class Auth
         $query =   'INSERT INTO game_users (username, email, password)
                     VALUES (\''.$username.'\', \''.$email.'\', \''.$hashedPassword.'\')';
         $sqlQuery->sqlQuery($query);
+        copy('../public/assets/img/blankUser100x100.png', '../deposit/User_Avatar/'.$username.'.png');
     }
 
     /**
