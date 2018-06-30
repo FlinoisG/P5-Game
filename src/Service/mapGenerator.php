@@ -3,73 +3,103 @@
 namespace App\Service;
 
 use App\Service\Perlin;
+use App\Service\Grid;
 
 class MapGenerator {
 
-    //This is a small test snippet that will output an example with DIV tags.
-    //Feel free to fiddle with it.
-    public function perlinTest()
+    public function resourceTest()
     {
-        $bob = new Perlin();
+        $perlin = new Perlin();
 
-        $size = 1;
-        $smooth = 42;
-        $gridsize = 125;
-        $content = '<canvas id="myCanvas" width="'.$gridsize.'" height="'.$gridsize.'" style="border:1px solid #000000;"></canvas>
+        $gridsizeX = 438; // long
+        $gridsizeY = 290; // lat
+        $nodeFreq = 17; // higher value = lower freq but bigger node
+        $nodeSize = 0.2; // 0 = max  1 = min
+
+        
+        $nodeSize = $nodeSize * -1;
+        $nodeSize = $nodeSize + 1;
+        $content = '<canvas id="myCanvas" width="'.$gridsizeX.'" height="'.$gridsizeY.'" style="border:1px solid #000000;"></canvas>
         <script>
         var c = document.getElementById("myCanvas")
-        var ctx = c.getContext("2d");';
-        for($y=0; $y<$gridsize; $y+=1) {
-            for($x=0; $x<$gridsize; $x+=1) {
-                $num = $bob->noise($x,$y,0,$smooth);
+        var ctx = c.getContext("2d");';        
+        for($y=0; $y<$gridsizeY; $y+=1) {
+            for($x=0; $x<$gridsizeX; $x+=1) {
+                $num = $perlin->noise($x,$y,0,$nodeFreq);
                 
                 $raw = ($num/2)+.5;
-                //if ($num == 0) $raw = 0;
-                //else $raw = 1/abs( $num );
-                
-                //$raw = pow((5*$raw)-4,3)+.5;
-                //$raw = 1-pow(50 * ($raw - 1), 2);
-                
-                //if ($raw > .9) $raw = 1;
-                //else $raw = 0;
                 if ($raw < 0) $raw = 0;
                 
                 $num = dechex( $raw*255 );
                 
                 if (strlen($num) < 2) $num = "0".$num;
 
-                $num = $num.$num.$num;
-                //echo '<span style="color:#'.$num.'">X</span>';
-                $content = $content . '
+                if ($raw > $nodeSize){
+                    //$num = "ff0000";
+                    $num = $num.$num.$num;
+                    $content = $content . '
                     ctx.beginPath();
                     ctx.rect('.$x.', '.$y.', 1, 1);
                     ctx.strokeStyle="#'.$num.'";
                     ctx.stroke();
                 ';
+                }
             }
-            //$content = $content . '<br>';
         }
         $content = $content . '</script>';
         return $content;
 
     }
-    
 
-    public function perlinTest2()
+    public function getOreMap()
     {
-        $bob = new Perlin(1);
+        $perlin = new Perlin();
 
-        $place = 0;
+        $gridsizeX = 438; // long
+        $gridsizeY = 290; // lat
+        $nodeFreq = 12; // higher value = lower freq but bigger node
+        $nodeSize = 0.2; // 0 = max  1 = min
 
-        for ($i=0; $i<100000; $i+=100) {
-            for ($i=0; $i<1000; $i++) {
-                $num = round(($bob->random1D($i)/2)+.5,2);
-                echo $num.'
-            ';
-                echo '';
-                $place++;
+        $waterMap = json_decode(file_get_contents('../deposit/Maps/waterMap.json'), true);
+        var_dump($waterMap[0][0]);
+
+        $nodeSize = $nodeSize * -1;
+        $nodeSize = $nodeSize + 1;
+        $content = "{\"oreMap\":[
+    ";
+        $grid = new Grid;
+        for($y=0; $y<$gridsizeY; $y+=1) {
+            for($x=0; $x<$gridsizeX; $x+=1) {
+                if ($y % 2 != 0) {
+                    $fakeY = $y - 1;
+                } else {
+                    $fakeY = $y;
+                }
+                if ($x % 2 != 0) {
+                    $fakeX = $x - 1;
+                } else {
+                    $fakeX = $x;
+                }
+
+                if (!isset($waterMap[$fakeY][$fakeX])) {
+                    $num = $perlin->noise($x,$y,0,$nodeFreq);                
+                    $raw = ($num/2)+.5;
+                    if ($raw < 0) $raw = 0;                
+                    $num = dechex( $raw*255 );                
+                    if (strlen($num) < 2) $num = "0".$num;                
+                    if ($raw > $nodeSize){
+                        $content = $content . '{"x": '.$grid->gridToCoordinates($x, 0, 'x').', "y": '.$grid->gridToCoordinates(0, $y, 'y').'},
+    ';                   
+                    } 
+                }              
             }
         }
+        $content[strrpos($content, ',')] = ' ';
+        $content = $content . ']}';
+        $fp = fopen('../deposit/Maps/oreMap.json', 'w');
+        fwrite($fp, $content);
+        fclose($fp);
     }
 
 }
+

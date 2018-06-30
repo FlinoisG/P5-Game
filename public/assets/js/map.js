@@ -9,9 +9,16 @@ var map = L.map('mapid', {
         ], 
     maxBoundsViscosity: 1.0
 }).setView([49, 10.5], 10);
-var marker = L.marker([0, 0]).addTo(map);
 
-var marker = L.marker([33, -12]).addTo(map);
+if (typeof oreMapObj !== 'undefined') {
+    oreMapObj.oreMap.forEach(ore => {
+        //var marker = L.marker([ore.y, ore.x], {icon: minimapCursor}).addTo(map);
+        var marker = L.circle([ore.y, ore.x], {
+            color: 'blue',
+            radius: 500
+        }).addTo(map);
+    });
+}
 
 
 var pos = {};

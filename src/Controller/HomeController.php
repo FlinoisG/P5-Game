@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Service\AvatarHandler;
 use App\Service\MapGenerator;
+use App\Service\Grid;
 
 class HomeController extends DefaultController
 {
@@ -36,6 +37,9 @@ class HomeController extends DefaultController
             include "../src/View/Panel/PanelView.php";
             $panel = ob_get_clean();
         }
+        $oreMap = file_get_contents('../deposit/Maps/OreMap.json');
+        echo '<script>var oreMapObj = '.$oreMap.'</script>';
+        
         require('../src/View/HomeView.php');
         
     }
@@ -61,16 +65,37 @@ class HomeController extends DefaultController
         header('Location: ?p=home');
     }
 
-    public function perlinTest()
+    public function oreGen()
     {
         if (!isset($_SESSION)) { 
             session_start(); 
         } 
         $scriptHead = "";
         $scriptBody = "";
+        $content = "";
         $mapGenerator = new MapGenerator;
-        $content = $mapGenerator->perlinTest();
+        $grid = new Grid;
+        var_dump($mapGenerator->getOreMap());
+        require('../src/View/base.php');
+    }
+    
+    public function gnn(){
+        $waterMap = json_decode(file_get_contents('../deposit/Maps/waterMap.json'), true);
+        $result = [];
+        foreach ($waterMap['waterMap'] as $key => $waterPoint) {
+            if (isset($waterPoint["y"])){
+                $result[$waterPoint["y"]][$waterPoint["x"]] = $waterPoint["x"];
+            }
+            //array_push($result[$waterPoint["y"]], $waterPoint["x"]);
+            
+        }
+        echo '<script>console.log('.json_encode($result).');</script>';
+        $fp = fopen('../deposit/Maps/testMap.json', 'w');
+        fwrite($fp, json_encode($result));
+        fclose($fp);
         require('../src/View/base.php');
     }
 
 }
+
+$fion = [0=>"", "", ];

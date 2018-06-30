@@ -9,6 +9,18 @@ var minimapCursor = L.icon({
 
 var markerMiniMap = L.marker(map.getCenter(), {icon: minimapCursor}).addTo(miniMap);
 
+if (typeof oreMapObj !== 'undefined') {
+    oreMapObj.oreMap.forEach(ore => {
+        //console.log(ore.x + ' ' + ore.y);
+        //var marker = L.marker([ore.y, ore.x], {icon: minimapCursor}).addTo(map);
+        var marker = L.circle([ore.y, ore.x], {
+            color: 'blue',
+            //fillColor: '#f03',
+            fillOpacity: 1,
+            radius: 1
+        }).addTo(miniMap);
+    });
+}
 
 miniMap.dragging.disable();
 miniMap.touchZoom.disable();
@@ -37,6 +49,11 @@ miniMap.addEventListener('mousemove', function(ev) {
         map.setView([lat, lng])
         markerMiniMap.setLatLng([lat, lng]); 
     }
+});
+
+miniMap.addEventListener('mousedown', function(ev) {
+    map.setView([lat, lng])
+    markerMiniMap.setLatLng([lat, lng]); 
 });
 
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
