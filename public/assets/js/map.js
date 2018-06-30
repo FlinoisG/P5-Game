@@ -1,8 +1,14 @@
 var map = L.map('mapid', {
-    minZoom: 0,
-    maxZoom: 15
-}).setView([48.488, 16.994], 8);
-
+    minZoom: 8,
+    maxZoom: 18,
+    maxBounds: [
+        //south west
+        [32.7, -11.7],
+        //north east
+        [61.7, 32.1]
+        ], 
+    maxBoundsViscosity: 1.0
+}).setView([49, 10.5], 10);
 var marker = L.marker([0, 0]).addTo(map);
 
 var marker = L.marker([33, -12]).addTo(map);

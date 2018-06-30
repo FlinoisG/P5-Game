@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Service\AvatarHandler;
+use App\Service\MapGenerator;
 
 class HomeController extends DefaultController
 {
@@ -58,6 +59,18 @@ class HomeController extends DefaultController
         $avatarHandler = new AvatarHandler;
         $avatarHandler->avatarUpload($_FILES);
         header('Location: ?p=home');
+    }
+
+    public function perlinTest()
+    {
+        if (!isset($_SESSION)) { 
+            session_start(); 
+        } 
+        $scriptHead = "";
+        $scriptBody = "";
+        $mapGenerator = new MapGenerator;
+        $content = $mapGenerator->perlinTest();
+        require('../src/View/base.php');
     }
 
 }

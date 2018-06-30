@@ -7,7 +7,7 @@ var minimapCursor = L.icon({
     popupAnchor:  [20, 0] // point from which the popup should open relative to the iconAnchor
 });
 
-var markerMiniMap = L.marker([33, -12], {icon: minimapCursor}).addTo(miniMap);
+var markerMiniMap = L.marker(map.getCenter(), {icon: minimapCursor}).addTo(miniMap);
 
 
 miniMap.dragging.disable();
@@ -23,7 +23,6 @@ miniMap.addEventListener('mousemove', function(ev) {
    lat = ev.latlng.lat;
    lng = ev.latlng.lng;
    console.log('lat : '+lat+', lng : '+lng);
-   
 });
 
 miniMapClicked = false;
