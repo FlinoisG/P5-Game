@@ -26,7 +26,6 @@ pos.lat = 0;
 pos.lng = 0;
 map.addEventListener('mousemove', function(ev) {
     pos = map.getCenter();
-    console.log(pos);
     markerMiniMap.setLatLng(pos); 
 });
 //var marker = L.marker([pos.lat, pos.lng]).addTo(miniMap);

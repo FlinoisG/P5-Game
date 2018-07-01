@@ -19,7 +19,7 @@ class LoginController extends DefaultController
         $scriptBody = "";
         if (isset($_GET['login'])) {
             $Auth = new Auth();
-            $Auth->login($_POST['username'], $_POST['password']);
+            $Auth->login($this->sanitize('username'), $this->sanitize('password'));
             header('Location: ?p=home');
         }
         if (isset($_GET['recovery'])) {
@@ -43,11 +43,19 @@ class LoginController extends DefaultController
         $scriptBody = $this->setScript("RegisterScript");
         if (isset($_GET['register'])) {
             $Auth = new Auth();
-            $Auth->checkRegister($_POST['username'], $_POST['email'], $_POST['password']);
+            if($Auth->checkRegister($this->sanitize('username'), $this->sanitize('email'), $this->sanitize('password'))){
+                $link = "<span>Compte créer avec succès !</span>";
+                require('../src/View/loginView.php');
+            } else {
+                $link = "<span>Erreur lors de la création de compte</span>";
+                require('../src/View/loginView.php');
+            }
+        } else {
+            $title = 'Créer un compte';
+            $script = $this->setScript("RegisterScript");
+            require('../src/View/RegisterView.php');
         }
-        $title = 'Créer un compte';
-        $script = $this->setScript("RegisterScript");
-        require('../src/View/RegisterView.php');
+        
     }
 
     public function recovery()
@@ -59,10 +67,11 @@ class LoginController extends DefaultController
         $scriptBody = "";
         $title = 'Mot de Passe Oublié';
         if (isset($_GET['token'])){
+            $username = $_GET['user'];
             $token = $_GET['token'];
             $token = $this->dataValidation($token);
             $auth = new Auth;
-            $user = $auth->getUsersWithToken($token);
+            $user = $auth->checkTokenValidity($username, $token);
             if (time() > strtotime($user['0']['token_exp'])) {
                 $title = "Réinitialisation du mot de passe";
                 $content = "<p>Lien expiré.</p>

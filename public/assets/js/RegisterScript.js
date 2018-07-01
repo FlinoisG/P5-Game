@@ -1,10 +1,11 @@
 var messages = {
-    username    : 'Doit contenir entre 3 et 25 caractères',
-    email       : 'Veuillez entrer une adresse mail valide',
-    emailConf   : 'Les adresses ne correspondent pas',
-    password    : 'Doit contenir entre 5 et 50 caractères',
-    passwordConf: 'Les mots de passe ne correspondent pas',
-    empty       : 'Ce champ ne dois pas être vide'
+    usernameSize : 'Doit contenir entre 3 et 25 caractères',
+    space        : 'Ne doit contenir aucun espace',
+    email        : 'Veuillez entrer une adresse mail valide',
+    emailConf    : 'Les adresses ne correspondent pas',
+    password     : 'Doit contenir entre 5 et 50 caractères',
+    passwordConf : 'Les mots de passe ne correspondent pas',
+    empty        : 'Ce champ ne dois pas être vide'
 };
 
 var username     = document.getElementById('registerUsername');
@@ -14,37 +15,41 @@ var password     = document.getElementById('registerPassword');
 var passwordConf = document.getElementById('registerPasswordConf');
 
 username.onfocusout = function(){validateUsername(this.value)};
-email.onfocusout = function(){validateEmail(this.value)};
+email.onfocusout = function(){validateEmail(this)};
 emailConf.onfocusout = function(){validateEmailConf(this.value)};
 password.onfocusout = function(){validatePassword(this.value)};
 passwordConf.onfocusout = function(){validatePasswordConf(this.value)};
 
 function validateUsername (username) {
-    if (username.length >= 3 && username.length <= 25) {
-        document.getElementById('registerUsername').classList.remove("form-deny");
-        document.getElementById('registerUsername').classList.add("form-validate");
-        document.getElementById('registerUsername').setCustomValidity("");
-    } else {
+    if (username.length <= 2 || username.length >= 25 || /\s/.test(username)) {
         document.getElementById('registerUsername').classList.remove("form-validate");
         document.getElementById('registerUsername').classList.add("form-deny");
-        document.getElementById('registerUsername').setCustomValidity(messages.username);
+    } else {
+        document.getElementById('registerUsername').classList.remove("form-deny");
+        document.getElementById('registerUsername').classList.add("form-validate");
+    }
+    if (username.length <= 2 || username.length >= 26) {        
+        document.getElementById('registerUsername').setCustomValidity(messages.usernameSize);
+    } else if (/\s/.test(username)) {
+        document.getElementById('registerUsername').setCustomValidity(messages.space);
+    } else {
+        document.getElementById('registerUsername').setCustomValidity("");
+        
     }
 }
 
 function validateEmail (email) {
-    if (/(.+)@(.+){2,}\.(.+){2,}/.test(email)) {
+    if(email.validity.valid){
         document.getElementById('registerEmail').classList.remove("form-deny");
         document.getElementById('registerEmail').classList.add("form-validate");
-        document.getElementById('registerEmail').setCustomValidity("");
+        console.log('oui');
     } else {
         document.getElementById('registerEmail').classList.remove("form-validate");
         document.getElementById('registerEmail').classList.add("form-deny");
-        document.getElementById('registerEmail').setCustomValidity(messages.email);
-    }
-    if (email.length > 5) {
-
+        console.log('non');
     }
 }
+
 
 function validateEmailConf () {
     if (email.value === emailConf.value) {

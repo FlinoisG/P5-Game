@@ -12,11 +12,11 @@
         </div>
         <div class="form-group">
             <label for="registerEmail">Adresse mail</label>
-            <input class="form-control login-form" type="text" id="registerEmail" name="email" placeholder="Adresse mail" required>
+            <input class="form-control login-form" type="email" id="registerEmail" name="email" placeholder="Adresse mail" required>
         </div>
         <div class="form-group">
             <label for="registerUsername">Confirmation de l'adresse mail</label>
-            <input class="form-control login-form" type="text" id="registerEmailConf" name="email_conf" placeholder="Adresse mail" required>
+            <input class="form-control login-form" type="email" id="registerEmailConf" name="email_conf" placeholder="Adresse mail" required>
         </div>
         <div class="form-group">
             <label for="registerPassword">Mot de passe</label>

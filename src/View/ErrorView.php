@@ -1,7 +1,7 @@
 <?php 
 ob_start(); ?>
 <div class="col-lg-12">
-    <h1>Erreur <?= $errorNo ?></h1>
+    <h1><?= $errorNo ?></h1>
     <p><?= $errorDesc ?></p>
 </div>
 <?php $content = ob_get_clean(); ?>

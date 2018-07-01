@@ -30,6 +30,20 @@ class DefaultController
             default:
             $errorDesc = "Erreur interne du serveur";
         endswitch;  
+        $errorNo = 'Erreur ' . $errorNo;
+        require('../src/View/ErrorView.php');
+    }
+
+    public function customError ($error)
+    {
+        if (!isset($_SESSION)) { 
+            session_start(); 
+        } 
+        $scriptHead = "";
+        $scriptBody = "";
+        $title = 'Erreur';
+        $errorNo = "";
+        $errorDesc = "Accès refusé";
         require('../src/View/ErrorView.php');
     }
 
@@ -81,6 +95,12 @@ class DefaultController
         } else {
             return $data;
         }
+    }
+
+    public function sanitize($data)
+    {
+        $sanitizedData = filter_input(INPUT_POST, $data, FILTER_SANITIZE_SPECIAL_CHARS);
+        return $sanitizedData;
     }
 
 }

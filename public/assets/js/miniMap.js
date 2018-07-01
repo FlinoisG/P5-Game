@@ -34,7 +34,6 @@ var lat, lng;
 miniMap.addEventListener('mousemove', function(ev) {
    lat = ev.latlng.lat;
    lng = ev.latlng.lng;
-   console.log('lat : '+lat+', lng : '+lng);
 });
 
 miniMapClicked = false;

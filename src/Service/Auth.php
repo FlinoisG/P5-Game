@@ -56,7 +56,13 @@ class Auth
         $scriptHead = "";
         $scriptBody = "";
         $title = '';
-        $available = null;
+        $available = true;
+        if (!preg_match('/^[a-zA-Z0-9]{2,26}$/', $username)){
+            $available = false;
+        }
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)){
+            $available = false;
+        }
         $sqlQuery = new sqlQuery();
         $getUser = $sqlQuery->sqlQuery("SELECT username FROM game_users WHERE username='".$username."'");
         if ($getUser) {
@@ -70,8 +76,11 @@ class Auth
             $content = '<h1>Un compte avec cet e-mail existe déjà</h1>';
             die(require('../src/View/base.php'));
         }
-        if ($available == null) {
+        if ($available == true) {
             $this->register($username, $email, $password);
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -99,11 +108,12 @@ class Auth
         if ($user != []) {
             $GUIDService = new GUID;
             $resetToken = $GUIDService->getGUID();
+            $hashedResetToken = password_hash($resetToken, PASSWORD_BCRYPT);
             $resetExpiration = date("Y-m-d H:i:s", strtotime('+24 hours'));
-            $sqlQuery->sqlQuery('UPDATE game_users SET token = \''.$resetToken.'\', token_exp = \''.$resetExpiration.'\' WHERE email=\''.$email.'\'');
+            $sqlQuery->sqlQuery('UPDATE game_users SET token = \''.$hashedResetToken.'\', token_exp = \''.$resetExpiration.'\' WHERE email=\''.$email.'\'');
             $to      = $_POST['email'];
             $subject = 'Demande de réinitialisation de mot de passe';
-            $message = 'Lien : http://gauthier.tuby.com/P5-Game/public/?p=login.recovery&token=' . $resetToken;
+            $message = 'Lien : http://gauthier.tuby.com/P5-Game/public/?p=login.recovery&user=' . $user['0']['username'] . '&token=' . $resetToken;
             $headers = 'From: webmaster@FlinoisG.com' . "\r\n" .
             'Reply-To: webmaster@forterocheblog.com' . "\r\n" .
             'X-Mailer: PHP/' . phpversion();
@@ -134,10 +144,16 @@ class Auth
         $sqlQuery->sqlQuery($query);
     }
 
-    public function getUsersWithToken($token)
+    public function checkTokenValidity($username, $tokenClient)
     {
         $sqlQuery = new sqlQuery();
-        $users = $sqlQuery->sqlQuery("SELECT * FROM game_users WHERE token='".$token."'");
+        $user = $sqlQuery->sqlQuery("SELECT token FROM game_users WHERE username='".$username."'");
+        $tokenServ = $user['0']['token'];
+        if ($user != [] && $this->hash_equals($tokenServ, crypt($tokenClient, $tokenServ))) {
+            $user = $sqlQuery->sqlQuery("SELECT * FROM game_users WHERE token='".$token."'");
+        } else {
+            $user = [];
+        }
         return $users;
     }
 

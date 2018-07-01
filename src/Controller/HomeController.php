@@ -96,6 +96,29 @@ class HomeController extends DefaultController
         require('../src/View/base.php');
     }
 
-}
+    public function testArea1(){
+        $scriptHead = "";
+        $scriptBody = "";
+        $content = '
+            <form class="center" action="?p=home.testArea" method="post">
+                <input type="text" name="test">
+                <input type="submit" value="Submit">
+            </form>
+        ';
 
-$fion = [0=>"", "", ];
+        require('../src/View/base.php');
+    }
+
+    public function testArea(){
+        $scriptHead = "";
+        $scriptBody = "";
+        $content = "";
+
+        $safe_data=filter_input(INPUT_POST, 'test', FILTER_SANITIZE_SPECIAL_CHARS);
+        //var_dump($_POST['test']);
+        echo '<br>';
+        var_dump($safe_data);
+        require('../src/View/base.php');
+    }
+
+}
