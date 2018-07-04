@@ -1,0 +1,8 @@
+class DefaultEntity {
+    constructor() {
+    }
+  
+    getFormattedDate() {
+
+    }
+}

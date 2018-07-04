@@ -27,8 +27,10 @@ class HomeController extends DefaultController
         $scriptBody = $scriptBody . $this->setScript('grid');
         $mapInit = new MapInit;
         $scriptBody = $scriptBody . $mapInit->mapInit();
+        $scriptBody = $scriptBody . $this->setScript('Entities/defaultEntity');
+        $scriptBody = $scriptBody . $this->setScript('Entities/base');
         $scriptBody = $scriptBody . $this->setScript('board');        
-        //$scriptBody = $scriptBody . $this->setScript('miniMap');
+        
         
         $title = 'Home';
         if (isset($_GET['logout'])) {

@@ -1,5 +1,7 @@
 var Board = {};
 
+
+
 Board.map = {
 
     //map: "",
@@ -16,7 +18,8 @@ Board.map = {
                 [61.7, 32.1]
                 ], 
             maxBoundsViscosity: 1.0
-        }).setView([49, 10.5], 10);
+        //}).setView([49, 10.5], 10);
+        }).setView([gridToCoordinates(0, 142.82, "y"), gridToCoordinates(112.15, 0, "x")], 10);
         this.map.addEventListener('click', function(ev) {
             x = coordinatesToGrid(ev.latlng.lng, 0, "x");
             y = coordinatesToGrid(0, ev.latlng.lat, "y");
@@ -36,6 +39,7 @@ Board.map = {
         //this.map.keyboard.disable();
         //if (this.map.tap) this.map.tap.disable();
         this.setOreMap();
+        this.setBaseMap();
         this.setTileLayer();
         
     },
@@ -65,11 +69,15 @@ Board.map = {
                 }
                 x = gridToCoordinates(base.x, 0, 'x')
                 y = gridToCoordinates(0, base.y, 'y')
-                console.log([x, y]);
-                var baseMarker = L.circle([y, x], {
+                const baseEntity = new BaseEntity(base.id);
+                baseMarker = L.circle([y, x], {
                     color: color,
                     radius: 5000
                 }).addTo(this.map);
+                baseMarker.addEventListener('click', function(ev) {
+                    baseEntity.onClick();
+                });
+                
             });
         }
     },

@@ -24,7 +24,7 @@ class MapInit {
             }            
             $pos = json_decode($base["pos"]);
             $result = $result . '
-                {"x": '.$pos[0].', "y": '.$pos[1].', "owner": "'.$owner.'"},
+                {"x": '.$pos[0].', "y": '.$pos[1].', "id": '.$base["id"].', "owner": "'.$owner.'"},
     ';
         }
         $result[strrpos($result, ',')] = ' ';
