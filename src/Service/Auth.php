@@ -51,7 +51,14 @@ class Auth
         }
     }
 
-    // Check if username or email already exists in database
+    /**
+     * Check if username or email already exists in database
+     *
+     * @param string $username
+     * @param string $email
+     * @param string $password
+     * @return bool
+     */
     public function checkRegister($username, $email, $password) {
         $scriptHead = "";
         $scriptBody = "";
@@ -84,6 +91,14 @@ class Auth
         }
     }
 
+    /**
+     * register new user in databse
+     *
+     * @param string $username
+     * @param string $email
+     * @param string $password
+     * @return void
+     */
     public function register($username, $email, $password) {
         require('../src/Service/PasswordService.php');
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
@@ -144,6 +159,13 @@ class Auth
         $sqlQuery->sqlQuery($query);
     }
 
+    /**
+     * Check the validity of a token in case a user forget his password
+     *
+     * @param string $username
+     * @param string $tokenClient
+     * @return $users
+     */
     public function checkTokenValidity($username, $tokenClient)
     {
         $sqlQuery = new sqlQuery();
@@ -155,6 +177,13 @@ class Auth
             $user = [];
         }
         return $users;
+    }
+
+    public function getMapObjects()
+    {
+        $sqlQuery = new sqlQuery();
+        $bases = $sqlQuery->sqlQuery("SELECT * FROM game_bases");
+        return $bases;
     }
 
 }

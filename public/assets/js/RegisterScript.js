@@ -20,21 +20,21 @@ emailConf.onfocusout = function(){validateEmailConf(this.value)};
 password.onfocusout = function(){validatePassword(this.value)};
 passwordConf.onfocusout = function(){validatePasswordConf(this.value)};
 
-function validateUsername (username) {
-    if (username.length <= 2 || username.length >= 25 || /\s/.test(username)) {
-        document.getElementById('registerUsername').classList.remove("form-validate");
-        document.getElementById('registerUsername').classList.add("form-deny");
+function validateUsername (value) {
+    //var username = document.getElementById('registerUsername');
+    if (username.length <= 2 || username.length >= 25 || /\s/.test(value)) {
+        username.classList.remove("form-validate");
+        username.classList.add("form-deny");
     } else {
-        document.getElementById('registerUsername').classList.remove("form-deny");
-        document.getElementById('registerUsername').classList.add("form-validate");
+        username.classList.remove("form-deny");
+        username.classList.add("form-validate");
     }
     if (username.length <= 2 || username.length >= 26) {        
-        document.getElementById('registerUsername').setCustomValidity(messages.usernameSize);
-    } else if (/\s/.test(username)) {
-        document.getElementById('registerUsername').setCustomValidity(messages.space);
+        username.setCustomValidity(messages.usernameSize);
+    } else if (/\s/.test(value)) {
+        username.setCustomValidity(messages.space);
     } else {
-        document.getElementById('registerUsername').setCustomValidity("");
-        
+        username.setCustomValidity("");
     }
 }
 
@@ -42,11 +42,9 @@ function validateEmail (email) {
     if(email.validity.valid){
         document.getElementById('registerEmail').classList.remove("form-deny");
         document.getElementById('registerEmail').classList.add("form-validate");
-        console.log('oui');
     } else {
         document.getElementById('registerEmail').classList.remove("form-validate");
         document.getElementById('registerEmail').classList.add("form-deny");
-        console.log('non');
     }
 }
 
