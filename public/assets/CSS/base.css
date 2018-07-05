@@ -66,3 +66,14 @@ div{
 .leaflet-control{
     display: none;
 }
+
+.unitSlot {
+    margin: 2px;
+    border: 1px solid #292929;
+    border-radius: 3px;
+}
+
+.userAvatar {
+    border: 0px solid #525252;
+    border-radius: 75px;
+}

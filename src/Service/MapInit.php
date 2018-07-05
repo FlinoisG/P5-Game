@@ -24,8 +24,14 @@ class MapInit {
             }            
             $pos = json_decode($base["pos"]);
             $result = $result . '
-                {"x": '.$pos[0].', "y": '.$pos[1].', "id": '.$base["id"].', "owner": "'.$owner.'"},
-    ';
+                {
+                    "x": '.$pos[0].', 
+                    "y": '.$pos[1].', 
+                    "id": '.$base["id"].', 
+                    "owner": "'.$owner.'", 
+                    "ownerName": "'.$base["player"].'", 
+                    "main": '.$base["main"].'
+                },';
         }
         $result[strrpos($result, ',')] = ' ';
         $result = $result . ']</script>';

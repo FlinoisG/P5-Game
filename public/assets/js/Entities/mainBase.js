@@ -1,0 +1,3 @@
+class MainBaseEntity extends BaseEntity {
+    
+}

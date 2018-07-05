@@ -1,15 +1,10 @@
-var Board = {};
+const Map = {};
 
-
-
-Board.map = {
-
-    //map: "",
-    //pos: {"lat": 0, "lng": 0},
+Map.mainMap = {
 
     mapInit: function(){
         this.map = L.map('mapid', {
-            minZoom: 8,
+            //minZoom: 8,
             maxZoom: 18,
             maxBounds: [
                 //south west
@@ -19,7 +14,7 @@ Board.map = {
                 ], 
             maxBoundsViscosity: 1.0
         //}).setView([49, 10.5], 10);
-        }).setView([gridToCoordinates(0, 142.82, "y"), gridToCoordinates(112.15, 0, "x")], 10);
+        }).setView([gridToCoordinates(0, 242.82, "y"), gridToCoordinates(212.15, 0, "x")], 10);
         this.map.addEventListener('click', function(ev) {
             x = coordinatesToGrid(ev.latlng.lng, 0, "x");
             y = coordinatesToGrid(0, ev.latlng.lat, "y");
@@ -28,9 +23,11 @@ Board.map = {
         });
         
         this.map.addEventListener('mousemove', function(ev) {
-            this.pos = Board.map.map.getCenter();
-            Board.miniMap.markerMiniMap.setLatLng(this.pos); 
+            this.pos = Map.mainMap.map.getCenter();
+            Map.miniMap.markerMiniMap.setLatLng(this.pos); 
         });
+
+        
         //this.map.dragging.disable();
         this.map.touchZoom.disable();
         this.map.doubleClickZoom.disable();
@@ -41,14 +38,14 @@ Board.map = {
         this.setOreMap();
         this.setBaseMap();
         this.setTileLayer();
-        
+        Map.miniMap.mapInit();
     },
    
     setOreMap: function(){
         if (typeof oreMapObj !== 'undefined') {
             oreMapObj.oreMap.forEach(ore => {
                 var oreMarker = L.circle([ore.y, ore.x], {
-                    color: 'blue',
+                    color: '#55719e',
                     radius: 500
                 }).addTo(this.map);
             });
@@ -58,18 +55,22 @@ Board.map = {
     setBaseMap: function(){
         if (typeof baseMapObj !== 'undefined') {
             baseMapObj.forEach(base => {
-                var color;
-                console.log(base);
+                x = gridToCoordinates(base.x, 0, 'x');
+                y = gridToCoordinates(0, base.y, 'y');
                 if (base.owner == "player"){
-                    color = "green";
+                    if (base.main == 1){
+                        this.map.setView([y, x]);
+                    }
+                    color = "blue";
+                    relation = "owned";
                 } else if (base.owner == "enemy"){
                     color = "red";
+                    relation = "enemy";
                 } else {
                     color = "grey";
+                    relation = "neutral";
                 }
-                x = gridToCoordinates(base.x, 0, 'x')
-                y = gridToCoordinates(0, base.y, 'y')
-                const baseEntity = new BaseEntity(base.id);
+                const baseEntity = new BaseEntity(base.id, base.ownerName, relation);
                 baseMarker = L.circle([y, x], {
                     color: color,
                     radius: 5000
@@ -94,16 +95,12 @@ Board.map = {
 
 }
 
-Board.miniMap = {
-
-    //miniMap: "",
-    //markerMiniMap: "",
-    //miniMapClicked: "",
+Map.miniMap = {
 
     mapInit: function(){
         this.setCursorIcon();
         this.miniMap = L.map('minimapid').setView([49, 10.5], 3);  
-        this.markerMiniMap = L.marker(Board.map.map.getCenter(), {icon: this.minimapCursor}).addTo(this.miniMap);
+        this.markerMiniMap = L.marker(Map.mainMap.map.getCenter(), {icon: this.minimapCursor}).addTo(this.miniMap);
         this.setOreMap();
         this.setMinimapControls();
         this.setTileLayer();
@@ -125,7 +122,7 @@ Board.miniMap = {
                 //console.log(ore.x + ' ' + ore.y);
                 //var marker = L.marker([ore.y, ore.x], {icon: minimapCursor}).addTo(map);
                 var oreMarker = L.circle([ore.y, ore.x], {
-                    color: 'blue',
+                    color: '#55719e',
                     fillOpacity: 1,
                     radius: 1
                 }).addTo(this.miniMap);
@@ -148,22 +145,24 @@ Board.miniMap = {
            lng = ev.latlng.lng;
         });        
         
-        Board.miniMap.miniMap.addEventListener('mousedown', function() {
-            Board.miniMap.miniMapClicked = true;
+        Map.miniMap.miniMap.addEventListener('mousedown', function() {
+            Map.miniMap.miniMapClicked = true;
         });
-        Board.miniMap.miniMap.addEventListener('mouseup', function() {
-            Board.miniMap.miniMapClicked = false;
-        });  
-        Board.miniMap.miniMap.addEventListener('mousemove', function() {
-            if (Board.miniMap.miniMapClicked) {
-                Board.map.map.setView([lat, lng])
-                Board.miniMap.markerMiniMap.setLatLng([lat, lng]); 
+        
+        Map.miniMap.miniMap.addEventListener('mouseup', function() {
+            Map.miniMap.miniMapClicked = false;
+        });
+
+        Map.miniMap.miniMap.addEventListener('mousemove', function() {
+            if (Map.miniMap.miniMapClicked) {
+                Map.mainMap.map.setView([lat, lng])
+                Map.miniMap.markerMiniMap.setLatLng([lat, lng]); 
             }
         });
         
-        Board.miniMap.miniMap.addEventListener('mousedown', function() {
-            Board.map.map.setView([lat, lng])
-            Board.miniMap.markerMiniMap.setLatLng([lat, lng]); 
+        Map.miniMap.miniMap.addEventListener('mousedown', function() {
+            Map.mainMap.map.setView([lat, lng])
+            Map.miniMap.markerMiniMap.setLatLng([lat, lng]); 
         });
     },
 
@@ -179,5 +178,5 @@ Board.miniMap = {
 
 }
 
-Board.map.mapInit();
-Board.miniMap.mapInit();
+Map.mainMap.mapInit();
+

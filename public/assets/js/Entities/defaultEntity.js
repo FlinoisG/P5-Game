@@ -1,8 +1,11 @@
 class DefaultEntity {
-    constructor() {
+    constructor(id, ownerName, relation) {
+        this.id = id;
+        this.ownerName = ownerName;
+        this.relation = relation;
     }
   
     getFormattedDate() {
-
     }
+
 }

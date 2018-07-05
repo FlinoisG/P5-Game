@@ -25,6 +25,12 @@
           <li class="nav-item">
             <a class="nav-link" href="?p=home">Home</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="?p=home">Classement</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="?p=home">Contact</a>
+          </li>
           
           <?php
             if (isset($_SESSION['auth'])) {

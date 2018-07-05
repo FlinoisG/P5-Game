@@ -29,7 +29,8 @@ class HomeController extends DefaultController
         $scriptBody = $scriptBody . $mapInit->mapInit();
         $scriptBody = $scriptBody . $this->setScript('Entities/defaultEntity');
         $scriptBody = $scriptBody . $this->setScript('Entities/base');
-        $scriptBody = $scriptBody . $this->setScript('board');        
+        $scriptBody = $scriptBody . $this->setScript('UI/panelInterface');
+        $scriptBody = $scriptBody . $this->setScript('UI/map');        
         
         
         $title = 'Home';
@@ -93,8 +94,6 @@ class HomeController extends DefaultController
             if (isset($waterPoint["y"])){
                 $result[$waterPoint["y"]][$waterPoint["x"]] = $waterPoint["x"];
             }
-            //array_push($result[$waterPoint["y"]], $waterPoint["x"]);
-            
         }
         echo '<script>console.log('.json_encode($result).');</script>';
         $fp = fopen('../deposit/Maps/testMap.json', 'w');
