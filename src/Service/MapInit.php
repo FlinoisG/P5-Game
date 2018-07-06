@@ -13,6 +13,17 @@ class MapInit {
         $bases = $auth->getMapObjects();
         $result = '<script>var baseMapObj = [';
         foreach ($bases as $base) {
+            $content = [];
+            $workers = $auth->getBaseWorker($base["id"]);
+            if ($workers[0]['workers'] != 0){
+                $content["workers"] = $workers[0]['workers'];      
+            }
+            $workersInConstruct = $auth->getWorkersInConstruct($base["id"]);
+            if ($workersInConstruct){
+                for ($i=0; $i < sizeof($workersInConstruct); $i++) { 
+                    $content["workersInConst"][$i] = (int)$workersInConstruct[$i]["time"]; 
+                }
+            }
             if (isset($_SESSION['auth'])){
                 if ($base["player"] == $_SESSION['auth']){
                     $owner = "player";
@@ -20,7 +31,7 @@ class MapInit {
                     $owner = "enemy";
                 }
             } else {
-                $owner = "enemy";
+                $owner = "neutral";
             }            
             $pos = json_decode($base["pos"]);
             $result = $result . '
@@ -30,7 +41,8 @@ class MapInit {
                     "id": '.$base["id"].', 
                     "owner": "'.$owner.'", 
                     "ownerName": "'.$base["player"].'", 
-                    "main": '.$base["main"].'
+                    "main": '.$base["main"].',
+                    "content": '.json_encode($content).'
                 },';
         }
         $result[strrpos($result, ',')] = ' ';

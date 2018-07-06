@@ -4,7 +4,7 @@ Map.mainMap = {
 
     mapInit: function(){
         this.map = L.map('mapid', {
-            //minZoom: 8,
+            minZoom: 8,
             maxZoom: 18,
             maxBounds: [
                 //south west
@@ -14,7 +14,7 @@ Map.mainMap = {
                 ], 
             maxBoundsViscosity: 1.0
         //}).setView([49, 10.5], 10);
-        }).setView([gridToCoordinates(0, 242.82, "y"), gridToCoordinates(212.15, 0, "x")], 10);
+        }).setView([gridToCoordinates(0, 131.48, "y"), gridToCoordinates(224.83, 0, "x")], 2);
         this.map.addEventListener('click', function(ev) {
             x = coordinatesToGrid(ev.latlng.lng, 0, "x");
             y = coordinatesToGrid(0, ev.latlng.lat, "y");
@@ -39,6 +39,9 @@ Map.mainMap = {
         this.setBaseMap();
         this.setTileLayer();
         Map.miniMap.mapInit();
+
+        console.log(gridDistance([0,0],[3,3]));
+
     },
    
     setOreMap: function(){
@@ -70,15 +73,16 @@ Map.mainMap = {
                     color = "grey";
                     relation = "neutral";
                 }
-                const baseEntity = new BaseEntity(base.id, base.ownerName, relation);
                 baseMarker = L.circle([y, x], {
                     color: color,
                     radius: 5000
                 }).addTo(this.map);
-                baseMarker.addEventListener('click', function(ev) {
-                    baseEntity.onClick();
-                });
-                
+                if (relation != "neutral"){
+                    const baseEntity = new BaseEntity(base.id, base.ownerName, relation, base.content);
+                    baseMarker.addEventListener('click', function(ev) {
+                        baseEntity.onClick();
+                    });
+                }
             });
         }
     },

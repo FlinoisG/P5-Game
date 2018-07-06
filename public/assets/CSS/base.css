@@ -12,8 +12,8 @@ body {
     padding-top: 55.6px;
     font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
     color: white;
-    background-image: url('../img/bg_fleur_500px.png');
-    background-color: #1F1F1F;
+    
+    background-color: rgb(15, 15, 15);
     text-align: center;
 }
 
@@ -22,7 +22,7 @@ body {
 }
 
 div{
-    border: 1px solid fuchsia;
+    border: 0px solid #00ff00;
 }
 
 .center {
@@ -52,25 +52,56 @@ div{
     top: 140px;
     height: 250px; 
     width: 250px;
+    border: 3px solid rgb(66, 66, 66);
+    border-top: 2px solid rgb(66, 66, 66);
+    border-right: 2px solid rgb(66, 66, 66);
+    border-bottom-left-radius: 5px;
+    border-top-right-radius: 5px;
 }
 
 #board{
+    background-image: url('../img/bg_fleur_500px.png');
     display: flex;
     margin: 15px;
+    border: 2px solid rgb(66, 66, 66);
+    border-radius: 5px;
+    box-shadow: 0px 3px 30px #000000;
 }
 
 #panel {
+    border-right: 2px solid rgb(66, 66, 66);
     min-width: 350px;
+    max-width: 350px;
+    
 }
 
 .leaflet-control{
     display: none;
 }
 
+.unitSlotContainer {
+    max-width: 54px;
+    max-height: 54px;
+    margin: 5px;
+}
+
+.panelSlots{
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin: 10px;
+}
+
 .unitSlot {
-    margin: 2px;
     border: 1px solid #292929;
     border-radius: 3px;
+}
+
+
+
+.panelUnitTimer{
+    position: relative;
+    top: -24px;
 }
 
 .userAvatar {

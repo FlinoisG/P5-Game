@@ -186,4 +186,63 @@ class Auth
         return $bases;
     }
 
+    public function getMetal($username)
+    {
+        $sqlQuery = new sqlQuery();
+        $metal = $sqlQuery->sqlQuery("SELECT metal FROM game_users WHERE username='".$username."'");
+        return $metal;
+    }
+
+    public function addMetal($username, $amount)
+    {
+        $sqlQuery = new sqlQuery();
+        $metal = $sqlQuery->sqlQuery("SELECT metal FROM game_users WHERE username='".$username."'");
+        $newAmount = $metal[0]['metal'] + $amount;
+        $sqlQuery->sqlQuery("UPDATE game_users SET metal = ".$newAmount." WHERE username='".$username."'");
+        return $metal;
+    }
+
+    public function getBaseWorker($baseId)
+    {
+        $sqlQuery = new sqlQuery();
+        $baseWorker = $sqlQuery->sqlQuery("SELECT workers FROM game_bases WHERE id='".$baseId."'");
+        return $baseWorker;
+    }
+
+    public function buyWorker($baseId)
+    {
+        $sqlQuery = new sqlQuery();
+        $baseWorker = $this->getBaseWorker($baseId);
+        $baseWorker = $baseWorker[0]["workers"] + 1;
+        $sqlQuery->sqlQuery("UPDATE game_bases SET workers = ".$baseWorker." WHERE id='".$baseId."'");
+    }
+
+    public function newTask($action, $target = null, $origin = null, $time = 0)
+    {
+        $sqlQuery = new sqlQuery();
+        $query = 'INSERT INTO game_tasks (action, target, origin, time) VALUES (\''.$action.'\', \''.$target.'\', \''.$origin.'\',  '.$time.')';
+        $sqlQuery->sqlQuery($query);
+    }
+
+    public function removeTask($taskId)
+    {
+        $sqlQuery = new sqlQuery();
+        $query = 'DELETE FROM game_tasks WHERE id='.$taskId;
+        $sqlQuery->sqlQuery($query);
+    }
+
+    public function getTasks()
+    {
+        $sqlQuery = new sqlQuery();
+        $tasks = $sqlQuery->sqlQuery("SELECT * FROM game_tasks");
+        return $tasks;
+    }
+
+    public function getWorkersInConstruct($baseId)
+    {
+        $sqlQuery = new sqlQuery();
+        $workersInConstruct = $sqlQuery->sqlQuery("SELECT time FROM game_tasks WHERE origin='base[".$baseId."]'");
+        return $workersInConstruct;
+    }
+
 }

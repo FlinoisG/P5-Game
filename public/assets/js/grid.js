@@ -31,3 +31,11 @@ function gridToCoordinates(x=0, y=0, type='both')
         return {"x": x, "y": y};
     }
 }
+
+
+function gridDistance(a, b)
+{
+    c = Math.pow((a[0]-b[0]), 2);
+    d = Math.pow((a[1]-b[1]), 2);
+    return Math.sqrt(c+d);
+}

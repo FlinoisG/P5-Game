@@ -6,6 +6,8 @@ use App\Service\AvatarHandler;
 use App\Service\MapGenerator;
 use App\Service\Grid;
 use App\Service\MapInit;
+use App\Service\Auth;
+use App\Entity\Base;
 
 class HomeController extends DefaultController
 {
@@ -31,6 +33,7 @@ class HomeController extends DefaultController
         $scriptBody = $scriptBody . $this->setScript('Entities/base');
         $scriptBody = $scriptBody . $this->setScript('UI/panelInterface');
         $scriptBody = $scriptBody . $this->setScript('UI/map');        
+        //$scriptBody = $scriptBody . $this->setScript('panelUnitCountdown');        
         
         
         $title = 'Home';
@@ -39,6 +42,8 @@ class HomeController extends DefaultController
             header('Location: ?p=home');
         }
         if ($_SESSION) {
+            $auth = new Auth;
+            $metal = $auth->getMetal($_SESSION['auth']);
             ob_start();
             include "../src/View/Panel/PanelLoggedView.php";
             $panel = ob_get_clean();
@@ -47,8 +52,6 @@ class HomeController extends DefaultController
             include "../src/View/Panel/PanelView.php";
             $panel = ob_get_clean();
         }
-        
-        
         require('../src/View/HomeView.php');
     }
 
