@@ -73,14 +73,9 @@ class DefaultController
             "select",
             "update",
             "delete",
-            "insert into",
-            "create database",
-            "alter database",
-            "create table",
-            "alter table",
-            "drop table",
-            "create index",
-            "drop index"
+            "insert",
+            "drop",
+            "create"
         ];
         $validate = true;
         for ($i = 0; $i < count($bannedCommands); $i++) {

@@ -24,6 +24,7 @@ class HomeController extends DefaultController
             <script src=\"https://unpkg.com/leaflet@1.3.1/dist/leaflet.js\"
             integrity=\"sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw==\"
             crossorigin=\"\"></script>";
+        $scriptHead = $scriptHead . $this->setScript('panelUnitCountdown'); 
         $oreMap = file_get_contents('../deposit/Maps/OreMap.json');
         $scriptBody = '<script>var oreMapObj = '.$oreMap.'</script>';
         $scriptBody = $scriptBody . $this->setScript('grid');
@@ -33,7 +34,8 @@ class HomeController extends DefaultController
         $scriptBody = $scriptBody . $this->setScript('Entities/base');
         $scriptBody = $scriptBody . $this->setScript('UI/panelInterface');
         $scriptBody = $scriptBody . $this->setScript('UI/map');        
-        //$scriptBody = $scriptBody . $this->setScript('panelUnitCountdown');        
+               
+              
         
         
         $title = 'Home';
@@ -88,6 +90,10 @@ class HomeController extends DefaultController
         $grid = new Grid;
         var_dump($mapGenerator->getOreMap());
         require('../src/View/base.php');
+    }
+
+    public function focus(){
+
     }
     
     public function gnn(){

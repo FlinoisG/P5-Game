@@ -17,10 +17,10 @@ class BaseController extends DefaultController
         $playerMetal = $auth->getMetal($_SESSION['auth']);
         $baseWorker = $auth->getBaseWorker($baseId);
         $available = true;
-        if (!$playerMetal >= 100) {
+        if (!$playerMetal >= 500) {
             $available = "metal";
         }
-        if (!$baseWorker < 12) {
+        if (!$baseWorker < 10) {
             $available = "place dans la base";
         }
         if ($available){
@@ -28,7 +28,7 @@ class BaseController extends DefaultController
             $auth->addMetal($_SESSION['auth'], -500);
             $origin = "base[".$baseId."]"; 
             $auth->newTask("buy", "worker", $origin, $time);
-            header('Location: ?p=home');
+            header('Location: ?p=home&focus='.$origin);
         } else {
             echo "Pas asser de " . $available;
         }

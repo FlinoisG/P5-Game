@@ -1,19 +1,19 @@
-//var el = document.getElementById("timer"),
-  mins = 2,
-  secs = 0;
+function countDown(target, time) {
 
-function countDown() {
-  if (secs || mins) {
-    setTimeout(countDown, 100); // Should be 1000, but I'm impatient
-  }
-  el.innerHTML = mins + ":" + (secs.toString().length < 2 ? "0" + secs : secs); // Pad number
-  secs -= 1;
-  if (secs < 0) {
-    mins -= 1;
-    secs = 59;
-  }
+    var x = setInterval(function() {
+
+        var now = Math.floor(Date.now() / 1000);
+        var distance = time - now;
+
+        var minutes = Math.floor((distance % (60 * 60)) / 60);
+        var seconds = Math.floor((distance % 60));
+
+        target.innerHTML = minutes + ":" + seconds;
+
+        if (distance < 0) {
+            clearInterval(x);
+            target.innerHTML = "Finition..";
+        }
+    }, 1000);
+
 }
-
-//countDown();
-
-console.log(document.getElementsByClassName("panelUnitTimer"));

@@ -1,10 +1,17 @@
-const Map = {};
+var Tilelayers = {
+    "SpinalMap": "https://{s}.tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png?apikey=213fa43d7d40475091d54ee21fa593ae",
+    "Stamen": "https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_nolabels/{z}/{x}/{y}{r}.png",
+    "mapBox": "https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_nolabels/{z}/{x}/{y}{r}.png",
+
+};
+
+const Map = {"tilemap": Tilelayers.Stamen};
 
 Map.mainMap = {
 
     mapInit: function(){
         this.map = L.map('mapid', {
-            minZoom: 8,
+            minZoom: 7,
             maxZoom: 18,
             maxBounds: [
                 //south west
@@ -21,7 +28,7 @@ Map.mainMap = {
             //console.log('grid x: ' + Math.round(ev.latlng.lng) + ', y: ' + Math.round(ev.latlng.lat));
             console.log('grid x: ' + (x) + ', y: ' + (y));
         });
-        
+
         this.map.addEventListener('mousemove', function(ev) {
             this.pos = Map.mainMap.map.getCenter();
             Map.miniMap.markerMiniMap.setLatLng(this.pos); 
@@ -62,7 +69,7 @@ Map.mainMap = {
                 y = gridToCoordinates(0, base.y, 'y');
                 if (base.owner == "player"){
                     if (base.main == 1){
-                        this.map.setView([y, x]);
+                        this.map.setView([y, x], 10);
                     }
                     color = "blue";
                     relation = "owned";
@@ -82,13 +89,19 @@ Map.mainMap = {
                     baseMarker.addEventListener('click', function(ev) {
                         baseEntity.onClick();
                     });
+                    if (window.location.search.includes('focus')){
+                        var target = (window.location.search.substr(14));
+                        if (target.startsWith('base') && target[5] == base.id){
+                            baseEntity.onClick();
+                        }
+                    }
                 }
             });
         }
     },
 
     setTileLayer: function(){
-        L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+        L.tileLayer(Map.tilemap, {
             maxZoom: 18,
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
                 '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
@@ -108,6 +121,7 @@ Map.miniMap = {
         this.setOreMap();
         this.setMinimapControls();
         this.setTileLayer();
+        this.setBaseMap();
     },      
 
     setCursorIcon: function(){
@@ -128,7 +142,29 @@ Map.miniMap = {
                 var oreMarker = L.circle([ore.y, ore.x], {
                     color: '#55719e',
                     fillOpacity: 1,
-                    radius: 1
+                    radius: 1,
+                    stroke: false
+                }).addTo(this.miniMap);
+            });
+        }
+    },
+
+    setBaseMap: function(){
+        if (typeof baseMapObj !== 'undefined') {
+            baseMapObj.forEach(base => {
+                x = gridToCoordinates(base.x, 0, 'x');
+                y = gridToCoordinates(0, base.y, 'y');
+                if (base.owner == "player"){
+                    color = "blue";
+                } else if (base.owner == "enemy"){
+                    color = "red";
+                } else {
+                    color = "grey";
+                }
+                baseMarker = L.circle([y, x], {
+                    color: color,
+                    radius: 20000
+                    
                 }).addTo(this.miniMap);
             });
         }
@@ -171,7 +207,7 @@ Map.miniMap = {
     },
 
     setTileLayer: function(){
-        L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+        L.tileLayer(Map.tilemap, {
             maxZoom: 18,
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
                 '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
