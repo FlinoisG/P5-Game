@@ -61,7 +61,6 @@ class MapGenerator {
         $nodeSize = 0.2; // 0 = max  1 = min
 
         $waterMap = json_decode(file_get_contents('../deposit/Maps/waterMap.json'), true);
-        var_dump($waterMap[0][0]);
 
         $nodeSize = $nodeSize * -1;
         $nodeSize = $nodeSize + 1;

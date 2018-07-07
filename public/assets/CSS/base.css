@@ -52,12 +52,24 @@ div{
     top: 140px;
     height: 250px; 
     width: 250px;
+    border-bottom-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.miniMapCanvas{
+    position: absolute;
+    z-index: 10;
+    right: 15px;
+    top: 140px;
+    height: 250px; 
+    width: 250px;
     border: 3px solid rgb(66, 66, 66);
-    border-top: 2px solid rgb(66, 66, 66);
+    border-top: 1px solid rgb(66, 66, 66);
     border-right: 2px solid rgb(66, 66, 66);
     border-bottom-left-radius: 5px;
     border-top-right-radius: 5px;
 }
+
 
 #board{
     background-image: url('../img/bg_fleur_500px.png');
@@ -85,11 +97,37 @@ div{
     margin: 5px;
 }
 
+.slotTabs{
+    display: flex;
+    border: 2px solid #262626;
+    border-bottom: 0px;
+    margin: 10px;
+    margin-bottom: 0px;
+    width: 328px;
+}
+
+.slotTab{
+    width: 50%;
+    margin: auto;
+}
+
+.slotTab.disabledLink{
+    background-color: #1a1a1a;
+}
+
+.slotTab.link{
+    background-color: #141414;
+}
+
 .panelSlots{
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
     margin: 10px;
+    margin-top: 0px;
+    border: 2px solid #262626;
+    border-top: 0px;
+    background-color: #1a1a1a
 }
 
 .unitSlot {
@@ -111,4 +149,13 @@ div{
 
 .leaflet-container {
     background-color: #262626 !important;
+}
+
+.link{
+    cursor: pointer;
+    color: #446ef7
+}
+
+.link:hover{
+    color: #28408f
 }

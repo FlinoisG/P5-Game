@@ -15,13 +15,22 @@ class BaseController extends DefaultController
         $baseId = $_GET["baseId"];
         $auth = new Auth;
         $playerMetal = $auth->getMetal($_SESSION['auth']);
+        $constructions = 0;
+        $tasks = $auth->getTasks();
+        foreach ($tasks as $task) {
+            if ($task['origin'] == 'base['.$_GET["baseId"].']' && $task['action'] == 'buy'){
+                $constructions++;
+            }
+        }
         $baseWorker = $auth->getBaseWorker($baseId);
+        $baseSoldiers = $auth->getBaseSoldier($baseId);
+        $slots = (int)$constructions + (int)$baseWorker[0] + (int)$baseSoldiers;
         $available = true;
         if (!$playerMetal >= 500) {
-            $available = "metal";
+            $available = false;
         }
-        if (!$baseWorker < 10) {
-            $available = "place dans la base";
+        if ($slots > 10) {
+            $available = false;
         }
         if ($available){
             $time = time() + 3600;
@@ -30,7 +39,7 @@ class BaseController extends DefaultController
             $auth->newTask("buy", "worker", $origin, $time);
             header('Location: ?p=home&focus='.$origin);
         } else {
-            echo "Pas asser de " . $available;
+            header('Location: ?p=home&focus='.$origin);
         }
     }
 

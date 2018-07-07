@@ -34,9 +34,7 @@ class HomeController extends DefaultController
         $scriptBody = $scriptBody . $this->setScript('Entities/base');
         $scriptBody = $scriptBody . $this->setScript('UI/panelInterface');
         $scriptBody = $scriptBody . $this->setScript('UI/map');        
-               
-              
-        
+        $scriptBody = $scriptBody . $this->setScript('mapControls');       
         
         $title = 'Home';
         if (isset($_GET['logout'])) {

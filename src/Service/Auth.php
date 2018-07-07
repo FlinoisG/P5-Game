@@ -190,14 +190,15 @@ class Auth
     {
         $sqlQuery = new sqlQuery();
         $metal = $sqlQuery->sqlQuery("SELECT metal FROM game_users WHERE username='".$username."'");
-        return $metal;
+        return $metal[0]['metal'];
     }
 
     public function addMetal($username, $amount)
     {
         $sqlQuery = new sqlQuery();
-        $metal = $sqlQuery->sqlQuery("SELECT metal FROM game_users WHERE username='".$username."'");
-        $newAmount = $metal[0]['metal'] + $amount;
+        //$metal = $sqlQuery->sqlQuery("SELECT metal FROM game_users WHERE username='".$username."'");
+        $metal = $this->getMetal($username);
+        $newAmount = $metal + $amount;
         $sqlQuery->sqlQuery("UPDATE game_users SET metal = ".$newAmount." WHERE username='".$username."'");
         return $metal;
     }
@@ -206,15 +207,22 @@ class Auth
     {
         $sqlQuery = new sqlQuery();
         $baseWorker = $sqlQuery->sqlQuery("SELECT workers FROM game_bases WHERE id='".$baseId."'");
-        return $baseWorker;
+        return $baseWorker[0]["workers"];
     }
 
     public function buyWorker($baseId)
     {
         $sqlQuery = new sqlQuery();
         $baseWorker = $this->getBaseWorker($baseId);
-        $baseWorker = $baseWorker[0]["workers"] + 1;
+        $baseWorker = $baseWorker + 1;
         $sqlQuery->sqlQuery("UPDATE game_bases SET workers = ".$baseWorker." WHERE id='".$baseId."'");
+    }
+
+    public function getBaseSoldier($baseId)
+    {
+        $sqlQuery = new sqlQuery();
+        $baseSoldier = $sqlQuery->sqlQuery("SELECT soldiers FROM game_bases WHERE id='".$baseId."'");
+        return $baseSoldier;
     }
 
     public function newTask($action, $target = null, $origin = null, $time = 0)

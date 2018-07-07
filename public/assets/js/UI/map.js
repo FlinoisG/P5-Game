@@ -20,20 +20,16 @@ Map.mainMap = {
                 [61.7, 32.1]
                 ], 
             maxBoundsViscosity: 1.0
-        //}).setView([49, 10.5], 10);
         }).setView([gridToCoordinates(0, 131.48, "y"), gridToCoordinates(224.83, 0, "x")], 2);
         this.map.addEventListener('click', function(ev) {
             x = coordinatesToGrid(ev.latlng.lng, 0, "x");
             y = coordinatesToGrid(0, ev.latlng.lat, "y");
-            //console.log('grid x: ' + Math.round(ev.latlng.lng) + ', y: ' + Math.round(ev.latlng.lat));
-            console.log('grid x: ' + (x) + ', y: ' + (y));
+            //console.log('grid x: ' + (x) + ', y: ' + (y));
         });
 
         this.map.addEventListener('mousemove', function(ev) {
-            this.pos = Map.mainMap.map.getCenter();
-            Map.miniMap.markerMiniMap.setLatLng(this.pos); 
+            Map.miniMap.setMinimapCursor();
         });
-
         
         //this.map.dragging.disable();
         this.map.touchZoom.disable();
@@ -115,26 +111,40 @@ Map.mainMap = {
 Map.miniMap = {
 
     mapInit: function(){
-        this.setCursorIcon();
         this.miniMap = L.map('minimapid').setView([49, 10.5], 3);  
-        this.markerMiniMap = L.marker(Map.mainMap.map.getCenter(), {icon: this.minimapCursor}).addTo(this.miniMap);
         this.setOreMap();
+        this.setMinimapCursor();
         this.setMinimapControls();
         this.setTileLayer();
         this.setBaseMap();
-    },      
-
-    setCursorIcon: function(){
-        this.minimapCursor = L.icon({
-            iconUrl: '../public/assets/img/minimapCursor.png',
-            iconSize:     [40, 20], // size of the icon
-            iconAnchor:   [20, 10], // point of the icon which will correspond to marker's location
-            popupAnchor:  [20, 0] // point from which the popup should open relative to the iconAnchor
-        });
     },
 
+    setMinimapCursor: function(){   
+        if (typeof(this.polygon) != "undefined"){
+            this.miniMap.removeLayer(this.polygon);  
+        }
+        var bounds = Map.mainMap.map.getBounds();
+        var northWest = bounds.getNorthWest();
+        var northEast = bounds.getNorthEast();
+        var southWest = bounds.getSouthWest();
+        var southEast = bounds.getSouthEast();
+        this.polygon = L.polygon([
+            [northWest.lat, northWest.lng],
+            [northEast.lat, northEast.lng],
+            [southEast.lat, southEast.lng],
+            [southWest.lat, southWest.lng]
+        ], {
+            stroke: true,
+            weight: 1.5,
+            lineJoin: 'miter-clip',
+            color: 'red',
+            fillColor: '#f03',
+            fillOpacity: 0.05,
+        }).addTo(this.miniMap);
+    },
         
     setOreMap: function(){
+        
         if (typeof oreMapObj !== 'undefined') {
             oreMapObj.oreMap.forEach(ore => {
                 //console.log(ore.x + ' ' + ore.y);
@@ -145,6 +155,7 @@ Map.miniMap = {
                     radius: 1,
                     stroke: false
                 }).addTo(this.miniMap);
+                
             });
         }
     },
@@ -198,6 +209,7 @@ Map.miniMap = {
                 Map.mainMap.map.setView([lat, lng])
                 Map.miniMap.markerMiniMap.setLatLng([lat, lng]); 
             }
+            
         });
         
         Map.miniMap.miniMap.addEventListener('mousedown', function() {

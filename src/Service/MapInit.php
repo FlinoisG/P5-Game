@@ -15,8 +15,8 @@ class MapInit {
         foreach ($bases as $base) {
             $content = [];
             $workers = $auth->getBaseWorker($base["id"]);
-            if ($workers[0]['workers'] != 0){
-                $content["workers"] = $workers[0]['workers'];      
+            if ($workers != 0){
+                $content["workers"] = $workers;      
             }
             $workersInConstruct = $auth->getWorkersInConstruct($base["id"]);
             if ($workersInConstruct){
