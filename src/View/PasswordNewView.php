@@ -1,6 +1,6 @@
 <?php ob_start(); ?> 
 <h1>Mot de Passe Oublié</h1>
-<div class="center col-lg-4">
+<div class="center">
     <form action="?p=login.newPassword&user=<?= $user ?>" method="post">
         <div class="form-group">
             <label for="registerPassword">Mot de passe</label>

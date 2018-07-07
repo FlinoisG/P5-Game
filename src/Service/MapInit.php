@@ -14,6 +14,8 @@ class MapInit {
         $result = '<script>var baseMapObj = [';
         foreach ($bases as $base) {
             $content = [];
+
+            
             $workers = $auth->getBaseWorker($base["id"]);
             if ($workers != 0){
                 $content["workers"] = $workers;      
@@ -24,6 +26,23 @@ class MapInit {
                     $content["workersInConst"][$i] = (int)$workersInConstruct[$i]["time"]; 
                 }
             }
+
+
+
+            $soldiers = $auth->getBaseSoldier($base["id"]);
+            if ($soldiers != 0){
+                $content["soldiers"] = $workers;      
+            }
+            $soldiersInConstruct = $auth->getSoldiersInConstruct($base["id"]);
+            if ($soldiersInConstruct){
+                for ($i=0; $i < sizeof($soldiersInConstruct); $i++) { 
+                    $content["soldiersInConst"][$i] = (int)$soldiersInConstruct[$i]["time"]; 
+                }
+            }
+
+
+
+
             if (isset($_SESSION['auth'])){
                 if ($base["player"] == $_SESSION['auth']){
                     $owner = "player";

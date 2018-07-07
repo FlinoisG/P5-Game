@@ -14,6 +14,7 @@ class HomeController extends DefaultController
 
     public function home()
     {
+        
         if (!isset($_SESSION)) { 
             session_start(); 
         } 
@@ -29,7 +30,9 @@ class HomeController extends DefaultController
         $scriptBody = '<script>var oreMapObj = '.$oreMap.'</script>';
         $scriptBody = $scriptBody . $this->setScript('grid');
         $mapInit = new MapInit;
+        
         $scriptBody = $scriptBody . $mapInit->mapInit();
+        
         $scriptBody = $scriptBody . $this->setScript('Entities/defaultEntity');
         $scriptBody = $scriptBody . $this->setScript('Entities/base');
         $scriptBody = $scriptBody . $this->setScript('UI/panelInterface');
@@ -52,6 +55,7 @@ class HomeController extends DefaultController
             include "../src/View/Panel/PanelView.php";
             $panel = ob_get_clean();
         }
+        
         require('../src/View/HomeView.php');
     }
 
@@ -59,9 +63,7 @@ class HomeController extends DefaultController
     {
         if (!isset($_SESSION)) { 
             session_start(); 
-        } 
-        $scriptHead = "";
-        $scriptBody = "";
+        }
         $title = 'User Settings';
         require('../src/View/UserSettingsView.php');
     }
@@ -80,9 +82,7 @@ class HomeController extends DefaultController
     {
         if (!isset($_SESSION)) { 
             session_start(); 
-        } 
-        $scriptHead = "";
-        $scriptBody = "";
+        }
         $content = "";
         $mapGenerator = new MapGenerator;
         $grid = new Grid;
@@ -110,8 +110,6 @@ class HomeController extends DefaultController
     }
 
     public function testArea1(){
-        $scriptHead = "";
-        $scriptBody = "";
         $content = '
             <form class="center" action="?p=home.testArea" method="post">
                 <input type="text" name="test">
@@ -123,8 +121,6 @@ class HomeController extends DefaultController
     }
 
     public function testArea(){
-        $scriptHead = "";
-        $scriptBody = "";
         $content = "";
 
         $safe_data=filter_input(INPUT_POST, 'test', FILTER_SANITIZE_SPECIAL_CHARS);

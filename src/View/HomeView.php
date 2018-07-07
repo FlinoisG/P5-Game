@@ -1,6 +1,6 @@
 <?php ob_start(); ?> 
 <h1>Home</h1>
-<div id="board" class="unselectable" >
+<div id="board">
     <div id="panel">
         <?= $panel ?>
     </div>

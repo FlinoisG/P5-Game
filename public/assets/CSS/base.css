@@ -12,7 +12,6 @@ body {
     padding-top: 55.6px;
     font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
     color: white;
-    
     background-color: rgb(15, 15, 15);
     text-align: center;
 }
@@ -25,11 +24,7 @@ div{
     border: 0px solid #00ff00;
 }
 
-.center {
-    margin: auto;
-    width: 50%;
-    padding: 10px;
-}
+
 
 .form-deny {
     border: 2px solid red;
@@ -49,28 +44,13 @@ div{
     position: absolute;
     z-index: 10;
     right: 15px;
-    top: 140px;
+    top: 139px;
     height: 250px; 
     width: 250px;
-    
+    border: 2px solid rgb(66, 66, 66);
     border-bottom-left-radius: 5px;
     border-top-right-radius: 5px;
 }
-
-.miniMapCanvas{
-    position: absolute;
-    z-index: 10;
-    right: 15px;
-    top: 140px;
-    height: 250px; 
-    width: 250px;
-    border: 3px solid rgb(66, 66, 66);
-    border-top: 1px solid rgb(66, 66, 66);
-    border-right: 2px solid rgb(66, 66, 66);
-    border-bottom-left-radius: 5px;
-    border-top-right-radius: 5px;
-}
-
 
 #board{
     background-image: url('../img/bg_fleur_500px.png');
@@ -95,16 +75,26 @@ div{
 .unitSlotContainer {
     max-width: 54px;
     max-height: 54px;
-    margin: 5px;
+    margin-bottom: 7px;
 }
 
 .slotTabs{
     display: flex;
     border: 2px solid #262626;
     border-bottom: 0px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
     margin: 10px;
     margin-bottom: 0px;
     width: 328px;
+}
+
+.workerTab{
+    border-top-left-radius: 5px;
+}
+
+.soldierTab{
+    border-top-right-radius: 5px;
 }
 
 .slotTab{
@@ -126,6 +116,9 @@ div{
     flex-wrap: wrap;
     margin: 10px;
     margin-top: 0px;
+    padding-top: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
     border: 2px solid #262626;
     border-top: 0px;
     background-color: #1a1a1a

@@ -38,9 +38,7 @@ class DefaultController
     {
         if (!isset($_SESSION)) { 
             session_start(); 
-        } 
-        $scriptHead = "";
-        $scriptBody = "";
+        }
         $title = 'Erreur';
         $errorNo = "";
         $errorDesc = "Accès refusé";
@@ -65,6 +63,12 @@ class DefaultController
     {
         $scriptTag = "<script src=\"assets/js/" . $getScript . ".js\"></script>";
         return $scriptTag;
+    }
+
+    public function setCustomStyle ($getStyle)
+    {
+        $styleTag = "<link href=\"assets/CSS/" . $getStyle . ".css\" rel=\"stylesheet\">";
+        return $styleTag;
     }
 
     public function dataValidation($data)

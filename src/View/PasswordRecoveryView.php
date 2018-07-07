@@ -1,6 +1,6 @@
 <?php ob_start(); ?> 
 <h1>Mot de Passe Oublié</h1>
-<div class="center col-lg-4">
+<div class="center">
     <form action="?p=login&recovery" method="post">
         <div class="form-group">
             <label for="loginUsername">Adresse mail</label>

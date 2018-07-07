@@ -11,7 +11,8 @@
         <link href="https://fonts.googleapis.com/css?family=Roboto|Ubuntu" rel="stylesheet">
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
         <link href="assets/CSS/base.css" rel="stylesheet">
-        <?= $scriptHead ?>
+        <?php if (isset($customStyle)) echo $customStyle; ?>
+        <?php if (isset($scriptHead)) echo $scriptHead; ?>
     </head>
     <body>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
@@ -57,7 +58,7 @@
     <div id="main">
       <?= $content ?>
     </div>
-    <?= $scriptBody ?>
+    <?php if (isset($scriptBody)) echo $scriptBody; ?>
     </body>    
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

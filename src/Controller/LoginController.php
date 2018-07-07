@@ -15,8 +15,6 @@ class LoginController extends DefaultController
         if (!isset($_SESSION)) { 
             session_start(); 
         } 
-        $scriptHead = "";
-        $scriptBody = "";
         if (isset($_GET['login'])) {
             $Auth = new Auth();
             $Auth->login($this->sanitize('username'), $this->sanitize('password'));
@@ -31,6 +29,7 @@ class LoginController extends DefaultController
             $link = "<a href=\"?p=login.recovery\">(Mot de passe oublié ?)</a>";
         }
         $title = 'Connection';
+        $customStyle = $this->setCustomStyle('form');
         require('../src/View/LoginView.php');
     }
 
@@ -39,7 +38,6 @@ class LoginController extends DefaultController
         if (!isset($_SESSION)) { 
             session_start(); 
         } 
-        $scriptHead = "";
         $scriptBody = $this->setScript("RegisterScript");
         if (isset($_GET['register'])) {
             $Auth = new Auth();
@@ -53,6 +51,7 @@ class LoginController extends DefaultController
         } else {
             $title = 'Créer un compte';
             $script = $this->setScript("RegisterScript");
+            $customStyle = $this->setCustomStyle('form');
             require('../src/View/RegisterView.php');
         }
         
@@ -63,9 +62,8 @@ class LoginController extends DefaultController
         if (!isset($_SESSION)) { 
             session_start(); 
         } 
-        $scriptHead = "";
-        $scriptBody = "";
         $title = 'Mot de Passe Oublié';
+        $customStyle = $this->setCustomStyle('form');
         if (isset($_GET['token'])){
             $username = $_GET['user'];
             $token = $_GET['token'];
@@ -98,8 +96,7 @@ class LoginController extends DefaultController
         $auth = new Auth();
         $auth->resetPassword($_GET['user'], $_POST['password']);
         $title = "Mot de passe réinitialisé";
-        $scriptHead = "";
-        $scriptBody = "";
+        $customStyle = $this->setCustomStyle('form');
         $content = "<p>Nouveau mot de passe actualisé.</p>
         <a href=\"?p=home\" class=\"btn btn-primary\">Retour</a>";
         require('../src/View/base.php');
@@ -110,9 +107,8 @@ class LoginController extends DefaultController
         if (!isset($_SESSION)) { 
             session_start(); 
         } 
-        $scriptHead = "";
-        $scriptBody = "";
         $title = 'Mot de Passe Oublié';
+        $customStyle = $this->setCustomStyle('form');
         $content = "<p>Aucune adresse mail ne correspond.</p>
             <a href=\"?p=login.recovery\" class=\"btn btn-primary\">Retour</a>";
         require('../src/View/base.php');

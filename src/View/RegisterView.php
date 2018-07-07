@@ -1,10 +1,10 @@
 <?php ob_start(); ?>
 <h1>S'inscrire</h1>
-<div class="center col-lg-4">
-    <a href="?p=login.login">Connection</a>
-    <span>S'inscrire</span>
+<div class="formTabs">
+    <a class="formTab link" href="?p=login.login">Connection</a>
+    <div class="formTab disabledLink">S'inscrire</div>
 </div>
-<div class="center col-lg-4">
+<div>
     <form action="?p=login.register&register" method="post">
         <div class="form-group">
             <label id="test" for="registerUsername">Nom du compte</label>

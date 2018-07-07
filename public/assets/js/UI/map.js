@@ -11,20 +11,21 @@ Map.mainMap = {
 
     mapInit: function(){
         this.map = L.map('mapid', {
-            minZoom: 7,
+            minZoom: 8,
             maxZoom: 18,
             maxBounds: [
                 //south west
-                [32.7, -11.7],
+                [32.7, -11.3269],
                 //north east
-                [61.7, 32.1]
+                [61.37567, 32.39868]
                 ], 
             maxBoundsViscosity: 1.0
         }).setView([gridToCoordinates(0, 131.48, "y"), gridToCoordinates(224.83, 0, "x")], 2);
         this.map.addEventListener('click', function(ev) {
             x = coordinatesToGrid(ev.latlng.lng, 0, "x");
             y = coordinatesToGrid(0, ev.latlng.lat, "y");
-            //console.log('grid x: ' + (x) + ', y: ' + (y));
+            console.log('grid x: ' + (x) + ', y: ' + (y));
+            console.log(Map.mainMap.map.getBounds());
         });     
         
         //this.map.dragging.disable();

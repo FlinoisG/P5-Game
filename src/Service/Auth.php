@@ -222,7 +222,7 @@ class Auth
     {
         $sqlQuery = new sqlQuery();
         $baseSoldier = $sqlQuery->sqlQuery("SELECT soldiers FROM game_bases WHERE id='".$baseId."'");
-        return $baseSoldier;
+        return $baseSoldier[0]["soldiers"];
     }
 
     public function newTask($action, $target = null, $origin = null, $time = 0)
@@ -249,8 +249,15 @@ class Auth
     public function getWorkersInConstruct($baseId)
     {
         $sqlQuery = new sqlQuery();
-        $workersInConstruct = $sqlQuery->sqlQuery("SELECT time FROM game_tasks WHERE origin='base[".$baseId."]'");
+        $workersInConstruct = $sqlQuery->sqlQuery("SELECT time FROM game_tasks WHERE origin='base[".$baseId."]' AND target='worker'");
         return $workersInConstruct;
+    }
+
+    public function getSoldiersInConstruct($baseId)
+    {
+        $sqlQuery = new sqlQuery();
+        $soldiersInConstruct = $sqlQuery->sqlQuery("SELECT time FROM game_tasks WHERE origin='base[".$baseId."]' AND target='soldier'");
+        return $soldiersInConstruct;
     }
 
 }
