@@ -25,11 +25,7 @@ Map.mainMap = {
             x = coordinatesToGrid(ev.latlng.lng, 0, "x");
             y = coordinatesToGrid(0, ev.latlng.lat, "y");
             //console.log('grid x: ' + (x) + ', y: ' + (y));
-        });
-
-        this.map.addEventListener('mousemove', function(ev) {
-            Map.miniMap.setMinimapCursor();
-        });
+        });     
         
         //this.map.dragging.disable();
         this.map.touchZoom.disable();
@@ -42,9 +38,6 @@ Map.mainMap = {
         this.setBaseMap();
         this.setTileLayer();
         Map.miniMap.mapInit();
-
-        console.log(gridDistance([0,0],[3,3]));
-
     },
    
     setOreMap: function(){
@@ -117,6 +110,7 @@ Map.miniMap = {
         this.setMinimapControls();
         this.setTileLayer();
         this.setBaseMap();
+        
     },
 
     setMinimapCursor: function(){   
@@ -140,7 +134,9 @@ Map.miniMap = {
             color: 'red',
             fillColor: '#f03',
             fillOpacity: 0.05,
+            clickable: false
         }).addTo(this.miniMap);
+        
     },
         
     setOreMap: function(){
@@ -153,7 +149,8 @@ Map.miniMap = {
                     color: '#55719e',
                     fillOpacity: 1,
                     radius: 1,
-                    stroke: false
+                    stroke: false,
+                    clickable: false
                 }).addTo(this.miniMap);
                 
             });
@@ -207,14 +204,20 @@ Map.miniMap = {
         Map.miniMap.miniMap.addEventListener('mousemove', function() {
             if (Map.miniMap.miniMapClicked) {
                 Map.mainMap.map.setView([lat, lng])
-                Map.miniMap.markerMiniMap.setLatLng([lat, lng]); 
             }
             
         });
         
         Map.miniMap.miniMap.addEventListener('mousedown', function() {
             Map.mainMap.map.setView([lat, lng])
-            Map.miniMap.markerMiniMap.setLatLng([lat, lng]); 
+        });
+
+        Map.mainMap.map.on('move', function() {
+            Map.miniMap.setMinimapCursor();
+        });
+
+        Map.mainMap.map.on('zoomend', function() {
+            Map.miniMap.setMinimapCursor();
         });
     },
 

@@ -41,7 +41,7 @@ div{
 
 #mapid { 
     z-index: 0;
-    height: 750px; 
+    min-height: 80vh; 
     width: 100%;
 }
 
@@ -52,6 +52,7 @@ div{
     top: 140px;
     height: 250px; 
     width: 250px;
+    
     border-bottom-left-radius: 5px;
     border-top-right-radius: 5px;
 }
