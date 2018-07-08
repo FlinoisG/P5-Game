@@ -2,12 +2,12 @@
 
 namespace App\Controller;
 
+use App\Service\EntitiesService;
 use App\Service\AvatarHandler;
 use App\Service\MapGenerator;
 use App\Service\Grid;
 use App\Service\MapInit;
 use App\Service\Auth;
-use App\Entity\Base;
 
 class HomeController extends DefaultController
 {
@@ -18,27 +18,26 @@ class HomeController extends DefaultController
         if (!isset($_SESSION)) { 
             session_start(); 
         } 
-        $scriptHead =   
+        
+        $customStyle = $this->setCustomStyle('panel');
+        $entitiesService = new EntitiesService;
+        $scriptHead = $entitiesService->entitiesScripts();  
+        $scriptHead .=   
             "<link rel=\"stylesheet\" href=\"https://unpkg.com/leaflet@1.3.1/dist/leaflet.css\"
             integrity=\"sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==\"
             crossorigin=\"\"/>
             <script src=\"https://unpkg.com/leaflet@1.3.1/dist/leaflet.js\"
             integrity=\"sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw==\"
             crossorigin=\"\"></script>";
-        $scriptHead = $scriptHead . $this->setScript('panelUnitCountdown'); 
+        $scriptHead .=  $this->setScript('panelUnitCountdown'); 
         $oreMap = file_get_contents('../deposit/Maps/OreMap.json');
         $scriptBody = '<script>var oreMapObj = '.$oreMap.'</script>';
-        $scriptBody = $scriptBody . $this->setScript('grid');
+        $scriptBody .= $this->setScript('grid');
         $mapInit = new MapInit;
-        
-        $scriptBody = $scriptBody . $mapInit->mapInit();
-        
-        $scriptBody = $scriptBody . $this->setScript('Entities/defaultEntity');
-        $scriptBody = $scriptBody . $this->setScript('Entities/base');
-        $scriptBody = $scriptBody . $this->setScript('UI/panelInterface');
-        $scriptBody = $scriptBody . $this->setScript('UI/map');        
-        $scriptBody = $scriptBody . $this->setScript('mapControls');       
-        
+        $scriptBody .= $mapInit->mapInit();
+        $scriptBody .= $this->setScript('UI/panelInterface');
+        $scriptBody .= $this->setScript('UI/map');        
+        $scriptBody .= $this->setScript('mapControls');      
         $title = 'Home';
         if (isset($_GET['logout'])) {
             session_destroy(); 

@@ -1,6 +1,7 @@
 <?php
 
 require_once "vendor/autoload.php";
+require_once "src/Service/taskHandler.php";
 
 use App\Service\Auth;
 use App\Service\TaskHandler;

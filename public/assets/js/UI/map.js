@@ -74,17 +74,20 @@ Map.mainMap = {
                     color: color,
                     radius: 5000
                 }).addTo(this.map);
-                if (relation != "neutral"){
-                    const baseEntity = new BaseEntity(base.id, base.ownerName, relation, base.content);
-                    baseMarker.addEventListener('click', function(ev) {
-                        baseEntity.onClick();
-                    });
+                const baseEntity = new BaseEntity(base.id, base.ownerName, relation, base.content);
+                baseMarker.addEventListener('click', function(ev) {
+                    baseEntity.onClick();
+                });
+                if (relation == "owned"){
                     if (window.location.search.includes('focus')){
                         var target = (window.location.search.substr(14));
                         if (target.startsWith('base') && target[5] == base.id){
                             baseEntity.onClick();
+                            if (window.location.search.includes('soldierTab')){
+                                panelInterface.soldierTab(baseEntity);
+                            }
                         }
-                    }
+                    }                    
                 }
             });
         }

@@ -1,13 +1,13 @@
 panelInterface = {
   
-    select(toSelect, ownerName, relation) 
+    select(toSelect) 
     {
         switch (toSelect.constructor.name){
             case "BaseEntity":
-                this.selectBase(toSelect, ownerName, relation);
+                this.selectBase(toSelect);
                 break;
             case "PeonEntity":
-                this.selectPeon(toSelect, ownerName, relation);
+                this.selectPeon(toSelect);
                 break;
             default:
                 console.log(':(');
@@ -21,28 +21,26 @@ panelInterface = {
     },
 
 
-    selectBase(toSelect, ownerName, relation) 
+    selectBase(toSelect) 
     {
-        if (relation == "owned") {
+        if (toSelect.relation == "owned") {
             var title = document.createElement('h4');
             title.textContent = '#' + toSelect.id + " Base";
 
-            var buyWorkers = document.createElement('a');
-            buyWorkers.href = "?p=base.buyWorker&baseId=" + toSelect.id;
-            buyWorkers.textContent = "Acheter péon";
-
             var slotTabs = document.createElement('div');
+            slotTabs.id = "slotTabs"
             slotTabs.className = "slotTabs"
 
             var workerTabButton = document.createElement('div');
             workerTabButton.className = "workerTab slotTab disabledLink";
-            workerTabButton.textContent = "worker";
+            workerTabButton.textContent = "workers";
             
             var soldierTabButton = document.createElement('div');
             soldierTabButton.className = "soldierTab slotTab link";
             soldierTabButton.textContent = "soldiers";
 
             var panelSlots = document.createElement('div');
+            panelSlots.id = "panelSlots"
             panelSlots.className = "panelSlots"
 
             slotTabs.appendChild(workerTabButton);
@@ -60,6 +58,15 @@ panelInterface = {
                         img.src = '../public/assets/img/unit_slot_worker_finished.png';
                         container.appendChild(img);
                         panelSlots.appendChild(container);
+                        container.addEventListener("click", (ev) => {
+                            var slots = document.getElementsByClassName('unitSlot')
+                            for (i = 0; i < slots.length; i++) {
+                                slots[i].style.border = "1px solid #292929";
+                                slots[i].className = slots[i].className.replace(' slotSelected','');
+                            }
+                            ev.target.className += " slotSelected";
+                            this.selectWorker(toSelect.id);
+                        });
                         freeSlots--;
                     }
                 }
@@ -100,52 +107,55 @@ panelInterface = {
                 container.appendChild(img);
                 panelSlots.appendChild(container);        
             }  
-            document.getElementById('panelInterface').innerHTML = "";
+
             
+            var panelSub = document.createElement('div');
+            panelSub.id = "panelSub";
+            panelSub.className = "panelSub";            
+
+            document.getElementById('panelInterface').innerHTML = "";
             document.getElementById('panelInterface').appendChild(title);
             document.getElementById('panelInterface').appendChild(slotTabs);
             document.getElementById('panelInterface').appendChild(panelSlots); 
-            document.getElementById('panelInterface').appendChild(buyWorkers);
+            document.getElementById('panelInterface').appendChild(panelSub);
+
+            var workerEntity = new WorkerEntity; 
+            var workerSpaceEntity = new WorkerSpaceEntity; 
+
+            SoldierEntity.link = toSelect.id;
+            workerSpaceEntity.link = toSelect.id;
+
+            baseOptions = [
+                workerEntity,
+                workerSpaceEntity
+            ]
+
+            document.getElementById('panelSub').appendChild(this.buildSubPanel(baseOptions, toSelect.id));
 
             soldierTabButton.addEventListener("click", (ev) => {
-                this.soldierTab(toSelect, ownerName, relation);
+                this.soldierTab(toSelect);
             });
         } else {
-            
-            content = "<h4>#" + toSelect.id + " Base de " + ownerName + "</h4>"
+            content = "<h4>#" + toSelect.id + " Base de " + toSelect.ownerName + "</h4>"
             var title = document.createElement('h4');
-            title.textContent = '#' + toSelect.id + " Base de " + ownerName;
+            title.textContent = '#' + toSelect.id + " Base de " + toSelect.ownerName;
             document.getElementById('panelInterface').innerHTML = "";
             document.getElementById('panelInterface').appendChild(title);
         }     
     },
 
-    soldierTab(toSelect, ownerName, relation) 
+    soldierTab(toSelect) 
     {
-        
-        var title = document.createElement('h4');
-        title.textContent = '#' + toSelect.id + " Base";
-
-        var buySoldiers = document.createElement('a');
-        buySoldiers.href = "?p=base.buySoldier&baseId=" + toSelect.id;
-        buySoldiers.textContent = "Acheter sentinel";
-
-        var slotTabs = document.createElement('div');
-        slotTabs.className = "slotTabs"
+        document.getElementById('slotTabs').innerHTML = "";
+        document.getElementById('panelSlots').innerHTML = "";
 
         var workerTabButton = document.createElement('div');
         workerTabButton.className = "soldierTab slotTab link";
-        workerTabButton.textContent = "worker";
+        workerTabButton.textContent = "workers";
         
         var soldierTabButton = document.createElement('div');
         soldierTabButton.className = "soldierTab slotTab disabledLink";
-        soldierTabButton.textContent = "soldiers";
-
-        var panelSlots = document.createElement('div');
-        panelSlots.className = "panelSlots"
-
-        slotTabs.appendChild(workerTabButton);
-        slotTabs.appendChild(soldierTabButton);
+        soldierTabButton.textContent = "soldiers";        
 
         var freeSlots = 10;
         if (toSelect.content.length != 0) {                
@@ -157,7 +167,18 @@ panelInterface = {
                     img.className = 'unitSlot unitSlotSoldier';
                     img.src = '../public/assets/img/unit_slot_soldier_finished.png';
                     container.appendChild(img);
-                    panelSlots.appendChild(container);
+                    document.getElementById('panelSlots').appendChild(container);
+
+                    container.addEventListener("click", (ev) => {
+                        var slots = document.getElementsByClassName('unitSlot')
+                        for (i = 0; i < slots.length; i++) {
+                            slots[i].style.border = "1px solid #292929";
+                            
+                        }
+                        ev.target.style.border = "1px solid #90b2d6";
+                        this.selectSoldier(toSelect.id);
+                    });
+
                     freeSlots--;
                 }
             }
@@ -183,7 +204,7 @@ panelInterface = {
                     timer.textContent = displayTime;
                     container.appendChild(img);
                     container.appendChild(timer);
-                    panelSlots.appendChild(container);
+                    document.getElementById('panelSlots').appendChild(container);
                     countDown(timer, soldier);
                     freeSlots--;
                 });
@@ -196,25 +217,93 @@ panelInterface = {
             img.className = 'unitSlot emptySlot';
             img.src = '../public/assets/img/unit_slot_empty.png';
             container.appendChild(img);
-            panelSlots.appendChild(container);        
+            document.getElementById('panelSlots').appendChild(container);        
         }  
-        document.getElementById('panelInterface').innerHTML = "";
         
-        document.getElementById('panelInterface').appendChild(title);
-        document.getElementById('panelInterface').appendChild(slotTabs);
-        document.getElementById('panelInterface').appendChild(panelSlots); 
-        document.getElementById('panelInterface').appendChild(buySoldiers);
+        document.getElementById('slotTabs').appendChild(workerTabButton);
+        document.getElementById('slotTabs').appendChild(soldierTabButton);
 
-        workerTabButton.addEventListener("click", (ev) => {
-            this.selectBase(toSelect, ownerName, relation);
+        soldierEntity = new SoldierEntity; 
+        soldierSpaceEntity = new SoldierSpaceEntity; 
+
+        soldierEntity.link = toSelect.id;
+        soldierSpaceEntity.link = toSelect.id;
+
+        soldierOptions = [
+            soldierEntity,
+            soldierSpaceEntity
+        ]
+
+        document.getElementById('panelSub').innerHTML = "";
+        document.getElementById('panelSub').appendChild(this.buildSubPanel(soldierOptions, toSelect.id));
+
+        workerTabButton.addEventListener("click", () => {
+            this.selectBase(toSelect);
         });
     },
 
-    selectPeon(toSelect, relation) {
-        content = "<h4>Péon " + toSelect.id + "</h4>"
-        content += "<a href=\"#\">Construir Base</a>"
-        
-        document.getElementById('panelInterface').innerHTML = content;
+    selectWorker(baseId) {
+        document.getElementById('panelSub').innerHTML = "";
+
+        baseEntity = new BaseEntity; 
+        mineEntity = new MineEntity; 
+
+        baseEntity.link = baseId;
+        mineEntity.link = baseId;
+
+        workerOptions = [
+            baseEntity,
+            mineEntity
+        ]
+
+        document.getElementById('panelSub').appendChild(this.buildSubPanel(workerOptions, baseId));
+    },
+
+    selectSoldier(baseId) {
+        document.getElementById('panelSub').innerHTML = "";
+
+        baseEntity = new BaseEntity; 
+        mineEntity = new MineEntity; 
+
+        baseEntity.link = baseId;
+        mineEntity.link = baseId;
+
+        workerOptions = [
+            baseEntity,
+            mineEntity
+        ]
+
+        document.getElementById('panelSub').appendChild(this.buildSubPanel(workerOptions, baseId));
+    },
+
+    buildSubPanel(options, selectedId=null)
+    {
+        var subPanelMain = document.createElement('div');
+        subPanelMain.id = "subPanelMain";
+
+        options.forEach(option => {
+            var panelSubOption = document.createElement('div');
+            panelSubOption.id = "panelSub"+option.class;
+            panelSubOption.className = "panelSubOption " + "panelSub" + option.class;
+
+            var SubOptionIcon = document.createElement('img');
+            SubOptionIcon.className = 'panelSubIcon';
+            SubOptionIcon.src = '../public/assets/img/' + option.imgName + '.png';
+
+            SubOptionIcon.addEventListener("click", function () {
+                option.subPanelAction(selectedId);
+            });
+
+            var SubOptionText = document.createElement('span');
+            SubOptionText.className = 'panelSubText';
+            SubOptionText.innerHTML = "Acheter "+option.class+"<br>Cout: "+option.cost+"metal, "+option.buildTime+"mn";
+
+            panelSubOption.appendChild(SubOptionIcon);
+            panelSubOption.appendChild(SubOptionText);
+
+            subPanelMain.appendChild(panelSubOption);
+        });
+        return subPanelMain; 
     },
 
 }

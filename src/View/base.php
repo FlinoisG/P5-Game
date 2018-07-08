@@ -32,7 +32,9 @@
           <li class="nav-item">
             <a class="nav-link" href="?p=home">Contact</a>
           </li>
-          
+          <li class="nav-item">
+            <a class="nav-link" href="?p=home">Aide</a>
+          </li>          
           <?php
             if (isset($_SESSION['auth'])) {
                 echo '

@@ -3,14 +3,10 @@
 namespace App\Controller;
 
 use App\Service\Auth;
+use App\Service\EntitiesService;
 
-class BaseController extends DefaultController
+class EntityController extends DefaultController
 {
-
-    private $workerBuildTime = 3600; // in seconds
-    private $workerBuildCost = 500; 
-    private $soldierBuildTime = 3600; // in seconds
-    private $soldierBuildCost = -500; 
 
     public function buyWorker()
     {
@@ -18,6 +14,7 @@ class BaseController extends DefaultController
             session_start(); 
         }
         $baseId = $_GET["baseId"];
+        $entitiesService = new EntitiesService;
         $auth = new Auth;
         $playerMetal = $auth->getMetal($_SESSION['auth']);
         $constructions = 0;
@@ -30,27 +27,22 @@ class BaseController extends DefaultController
         $baseWorker = $auth->getBaseWorker($baseId);
         $slots = (int)$constructions + (int)$baseWorker;
         $available = true;
-        if (!$playerMetal >= $this->workerBuildCost) {
+        if (!$playerMetal >= $entitiesService->getWorker()["cost"]) {
             $available = false;
             $cause = "metal";
         }
-        if ($slots > 10) {
+        if ($slots > 9) {
             $available = false;
             $cause = "space";
         }
         $origin = "base[".$baseId."]"; 
         if ($available){
-            
-            //echo "construction : " . (int)$constructions . ", baseWorker : " . (int)$baseWorker[0];
-            $time = time() + $this->workerBuildTime;
-            $auth->addMetal($_SESSION['auth'], ($this->workerBuildCost * -1));
+            $time = time() + $entitiesService->getWorker()["buildTime"];
+            $auth->addMetal($_SESSION['auth'], ($entitiesService->getWorker()["cost"] * -1));
             $auth->newTask("buy", "worker", $origin, $time);
             header('Location: ?p=home&focus='.$origin);
         } else {
-            echo "construction : " . (int)$constructions . ", baseWorker : " . (int)$baseWorker[0];
-            echo " cause : " . $cause;
-            echo " playerMetal : " . $playerMetal;
-            //header('Location: ?p=home&focus='.$origin);
+            header('Location: ?p=home&focus='.$origin);
         }
     }
 
@@ -61,6 +53,7 @@ class BaseController extends DefaultController
         }
         $baseId = $_GET["baseId"];
         $auth = new Auth;
+        $entitiesService = new EntitiesService;
         $playerMetal = $auth->getMetal($_SESSION['auth']);
         $constructions = 0;
         $tasks = $auth->getTasks();
@@ -72,21 +65,20 @@ class BaseController extends DefaultController
         $baseSoldiers = $auth->getBaseSoldier($baseId);
         $slots = (int)$constructions + (int)$baseSoldiers;
         $available = true;
-        if (!$playerMetal >= $this->soldierBuildCost) {
+        if (!$playerMetal >= $entitiesService->getSoldier()["cost"]) {
             $available = false;
         }
-        if ($slots > 10) {
+        if ($slots > 9) {
             $available = false;
         }
         $origin = "base[".$baseId."]"; 
         if ($available){
-            //echo "construction : " . (int)$constructions . ", baseWorker : " . (int)$baseWorker[0] . ", baseSoldiers : " . (int)$baseSoldiers;
-            $time = time() + $this->soldierBuildTime;
-            $auth->addMetal($_SESSION['auth'], ($this->soldierBuildCost * -1));
+            $time = time() + $entitiesService->getSoldier()["buildTime"];
+            $auth->addMetal($_SESSION['auth'], ($entitiesService->getSoldier()["cost"] * -1));
             $auth->newTask("buy", "soldier", $origin, $time);
-            header('Location: ?p=home&focus='.$origin);
+            header('Location: ?p=home&focus='.$origin.'&soldierTab');
         } else {
-            header('Location: ?p=home&focus='.$origin);
+            header('Location: ?p=home&focus='.$origin.'&soldierTab');
         }
     }
 

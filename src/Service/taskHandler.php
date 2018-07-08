@@ -18,7 +18,11 @@ class TaskHandler
                 if ($task["time"] < time()){
                     $auth = new Auth;
                     $origin = (int)preg_replace('/[^0-9.]+/', '', $task["origin"]);
-                    $auth->buyWorker($origin);
+                    if ($task["target"] == "worker"){
+                        $auth->buyWorker($origin);
+                    } else if ($task["target"] == "soldier"){
+                        $auth->buySoldier($origin);
+                    }
                     $auth->removeTask($task["id"]);
                 }
             }            

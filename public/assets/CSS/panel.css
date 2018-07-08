@@ -1,0 +1,128 @@
+#panel {
+    border-right: 2px solid rgb(66, 66, 66);
+    min-width: 350px;
+    max-width: 350px;
+    
+}
+
+
+
+.unitSlotContainer {
+    max-width: 54px;
+    max-height: 54px;
+    margin-bottom: 7px;
+}
+
+.slotTabs{
+    display: flex;
+    border: 2px solid #262626;
+    border-bottom: 0px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    margin: 10px;
+    margin-bottom: 0px;
+    width: 328px;
+}
+
+.workerTab{
+    border-top-left-radius: 5px;
+}
+
+.soldierTab{
+    border-top-right-radius: 5px;
+}
+
+.slotTab{
+    width: 50%;
+    margin: auto;
+}
+
+.slotTab.disabledLink{
+    background-color: #1a1a1a;
+}
+
+.slotTab.link{
+    background-color: #141414;
+}
+
+.panelSlots{
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 3px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-left: 2px solid #262626;
+    border-right: 2px solid #262626;
+    background-color: #1a1a1a
+}
+
+.unitSlot{
+    border: 1px solid #292929;
+    border-radius: 3px;
+    cursor: pointer;
+    width: 52px;
+    height: 52px;
+}
+
+.panelSubIcon:hover{
+    border: 1px solid #444444;
+}
+
+.panelUnitTimer{
+    position: relative;
+    top: -24px;
+}
+
+.panelSub{
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin: 10px;
+    margin-top: 0px;
+    padding: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border: 2px solid #2c2c2c;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    background-color: #1a1a1a
+}
+
+.panelSubOption{
+    display: flex;
+    background-color: #191919;
+    border: 1px solid #252525;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.panelSubIcon{
+    border: 1px solid #292929;
+    border-radius: 3px;
+    cursor: pointer;
+    margin: 5px;
+    margin-right: 0px;
+    margin-left: 7px;
+    width: 52px;
+    height: 52px;
+}
+
+.panelSubIcon:hover{
+    border: 1px solid #444444;
+}
+
+.panelSubText{
+    height: 52px;
+    min-width: 200px;
+    font-size: 13px;
+    padding: 10px;
+    vertical-align: middle;
+}
+
+.slotSelected{
+    border: 1px solid #90b2d6 !important; 
+}

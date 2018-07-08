@@ -218,6 +218,14 @@ class Auth
         $sqlQuery->sqlQuery("UPDATE game_bases SET workers = ".$baseWorker." WHERE id='".$baseId."'");
     }
 
+    public function buySoldier($baseId)
+    {
+        $sqlQuery = new sqlQuery();
+        $baseSoldier = $this->getBaseSoldier($baseId);
+        $baseSoldier = $baseSoldier + 1;
+        $sqlQuery->sqlQuery("UPDATE game_bases SET soldiers = ".$baseSoldier." WHERE id='".$baseId."'");
+    }
+
     public function getBaseSoldier($baseId)
     {
         $sqlQuery = new sqlQuery();
