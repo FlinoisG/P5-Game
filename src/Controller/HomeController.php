@@ -29,7 +29,13 @@ class HomeController extends DefaultController
             <script src=\"https://unpkg.com/leaflet@1.3.1/dist/leaflet.js\"
             integrity=\"sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw==\"
             crossorigin=\"\"></script>";
-        $scriptHead .=  $this->setScript('panelUnitCountdown'); 
+        $scriptHead .= $this->setScript('panelUnitCountdown'); 
+        $waterMap = file_get_contents('../deposit/Maps/waterMap.json');
+        $scriptHead .= '<script>var waterMapObj = '.$waterMap.'</script>'; 
+        $scriptHead .= $this->setScript('build'); 
+        $auth = new Auth;
+        //$objects = $auth->getMapObjects();
+        //$scriptHead .= '<script>var objects = '.json_encode($objects).'</script>'; 
         $oreMap = file_get_contents('../deposit/Maps/OreMap.json');
         $scriptBody = '<script>var oreMapObj = '.$oreMap.'</script>';
         $scriptBody .= $this->setScript('grid');
@@ -44,8 +50,8 @@ class HomeController extends DefaultController
             header('Location: ?p=home');
         }
         if ($_SESSION) {
-            $auth = new Auth;
             $metal = $auth->getMetal($_SESSION['auth']);
+            $scriptHead .= "<script> var userMetal = ".$metal."; </script>";
             ob_start();
             include "../src/View/Panel/PanelLoggedView.php";
             $panel = ob_get_clean();
@@ -54,7 +60,6 @@ class HomeController extends DefaultController
             include "../src/View/Panel/PanelView.php";
             $panel = ob_get_clean();
         }
-        
         require('../src/View/HomeView.php');
     }
 

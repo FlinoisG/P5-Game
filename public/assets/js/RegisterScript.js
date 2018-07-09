@@ -21,7 +21,6 @@ password.onfocusout = function(){validatePassword(this.value)};
 passwordConf.onfocusout = function(){validatePasswordConf(this.value)};
 
 function validateUsername (value) {
-    //var username = document.getElementById('registerUsername');
     if (username.length <= 2 || username.length >= 25 || /\s/.test(value)) {
         username.classList.remove("form-validate");
         username.classList.add("form-deny");

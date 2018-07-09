@@ -46,7 +46,9 @@ panelInterface = {
             slotTabs.appendChild(workerTabButton);
             slotTabs.appendChild(soldierTabButton);
 
-            var freeSlots = 10;
+            var workerSpace = toSelect.workerSpace +1;
+
+            var freeSlots = workerSpace;
 
             if (toSelect.content.length != 0) {                
                 if (toSelect.content.workers !== undefined && toSelect.content.workers != 0){
@@ -135,6 +137,31 @@ panelInterface = {
             soldierTabButton.addEventListener("click", (ev) => {
                 this.soldierTab(toSelect);
             });
+            if (toSelect.content.workerSpaceInConst !== undefined && toSelect.content.workersInConst != 0){
+                var workerSpaceCooldown = document.createElement('div');
+                workerSpaceCooldown.id = "workerSpaceCooldown";
+                workerSpaceCooldown.className = "workerSpaceCooldown subPanelCooldown";
+                workerSpaceCooldown.textContent = "Contruction en cours...";
+
+                var timestamp = Math.floor(Date.now() / 1000);
+                var time = toSelect.content.workerSpaceInConst - timestamp;
+                if (time < 0){
+                    time = 0;
+                }
+                var mins = Math.floor(time / 60);
+                if (mins == 0) mins = "00";
+                var secs = time - mins * 60;
+                if (secs == 0) secs = "00";
+                var displayTime = mins + ":" + secs;
+
+                var timer = document.createElement('div');
+                timer.className = 'panelUnitTimer panelSubTimer';
+                timer.textContent = displayTime;
+
+                workerSpaceCooldown.appendChild(timer);
+                document.getElementById('panelSubworkerSpace').appendChild(workerSpaceCooldown);
+                countDown(timer, toSelect.content.workerSpaceInConst);
+            }
         } else {
             content = "<h4>#" + toSelect.id + " Base de " + toSelect.ownerName + "</h4>"
             var title = document.createElement('h4');
@@ -157,7 +184,7 @@ panelInterface = {
         soldierTabButton.className = "soldierTab slotTab disabledLink";
         soldierTabButton.textContent = "soldiers";        
 
-        var freeSlots = 10;
+        var freeSlots = toSelect.soldierSpace +1;
         if (toSelect.content.length != 0) {                
             if (toSelect.content.soldiers !== undefined && toSelect.content.soldiers != 0){
                 for (i = 0; i < toSelect.content.soldiers; i++) {
@@ -240,6 +267,32 @@ panelInterface = {
         workerTabButton.addEventListener("click", () => {
             this.selectBase(toSelect);
         });
+
+        if (toSelect.content.soldierSpaceInConst !== undefined && toSelect.content.soldierInConst != 0){
+            var soldierSpaceCooldown = document.createElement('div');
+            soldierSpaceCooldown.id = "soldierSpaceCooldown";
+            soldierSpaceCooldown.className = "soldierSpaceCooldown subPanelCooldown";
+            soldierSpaceCooldown.textContent = "Contruction en cours...";
+
+            var timestamp = Math.floor(Date.now() / 1000);
+            var time = toSelect.content.soldierSpaceInConst - timestamp;
+            if (time < 0){
+                time = 0;
+            }
+            var mins = Math.floor(time / 60);
+            if (mins == 0) mins = "00";
+            var secs = time - mins * 60;
+            if (secs == 0) secs = "00";
+            var displayTime = mins + ":" + secs;
+
+            var timer = document.createElement('div');
+            timer.className = 'panelUnitTimer panelSubTimer';
+            timer.textContent = displayTime;
+
+            soldierSpaceCooldown.appendChild(timer);
+            document.getElementById('panelSubsoldierSpace').appendChild(soldierSpaceCooldown);
+            countDown(timer, toSelect.content.soldierSpaceInConst);
+        }
     },
 
     selectWorker(baseId) {
@@ -298,10 +351,27 @@ panelInterface = {
             SubOptionText.className = 'panelSubText';
             SubOptionText.innerHTML = "Acheter "+option.class+"<br>Cout: "+option.cost+"metal, "+option.buildTime+"mn";
 
-            panelSubOption.appendChild(SubOptionIcon);
-            panelSubOption.appendChild(SubOptionText);
+            if (userMetal < option.cost){
 
+                SubOptionText.innerHTML = "Acheter "+option.class+"<br>Cout: <span style=\"color:#FF0000;\">"+option.cost+"metal</span>, "+option.buildTime+"mn";
+                var optionDisabled = document.createElement('div');
+                optionDisabled.id = "workerSpaceCooldown";
+                optionDisabled.className = "workerSpaceCooldown subPanelDisabled";
+
+            }
+
+            var optionInner = document.createElement('div');
+            optionInner.id = "optionInner";
+
+            optionInner.appendChild(SubOptionIcon);
+            optionInner.appendChild(SubOptionText);
+
+            panelSubOption.appendChild(optionInner);
             subPanelMain.appendChild(panelSubOption);
+
+            if (userMetal < option.cost){
+                optionInner.appendChild(optionDisabled);
+            }
         });
         return subPanelMain; 
     },

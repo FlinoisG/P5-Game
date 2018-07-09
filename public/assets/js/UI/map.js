@@ -35,10 +35,15 @@ Map.mainMap = {
         this.map.boxZoom.disable();
         //this.map.keyboard.disable();
         //if (this.map.tap) this.map.tap.disable();
+        this.setMarkers();
         this.setOreMap();
-        this.setBaseMap();
+        this.setObjectMap();
         this.setTileLayer();
         Map.miniMap.mapInit();
+    },
+
+    setMarkers: function(){
+        
     },
    
     setOreMap: function(){
@@ -52,42 +57,105 @@ Map.mainMap = {
         }
     },
 
-    setBaseMap: function(){
-        if (typeof baseMapObj !== 'undefined') {
-            baseMapObj.forEach(base => {
-                x = gridToCoordinates(base.x, 0, 'x');
-                y = gridToCoordinates(0, base.y, 'y');
-                if (base.owner == "player"){
-                    if (base.main == 1){
-                        this.map.setView([y, x], 10);
-                    }
-                    color = "blue";
-                    relation = "owned";
-                } else if (base.owner == "enemy"){
-                    color = "red";
-                    relation = "enemy";
-                } else {
-                    color = "grey";
-                    relation = "neutral";
-                }
-                baseMarker = L.circle([y, x], {
-                    color: color,
-                    radius: 5000
-                }).addTo(this.map);
-                const baseEntity = new BaseEntity(base.id, base.ownerName, relation, base.content);
-                baseMarker.addEventListener('click', function(ev) {
-                    baseEntity.onClick();
-                });
-                if (relation == "owned"){
-                    if (window.location.search.includes('focus')){
-                        var target = (window.location.search.substr(14));
-                        if (target.startsWith('base') && target[5] == base.id){
-                            baseEntity.onClick();
-                            if (window.location.search.includes('soldierTab')){
-                                panelInterface.soldierTab(baseEntity);
-                            }
+    setObjectMap: function(){
+        var baseOwnerIcon = L.icon({
+            iconUrl: 'assets/img/base_owner.png',
+            iconSize:     [30, 33],
+            iconAnchor:   [15, 17],
+            popupAnchor:  [0, -20]
+        });
+        var baseEnemyIcon = L.icon({
+            iconUrl: 'assets/img/base_enemy.png',
+            iconSize:     [30, 33],
+            iconAnchor:   [15, 17],
+            popupAnchor:  [0, -20]
+        });
+        var baseNeutralIcon = L.icon({
+            iconUrl: 'assets/img/base_neutral.png',
+            iconSize:     [30, 33],
+            iconAnchor:   [15, 17],
+            popupAnchor:  [0, -20]
+        });
+        var mineOwnerIcon = L.icon({
+            iconUrl: 'assets/img/mine_owner.png',
+            iconSize:     [37, 43],
+            iconAnchor:   [19, 22],
+            popupAnchor:  [0, -20]
+        });
+        var mineEnemyIcon = L.icon({
+            iconUrl: 'assets/img/mine_enemy.png',
+            iconSize:     [37, 43],
+            iconAnchor:   [19, 22],
+            popupAnchor:  [0, -20]
+        });
+        var mineNeutralIcon = L.icon({
+            iconUrl: 'assets/img/mine_neutral.png',
+            iconSize:     [37, 43],
+            iconAnchor:   [19, 22],
+            popupAnchor:  [0, -20]
+        });
+        if (typeof objectMapObj !== 'undefined') {
+            objectMapObj.forEach(object => {
+                x = gridToCoordinates(object.x, 0, 'x');
+                y = gridToCoordinates(0, object.y, 'y');
+                if (object.type == "base"){
+                    if (object.owner == "player"){
+                        if (object.main == 1){
+                            this.map.setView([y, x], 10);
                         }
-                    }                    
+                        icon = baseOwnerIcon;
+                        relation = "owned";
+                    } else if (object.owner == "enemy"){
+                        icon = baseEnemyIcon;
+                        relation = "enemy";
+                    } else {
+                        icon = baseNeutralIcon;
+                        relation = "neutral";
+                    }
+                    baseMarker = L.marker([y, x], {
+                        icon: icon,
+                    }).addTo(this.map);
+                    const baseEntity = new BaseEntity(object.id, object.ownerName, relation, object.content, object.workerSpace, object.soldierSpace);
+                    baseMarker.addEventListener('click', function(ev) {
+                        baseEntity.onClick();
+                    });
+                    if (relation == "owned"){
+                        if (window.location.search.includes('focus')){
+                            var target = (window.location.search.substr(14));
+                            if (target.startsWith('base') && target[5] == object.id){
+                                baseEntity.onClick();
+                                if (window.location.search.includes('soldierTab')){
+                                    panelInterface.soldierTab(baseEntity);
+                                }
+                            }
+                        }                    
+                    }
+                } else if (object.type == "mine") {
+                    if (object.owner == "player"){
+                        icon = mineOwnerIcon;
+                        relation = "owned";
+                    } else if (object.owner == "enemy"){
+                        icon = mineEnemyIcon;
+                        relation = "enemy";
+                    } else {
+                        icon = mineNeutralIcon;
+                        relation = "neutral";
+                    }
+                    mineMarker = L.marker([y, x], {
+                        icon: icon,
+                    }).addTo(this.map);
+                    const mineEntity = new MineEntity(object.id, object.ownerName, relation, object.content, object.workerSpace, object.soldierSpace); // ??
+                    mineMarker.addEventListener('click', function(ev) {
+                        mineEntity.onClick();
+                    });
+                    if (relation == "owned"){
+                        if (window.location.search.includes('focus')){
+                            var target = (window.location.search.substr(14));
+                            if (target.startsWith('mine') && target[5] == object.id){
+                                baseEntity.onClick();
+                            }
+                        }                    
+                    }
                 }
             });
         }
@@ -162,8 +230,8 @@ Map.miniMap = {
     },
 
     setBaseMap: function(){
-        if (typeof baseMapObj !== 'undefined') {
-            baseMapObj.forEach(base => {
+        if (typeof objectMapObj !== 'undefined') {
+            objectMapObj.forEach(base => {
                 x = gridToCoordinates(base.x, 0, 'x');
                 y = gridToCoordinates(0, base.y, 'y');
                 if (base.owner == "player"){
@@ -183,13 +251,13 @@ Map.miniMap = {
     },
 
     setMinimapControls: function(){
+
         this.miniMap.dragging.disable();
         this.miniMap.touchZoom.disable();
         this.miniMap.doubleClickZoom.disable();
         this.miniMap.scrollWheelZoom.disable();
         this.miniMap.boxZoom.disable();
         this.miniMap.keyboard.disable();
-        //if (map.tap) map.tap.disable();
 
         var lat, lng;
         this.miniMap.addEventListener('mousemove', function(ev) {
@@ -209,7 +277,6 @@ Map.miniMap = {
             if (Map.miniMap.miniMapClicked) {
                 Map.mainMap.map.setView([lat, lng])
             }
-            
         });
         
         Map.miniMap.miniMap.addEventListener('mousedown', function() {

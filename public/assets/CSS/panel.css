@@ -1,8 +1,13 @@
 #panel {
     border-right: 2px solid rgb(66, 66, 66);
-    min-width: 350px;
-    max-width: 350px;
     
+    background-image: url('../img/bg_fleur_500px.png');
+    background-attachment: fixed;
+    min-width: 367px;
+    max-width: 367px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    max-height: 80vh;
 }
 
 
@@ -10,12 +15,12 @@
 .unitSlotContainer {
     max-width: 54px;
     max-height: 54px;
-    margin-bottom: 7px;
+    margin-bottom: 5px;
 }
 
 .slotTabs{
     display: flex;
-    border: 2px solid #262626;
+    border: 2px solid #2c2c2c;
     border-bottom: 0px;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
@@ -52,11 +57,11 @@
     margin-left: 10px;
     margin-right: 10px;
     padding-top: 10px;
-    padding-bottom: 3px;
-    padding-left: 15px;
-    padding-right: 15px;
-    border-left: 2px solid #262626;
-    border-right: 2px solid #262626;
+    padding-bottom: 6px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-left: 2px solid #2c2c2c;
+    border-right: 2px solid #2c2c2c;
     background-color: #1a1a1a
 }
 
@@ -66,6 +71,14 @@
     cursor: pointer;
     width: 52px;
     height: 52px;
+}
+
+.unitSlotWorker:hover{
+    border: 1px solid #444444
+}
+
+.unitSlotSoldier:hover{
+    border: 1px solid #444444
 }
 
 .panelSubIcon:hover{
@@ -96,11 +109,16 @@
     display: flex;
     background-color: #191919;
     border: 1px solid #252525;
+    border-radius: 3px;
     margin-top: 3px;
     margin-bottom: 3px;
+    min-width: 259px;
+    width: 259px;
+    height: 64px;
 }
 
 .panelSubIcon{
+    z-index: 5;
     border: 1px solid #292929;
     border-radius: 3px;
     cursor: pointer;
@@ -116,13 +134,50 @@
 }
 
 .panelSubText{
+    position: absolute;
+    left: 60px;
     height: 52px;
-    min-width: 200px;
+    width: 200px;
     font-size: 13px;
-    padding: 10px;
+    padding-top: 10px;
     vertical-align: middle;
 }
 
 .slotSelected{
     border: 1px solid #90b2d6 !important; 
+}
+
+.subPanelCooldown{
+    z-index: 10;
+    position: absolute;
+    width: 259px;
+    height: 62px;
+    line-height: 42px;
+    text-align: center;
+    border-radius: 3px;
+    background: rgba(14, 14, 14, 0.9);
+    text-shadow: 0px 0px 2px #000000;
+}
+
+.subPanelDisabled{
+    z-index: 10;
+    position: absolute;
+    width: 257px;
+    height: 61px;
+    border-radius: 3px;
+    background: rgba(8, 8, 8, 0.4);
+    text-shadow: 0px 0px 2px #000000;
+    top: 0px;
+}
+
+.panelSubTimer{
+    position: absolute;
+    text-align: center;
+    width: 259px;
+    top: 20px;
+}
+
+#optionInner{
+    position: relative;
+    height: auto;
 }

@@ -31,7 +31,8 @@ class EntityController extends DefaultController
             $available = false;
             $cause = "metal";
         }
-        if ($slots > 9) {
+        $workerSpace = $auth->getWorkerSpace($baseId);
+        if ($slots > $workerSpace) {
             $available = false;
             $cause = "space";
         }
@@ -68,7 +69,8 @@ class EntityController extends DefaultController
         if (!$playerMetal >= $entitiesService->getSoldier()["cost"]) {
             $available = false;
         }
-        if ($slots > 9) {
+        $soldierSpace = $auth->getSoldierSpace($baseId);
+        if ($slots > $soldierSpace) {
             $available = false;
         }
         $origin = "base[".$baseId."]"; 
@@ -79,6 +81,77 @@ class EntityController extends DefaultController
             header('Location: ?p=home&focus='.$origin.'&soldierTab');
         } else {
             header('Location: ?p=home&focus='.$origin.'&soldierTab');
+        }
+    }
+
+    public function buyWorkerSpace()
+    {
+        if (!isset($_SESSION)) { 
+            session_start(); 
+        }
+        $baseId = $_GET["baseId"];
+        $entitiesService = new EntitiesService;
+        $auth = new Auth;
+        $available = true;
+        $playerMetal = $auth->getMetal($_SESSION['auth']);
+        if (!$playerMetal >= $entitiesService->getWorkerSpace()["cost"]) {
+            $available = false;
+            $cause = "metal";
+        }
+        $workerSpace = $auth->getWorkerSpace($baseId);
+        if ($workerSpace >= 99) {
+            $available = false;
+            $cause = "space";
+        }
+        $workerSpaceInConstruct = $auth->getEntityInConst("workerSpace", $baseId);
+        if ($workerSpaceInConstruct){
+            $available = false;
+            $cause = "already upgrading";
+        }
+        $origin = "base[".$baseId."]"; 
+        if ($available){
+            $time = time() + $entitiesService->getWorkerSpace()["buildTime"];
+            $auth->addMetal($_SESSION['auth'], ($entitiesService->getWorkerSpace()["cost"] * -1));
+            $auth->newTask("buy", "workerSpace", $origin, $time);
+            header('Location: ?p=home&focus='.$origin);
+        } else {
+            header('Location: ?p=home&focus='.$origin);
+        }
+    }
+
+    public function buySoldierSpace()
+    {
+        if (!isset($_SESSION)) { 
+            session_start(); 
+        }
+        $baseId = $_GET["baseId"];
+        $entitiesService = new EntitiesService;
+        $auth = new Auth;
+        $available = true;
+        $playerMetal = $auth->getMetal($_SESSION['auth']);
+        if (!$playerMetal >= $entitiesService->getSoldierSpace()["cost"]) {
+            $available = false;
+            $cause = "not enough metal";
+        }
+        $soldierSpace = $auth->getSoldierSpace($baseId);
+        if ($soldierSpace >= 99) {
+            $available = false;
+            $cause = "not enough space";
+        }
+        $soldierSpaceInConstruct = $auth->getEntityInConst("soldierSpace", $baseId);
+        if ($soldierSpaceInConstruct){
+            $available = false;
+            $cause = "already upgrading";
+        }
+        $origin = "base[".$baseId."]"; 
+        if ($available){
+            $time = time() + $entitiesService->getSoldierSpace()["buildTime"];
+            $auth->addMetal($_SESSION['auth'], ($entitiesService->getSoldierSpace()["cost"] * -1));
+            $auth->newTask("buy", "soldierSpace", $origin, $time);
+            header('Location: ?p=home&focus='.$origin.'&soldierTab');
+        } else {
+            echo $cause;
+            //header('Location: ?p=home&focus='.$origin.'&soldierTab');
         }
     }
 

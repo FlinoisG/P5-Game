@@ -16,12 +16,14 @@ class EntitiesService
         "buildTime"=>3600,
         "imgName"=>"unit_slot_base",
         "onClick"=>"panelInterface.select(this);",
+        "subPanelAction"=>"build()",
     ];
     private $main = [
     ];
     private $mine = [
         "cost"=>500,
         "buildTime"=>3600,
+        "imgName"=>"unit_slot_mine",
         "onClick"=>"panelInterface.select(this);",
     ];
     private $worker = [
@@ -37,7 +39,7 @@ class EntitiesService
     private $workerSpace = [
         "class"=>"workerSpace",
         "cost"=>500,
-        "buildTime"=>3600,
+        "buildTime"=>60,
         "imgName"=>"unit_slot_base",
     ];
     private $soldierSpace = [
@@ -73,13 +75,16 @@ class EntitiesService
 
         class BaseEntity extends DefaultEntity {
     
-            constructor(id=0, ownerName=\"\", relation=\"neutral\", content=\"\") {
+            constructor(id=0, ownerName=\"\", relation=\"neutral\", content=\"\", workerSpace=\"\", soldierSpace=\"\") {
                 super();
                 this.id = id;
                 this.class = \"base\";
+                this.imgName = \"".$this->base["imgName"]."\";
                 this.ownerName = ownerName;
                 this.relation = relation;
                 this.content = content;
+                this.workerSpace = workerSpace;
+                this.soldierSpace = soldierSpace;
                 this.cost = ".$this->base["cost"].";
                 this.buildTime = ".$this->base["buildTime"].";
             }
@@ -87,11 +92,15 @@ class EntitiesService
             onClick() {
                 var sessionAuth = '".$sessionAuth."';
                 if (sessionAuth !== '') {
-                    ".$this->base["onClick"]."".$this->base["onClick"]."
+                    ".$this->base["onClick"]."
                 } else {
                     console.log(sessionAuth);
                 }
             }
+
+            subPanelAction(baseId){
+                ".$this->base["subPanelAction"].";
+            };
         
         }
 
@@ -109,6 +118,7 @@ class EntitiesService
                 super();
                 this.id = id;
                 this.class = \"mine\";
+                this.imgName = \"".$this->mine["imgName"]."\";
                 this.ownerName = ownerName;
                 this.relation = relation;
                 this.content = content;
@@ -167,6 +177,10 @@ class EntitiesService
                 this.cost = ".$this->workerSpace["cost"].";
                 this.buildTime = ".$this->workerSpace["buildTime"].";
             }
+
+            subPanelAction(baseId){
+                window.location.replace(\"?p=entity.buyWorkerSpace&baseId=\" + baseId);
+            };
             
         }
 
@@ -179,6 +193,10 @@ class EntitiesService
                 this.cost = ".$this->soldierSpace["cost"].";
                 this.buildTime = ".$this->soldierSpace["buildTime"].";
             }
+
+            subPanelAction(baseId){
+                window.location.replace(\"?p=entity.buySoldierSpace&baseId=\" + baseId);
+            };
             
         }
 

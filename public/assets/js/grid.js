@@ -32,7 +32,11 @@ function gridToCoordinates(x=0, y=0, type='both')
     }
 }
 
-
+/**
+ * 
+ * @param {*} a 
+ * @param {*} b 
+ */
 function gridDistance(a, b)
 {
     c = Math.pow((a[0]-b[0]), 2);

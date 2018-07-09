@@ -22,6 +22,10 @@ class TaskHandler
                         $auth->buyWorker($origin);
                     } else if ($task["target"] == "soldier"){
                         $auth->buySoldier($origin);
+                    } else if ($task["target"] == "workerSpace"){
+                        $auth->buyWorkerSpace($origin);
+                    } else if ($task["target"] == "soldierSpace"){
+                        $auth->buySoldierSpace($origin);
                     }
                     $auth->removeTask($task["id"]);
                 }
