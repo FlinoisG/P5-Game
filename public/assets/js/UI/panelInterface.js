@@ -10,7 +10,8 @@ panelInterface = {
                 this.selectPeon(toSelect);
                 break;
             default:
-                console.log(':(');
+                this.unSelect();
+                console.log('Selection inconnue');
         }
         
     },
@@ -23,6 +24,7 @@ panelInterface = {
 
     selectBase(toSelect) 
     {
+        
         if (toSelect.relation == "owned") {
             var title = document.createElement('h4');
             title.textContent = '#' + toSelect.id + " Base";
@@ -67,7 +69,7 @@ panelInterface = {
                                 slots[i].className = slots[i].className.replace(' slotSelected','');
                             }
                             ev.target.className += " slotSelected";
-                            this.selectWorker(toSelect.id);
+                            this.selectWorker(toSelect);
                         });
                         freeSlots--;
                     }
@@ -132,7 +134,7 @@ panelInterface = {
                 workerSpaceEntity
             ]
 
-            document.getElementById('panelSub').appendChild(this.buildSubPanel(baseOptions, toSelect.id));
+            document.getElementById('panelSub').appendChild(this.buildSubPanel(baseOptions, toSelect));
 
             soldierTabButton.addEventListener("click", (ev) => {
                 this.soldierTab(toSelect);
@@ -173,6 +175,7 @@ panelInterface = {
 
     soldierTab(toSelect) 
     {
+        
         document.getElementById('slotTabs').innerHTML = "";
         document.getElementById('panelSlots').innerHTML = "";
 
@@ -203,7 +206,7 @@ panelInterface = {
                             
                         }
                         ev.target.style.border = "1px solid #90b2d6";
-                        this.selectSoldier(toSelect.id);
+                        this.selectSoldier(toSelect);
                     });
 
                     freeSlots--;
@@ -262,7 +265,7 @@ panelInterface = {
         ]
 
         document.getElementById('panelSub').innerHTML = "";
-        document.getElementById('panelSub').appendChild(this.buildSubPanel(soldierOptions, toSelect.id));
+        document.getElementById('panelSub').appendChild(this.buildSubPanel(soldierOptions, toSelect));
 
         workerTabButton.addEventListener("click", () => {
             this.selectBase(toSelect);
@@ -296,42 +299,44 @@ panelInterface = {
         }
     },
 
-    selectWorker(baseId) {
+    selectWorker(toSelect) {
+        
         document.getElementById('panelSub').innerHTML = "";
 
         baseEntity = new BaseEntity; 
         mineEntity = new MineEntity; 
 
-        baseEntity.link = baseId;
-        mineEntity.link = baseId;
+        baseEntity.link = toSelect.Id;
+        mineEntity.link = toSelect.Id;
 
         workerOptions = [
             baseEntity,
             mineEntity
         ]
 
-        document.getElementById('panelSub').appendChild(this.buildSubPanel(workerOptions, baseId));
+        document.getElementById('panelSub').appendChild(this.buildSubPanel(workerOptions, toSelect));
     },
 
-    selectSoldier(baseId) {
+    selectSoldier(toSelect) {
         document.getElementById('panelSub').innerHTML = "";
 
         baseEntity = new BaseEntity; 
         mineEntity = new MineEntity; 
 
-        baseEntity.link = baseId;
-        mineEntity.link = baseId;
+        baseEntity.link = toSelect.Id;
+        mineEntity.link = toSelect.Id;
 
         workerOptions = [
             baseEntity,
             mineEntity
         ]
 
-        document.getElementById('panelSub').appendChild(this.buildSubPanel(workerOptions, baseId));
+        document.getElementById('panelSub').appendChild(this.buildSubPanel(workerOptions, toSelect));
     },
 
-    buildSubPanel(options, selectedId=null)
+    buildSubPanel(options, toSelect)
     {
+        
         var subPanelMain = document.createElement('div');
         subPanelMain.id = "subPanelMain";
 
@@ -345,7 +350,7 @@ panelInterface = {
             SubOptionIcon.src = '../public/assets/img/' + option.imgName + '.png';
 
             SubOptionIcon.addEventListener("click", function () {
-                option.subPanelAction(selectedId);
+                option.subPanelAction(toSelect.type+","+toSelect.id);
             });
 
             var SubOptionText = document.createElement('span');

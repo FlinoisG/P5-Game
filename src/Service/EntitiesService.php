@@ -7,7 +7,7 @@ class EntitiesService
 
     private $default = [
         "cost"=>500,
-        "buildTime"=>3600,
+        "buildTime"=>3,
         "imgName"=>"unit_slot_empty",
         "subPanelAction"=>"",
     ];
@@ -15,7 +15,7 @@ class EntitiesService
         "type"=>"base",
         "class"=>"building",
         "cost"=>500,
-        "buildTime"=>3600,
+        "buildTime"=>3,
         "imgName"=>"unit_slot_base",
         "onClick"=>"panelInterface.select(this);",
     ];
@@ -32,7 +32,7 @@ class EntitiesService
         "type"=>"mine",
         "class"=>"building",
         "cost"=>500,
-        "buildTime"=>3600,
+        "buildTime"=>3,
         "imgName"=>"unit_slot_mine",
         "onClick"=>"panelInterface.select(this);",
     ];
@@ -45,28 +45,28 @@ class EntitiesService
         "type"=>"worker",
         "class"=>"unit",
         "cost"=>500,
-        "buildTime"=>3600,
+        "buildTime"=>3,
         "imgName"=>"unit_slot_worker_finished",
     ];
     private $soldier = [
         "type"=>"soldier",
         "class"=>"unit",
         "cost"=>500,
-        "buildTime"=>3600,
+        "buildTime"=>3,
         "imgName"=>"unit_slot_soldier_finished",
     ];
     private $workerSpace = [
         "type"=>"workerSpace",
         "class"=>"upgrade",
         "cost"=>500,
-        "buildTime"=>60,
+        "buildTime"=>3,
         "imgName"=>"unit_slot_base",
     ];
     private $soldierSpace = [
         "type"=>"soldierSpace",
         "class"=>"upgrade",
         "cost"=>500,
-        "buildTime"=>3600,
+        "buildTime"=>3,
         "imgName"=>"unit_slot_base",
     ];
 
@@ -97,7 +97,7 @@ class EntitiesService
 
         class BaseEntity extends DefaultEntity {
     
-            constructor(id=0, ownerName=\"\", relation=\"neutral\", content=\"\", workerSpace=\"\", soldierSpace=\"\") {
+            constructor(id=0, ownerName=\"\", relation=\"neutral\", content=\"\", workerSpace=\"\", soldierSpace=\"\", marker=null) {
                 super();
                 this.id = id;
                 this.type = \"".$this->base["type"]."\";
@@ -110,6 +110,7 @@ class EntitiesService
                 this.soldierSpace = soldierSpace;
                 this.cost = ".$this->base["cost"].";
                 this.buildTime = ".$this->base["buildTime"].";
+                this.marker = marker;
             }
             
             onClick() {
@@ -121,8 +122,8 @@ class EntitiesService
                 }
             }
 
-            subPanelAction(baseId){
-                build.build(".$this->base["type"].", baseId);
+            subPanelAction(origin){
+                build.build('".$this->base["type"]."', origin);
             };
         
         }
@@ -175,8 +176,8 @@ class EntitiesService
                 ".$this->mine["onClick"]."
             }
 
-            subPanelAction(baseId){
-                build.build('mine');
+            subPanelAction(origin){
+                build.build('mine', origin);
             };
             
         }
@@ -215,8 +216,8 @@ class EntitiesService
                 this.buildTime = ".$this->worker["buildTime"].";
             }
         
-            subPanelAction(baseId){
-                window.location.replace(\"?p=entity.buy&type=worker&baseId=\" + baseId);
+            subPanelAction(origin){
+                window.location.replace(\"?p=entity.buy&type=worker&origin=\" + origin);
             };
             
         }
@@ -234,8 +235,8 @@ class EntitiesService
                 this.buildTime = ".$this->soldier["buildTime"].";
             }
         
-            subPanelAction(baseId){
-                window.location.replace(\"?p=entity.buy&type=soldier&baseId=\" + baseId);
+            subPanelAction(origin){
+                window.location.replace(\"?p=entity.buy&type=soldier&origin=\" + origin);
             };
             
         }
@@ -251,8 +252,8 @@ class EntitiesService
                 this.buildTime = ".$this->workerSpace["buildTime"].";
             }
 
-            subPanelAction(baseId){
-                window.location.replace(\"?p=entity.buy&type=workerSpace&baseId=\" + baseId);
+            subPanelAction(origin){
+                window.location.replace(\"?p=entity.buy&type=workerSpace&origin=\" + origin);
             };
             
         }
@@ -268,8 +269,8 @@ class EntitiesService
                 this.buildTime = ".$this->soldierSpace["buildTime"].";
             }
 
-            subPanelAction(baseId){
-                window.location.replace(\"?p=entity.buy&type=soldierSpace&baseId=\" + baseId);
+            subPanelAction(origin){
+                window.location.replace(\"?p=entity.buy&type=soldierSpace&origin=\" + origin);
             };
             
         }

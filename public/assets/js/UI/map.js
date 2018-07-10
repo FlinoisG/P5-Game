@@ -100,7 +100,12 @@ Map.mainMap = {
             iconAnchor:   [15, 17],
             popupAnchor:  [0, -20]
         });
-        console.log(objectMapObj);
+        var mineInConstIcon = L.icon({
+            iconUrl: 'assets/img/mine_construction.png',
+            iconSize:     [37, 43],
+            iconAnchor:   [19, 22],
+            popupAnchor:  [0, -20]
+        });
         if (typeof objectMapObj !== 'undefined') {
             objectMapObj.forEach(object => {
                 x = gridToCoordinates(object.x, 0, 'x');
@@ -121,10 +126,18 @@ Map.mainMap = {
                     }
                     baseMarker = L.marker([y, x], {
                         icon: icon,
+                        riseOnHover: true,
                     }).addTo(this.map);
-                    const baseEntity = new BaseEntity(object.id, object.ownerName, relation, object.content, object.workerSpace, object.soldierSpace);
-                    baseMarker.addEventListener('click', function(ev) {
+                    console.log(object.id);
+                    const baseEntity = new BaseEntity(object.id, object.ownerName, relation, object.content, object.workerSpace, object.soldierSpace, baseMarker);
+                    $target = 'cul';
+                    baseMarker.bindPopup("#"+object.id+" base de "+object.ownerName);
+                    baseMarker.addEventListener('click', function(e) {
                         baseEntity.onClick();
+                        //e.target.setIcon(baseNeutralIcon);
+                        e.target._icon.className = e.target._icon.className + " selectedMarker";   
+                        baseMarker.addEventListener('click', function(e) {
+                        });
                     });
                     if (relation == "owned"){
                         if (window.location.search.includes('focus')){
@@ -150,6 +163,7 @@ Map.mainMap = {
                     }
                     mineMarker = L.marker([y, x], {
                         icon: icon,
+                        riseOnHover: true,
                     }).addTo(this.map);
                     const mineEntity = new MineEntity(object.id, object.ownerName, relation, object.content, object.workerSpace, object.soldierSpace);
                     mineMarker.addEventListener('click', function(ev) {

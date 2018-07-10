@@ -186,6 +186,13 @@ class Auth
         return $result[0]['ID'];
     }
 
+    public function getUsernameById($id){
+        $sqlQuery = new sqlQuery();
+        $query = "SELECT username FROM game_users WHERE id='".$id."'";
+        $result = $sqlQuery->sqlQuery($query);
+        return $result[0]['username'];
+    }
+
     public function getMapObjects()
     {
         $sqlQuery = new sqlQuery();
@@ -211,64 +218,55 @@ class Auth
         return $metal;
     }
 
-    public function getBaseWorker($baseId)
+    public function getUnit($unit, $targetOrigin)
     {
         $sqlQuery = new sqlQuery();
-        $baseWorker = $sqlQuery->sqlQuery("SELECT workers FROM game_bases WHERE id='".$baseId."'");
-        return $baseWorker[0]["workers"];
+        $arr = explode(',', $targetOrigin);
+        $buildingType = $arr[0];
+        $buildingId = $arr[1];
+        $baseUnit = $sqlQuery->sqlQuery("SELECT ".$unit."s FROM game_".$buildingType."s WHERE id='".$buildingId."'");
+        return $baseUnit[0][$unit."s"];
     }
 
-    public function getWorkerSpace($baseId)
+    public function buyUnit($unit, $origin, $amount=1)
     {
         $sqlQuery = new sqlQuery();
-        $WorkerSpace = $sqlQuery->sqlQuery("SELECT workerSpace FROM game_bases WHERE id='".$baseId."'");
-        return $WorkerSpace[0]["workerSpace"];
-    }
-
-    public function buyWorker($baseId)
-    {
-        $sqlQuery = new sqlQuery();
-        $baseWorker = $this->getBaseWorker($baseId);
-        $baseWorker = $baseWorker + 1;
-        $sqlQuery->sqlQuery("UPDATE game_bases SET workers = ".$baseWorker." WHERE id='".$baseId."'");
-    }
-
-    public function buyWorkerSpace($baseId)
-    {
-        $sqlQuery = new sqlQuery();
-        $baseWorkerSpace = $this->getWorkerSpace($baseId);
-        $baseWorkerSpace = $baseWorkerSpace + 5;
-        $sqlQuery->sqlQuery("UPDATE game_bases SET workerSpace = ".$baseWorkerSpace." WHERE id='".$baseId."'");
-    }
-
-    public function getBaseSoldier($baseId)
-    {
-        $sqlQuery = new sqlQuery();
-        $baseSoldier = $sqlQuery->sqlQuery("SELECT soldiers FROM game_bases WHERE id='".$baseId."'");
-        return $baseSoldier[0]["soldiers"];
-    }
-
-    public function buySoldier($baseId)
-    {
-        $sqlQuery = new sqlQuery();
-        $baseSoldier = $this->getBaseSoldier($baseId);
-        $baseSoldier = $baseSoldier + 1;
-        $sqlQuery->sqlQuery("UPDATE game_bases SET soldiers = ".$baseSoldier." WHERE id='".$baseId."'");
+        $arr = explode(",", $origin);
+        $originType = $arr[0];
+        $originId = $arr[1];
+        $baseUnit = $this->getUnit($unit, $origin);
+        $baseUnit = $baseUnit + $amount;
+        $sqlQuery->sqlQuery("UPDATE game_".$originType."s SET ".$unit."s = ".$baseUnit." WHERE id='".$originId."'");
     }  
-    
-    public function buySoldierSpace($baseId)
+
+    public function buySpace($type, $origin, $amount=5)
     {
         $sqlQuery = new sqlQuery();
-        $baseSoldierSpace = $this->getSoldierSpace($baseId);
-        $baseSoldierSpace = $baseSoldierSpace + 5;
-        $sqlQuery->sqlQuery("UPDATE game_bases SET soldierSpace = ".$baseSoldierSpace." WHERE id='".$baseId."'");
+        $arr = explode(",", $origin);
+        $originType = $arr[0];
+        $originId = $arr[1];
+        $space = $this->getSpace($type, $origin);
+        $space = $space + $amount;
+        $sqlQuery->sqlQuery("UPDATE game_".$originType."s SET ".$type."Space = ".$space." WHERE id='".$originId."'");
     } 
 
-    public function getSoldierSpace($baseId)
+    public function build($type, $pos, $author)
     {
         $sqlQuery = new sqlQuery();
-        $SoldierSpace = $sqlQuery->sqlQuery("SELECT soldierSpace FROM game_bases WHERE id='".$baseId."'");
-        return $SoldierSpace[0]["soldierSpace"];
+        $username = $this->getUsernameById($author);
+        $query = 'INSERT INTO game_'.$type.'s (player, player_id, pos) VALUES (\''.$username.'\', \''.$author.'\', \''.$pos.'\')';
+        $sqlQuery->sqlQuery($query);
+    }
+
+    public function getSpace($type, $origin)
+    {
+        $sqlQuery = new sqlQuery();
+        $arr = explode(",", $origin);
+        $originType = $arr[0];
+        $originId = $arr[1];
+        $query = "SELECT ".$type."Space FROM game_".$originType."s WHERE id='".$originId."'";
+        $space = $sqlQuery->sqlQuery($query);
+        return $space[0][$type."Space"];
     }
     
     public function newTask($action, $target = null, $origin = null, $time = 0, $pos = null, $authorId=null)
@@ -299,7 +297,7 @@ class Auth
     public function getEntityInConst($target, $baseId)
     {
         $sqlQuery = new sqlQuery();
-        $targetInConstruct = $sqlQuery->sqlQuery("SELECT time FROM game_tasks WHERE origin='base[".$baseId."]' AND target='".$target."'");
+        $targetInConstruct = $sqlQuery->sqlQuery("SELECT time FROM game_tasks WHERE origin='base,".$baseId."' AND target='".$target."'");
         return $targetInConstruct;
     }
 

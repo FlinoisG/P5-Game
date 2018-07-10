@@ -24,7 +24,7 @@ class MapInit {
 
             if ($object['type'] == "base" || $object['type'] == "mine") {
                 $content = [];
-                $workers = $auth->getBaseWorker($object["id"]);
+                $workers = $auth->getUnit('worker', 'base,'.$object["id"]);
                 if ($workers != 0) {
                     $content["workers"] = $workers;
                 }
@@ -35,7 +35,7 @@ class MapInit {
                     }
                 }
 
-                $soldiers = $auth->getBaseSoldier($object["id"]);
+                $soldiers = $auth->getUnit('soldier', 'base,'.$object["id"]);
                 if ($soldiers != 0) {
                     $content["soldiers"] = $soldiers;
                 }
@@ -68,8 +68,8 @@ class MapInit {
             $pos = json_decode($object["pos"]);
             
             if ($object['type'] == 'base') {
-                $workerSpace = $auth->getWorkerSpace($object["id"]);
-                $soldierSpace = $auth->getSoldierSpace($object["id"]);
+                $workerSpace = $auth->getSpace('worker', $object['type'].','.$object["id"]);
+                $soldierSpace = $auth->getSpace('soldier', $object['type'].','.$object["id"]);
                 $result .= '
                     {
                         "type": "base",
@@ -84,8 +84,8 @@ class MapInit {
                         "soldierSpace": '.$soldierSpace.'
                     },';
             } else if ($object['type'] == 'mine') {
-                $workerSpace = $auth->getWorkerSpace($object["id"]);
-                $soldierSpace = $auth->getSoldierSpace($object["id"]);
+                $workerSpace = $auth->getSpace('worker', $object['type'].','.$object["id"]);
+                $soldierSpace = $auth->getSpace('soldier', $object['type'].','.$object["id"]);
                 $result .= '
                     {
                         "type": "mine",
@@ -99,10 +99,10 @@ class MapInit {
                         "soldierSpace": '.$soldierSpace.'
                     },';
 
-            } else if ($object['type'] == 'baseInConst') {
+            } else {
                 $result .= '
                 {
-                    "type": "baseInConst",
+                    "type": "'.$object['type'].'",
                     "x": '.$pos[0].', 
                     "y": '.$pos[1].', 
                     "owner": "'.$owner.'", 

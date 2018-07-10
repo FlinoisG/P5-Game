@@ -1,11 +1,12 @@
 build = {
 
-    build(type, baseId) 
+    build(type, origin) //baseId
     {
 
         document.removeEventListener('mouseup', unSelect);
 
-        this.baseId = baseId
+        this.origin = origin
+        this.type = type
         if (type == "mine"){
             this.validImg = "../public/assets/img/mine_valid.png";
             this.invalidImg = "../public/assets/img/mine_invalid.png";
@@ -14,8 +15,8 @@ build = {
         } else {
             this.validImg = "../public/assets/img/base_valid.png";
             this.invalidImg = "../public/assets/img/base_invalid.png";
-            this.imgOffsetX = -15;
-            this.imgOffsetY = -17;
+            this.imgOffsetX = -19;
+            this.imgOffsetY = -22;
         }
 
         var buildingImg = document.createElement('img');
@@ -92,13 +93,13 @@ build = {
     eventOnClick(e){
         if (validated == true){
             pos = coordinatesToGrid(e.latlng.lng, e.latlng.lat);
-            window.location.replace("?p=entity.buy&type="+$type+"&baseId=" + build.baseId + "&pos=[" + pos.x + "," + pos.y + "]");
+            window.location.replace("?p=entity.buy&type="+build.type+"&origin=" + build.origin + "&pos=[" + pos.x + "," + pos.y + "]");
         } else {
         }
     },
 
     cancelBuild(){
-        panelInterface.selectWorker(build.baseId);
+        panelInterface.selectWorker(build.origin);
         document.removeEventListener("mousemove", build.checkMousePos);
         Map.mainMap.map.removeEventListener("mousemove", build.checkPosValidity);
         Map.mainMap.map.removeEventListener("click", build.eventOnClick);

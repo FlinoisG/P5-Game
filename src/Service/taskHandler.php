@@ -13,23 +13,26 @@ class TaskHandler
 
     public function handleTasks($tasks)
     {
+        $auth = new Auth;
         foreach ($tasks as $task) {
             if ($task["action"] == "buy"){
                 if ($task["time"] < time()){
-                    $auth = new Auth;
-                    $origin = (int)preg_replace('/[^0-9.]+/', '', $task["origin"]);
-                    if ($task["target"] == "worker"){
-                        $auth->buyWorker($origin);
-                    } else if ($task["target"] == "soldier"){
-                        $auth->buySoldier($origin);
+                    if ($task["target"] == "worker" || $task["target"] == "soldier"){
+                        var_dump($task["origin"]);
+                        $auth->buyUnit($task["target"], $task["origin"]);
                     } else if ($task["target"] == "workerSpace"){
-                        $auth->buyWorkerSpace($origin);
+                        $auth->buySpace($task["origin"]);
                     } else if ($task["target"] == "soldierSpace"){
-                        $auth->buySoldierSpace($origin);
+                        $auth->buySpace($task["origin"]);
                     }
+                }
+                //$auth->removeTask($task["id"]);
+            } else if ($task["action"] == "build"){
+                if ($task["time"] < time()) {
+                    $auth->build($task["target"], $task["targetPos"], $task["author"]);
                     $auth->removeTask($task["id"]);
                 }
-            }            
+            }
         }
     }
 
