@@ -141,7 +141,7 @@ panelInterface = {
             if (toSelect.content.workerSpaceInConst !== undefined && toSelect.content.workersInConst != 0){
                 var workerSpaceCooldown = document.createElement('div');
                 workerSpaceCooldown.className = "workerSpaceCooldown subPanelCooldown";
-                workerSpaceCooldown.textContent = "Contruction en cours...";
+                workerSpaceCooldown.textContent = "Upgrade en cours...";
 
                 var timestamp = Math.floor(Date.now() / 1000);
                 var time = toSelect.content.workerSpaceInConst - timestamp;
@@ -269,10 +269,11 @@ panelInterface = {
         });
 
         if (toSelect.content.soldierSpaceInConst !== undefined && toSelect.content.soldierInConst != 0){
+
             var soldierSpaceCooldown = document.createElement('div');
             soldierSpaceCooldown.id = "soldierSpaceCooldown";
             soldierSpaceCooldown.className = "soldierSpaceCooldown subPanelCooldown";
-            soldierSpaceCooldown.textContent = "Contruction en cours...";
+            soldierSpaceCooldown.textContent = "Upgrade en cours...";
 
             var timestamp = Math.floor(Date.now() / 1000);
             var time = toSelect.content.soldierSpaceInConst - timestamp;
@@ -290,7 +291,7 @@ panelInterface = {
             timer.textContent = displayTime;
 
             soldierSpaceCooldown.appendChild(timer);
-            document.getElementById('panelSubsoldierSpace').appendChild(soldierSpaceCooldown);
+            document.getElementById('optionInnersoldierSpace').appendChild(soldierSpaceCooldown);
             countDown(timer, toSelect.content.soldierSpaceInConst);
         }
     },

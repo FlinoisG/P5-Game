@@ -92,7 +92,7 @@ build = {
     eventOnClick(e){
         if (validated == true){
             pos = coordinatesToGrid(e.latlng.lng, e.latlng.lat);
-            window.location.replace("?p=entity.buyBase&baseId=" + build.baseId + "&pos=[" + pos.x + "," + pos.y + "]");
+            window.location.replace("?p=entity.buy&type="+$type+"&baseId=" + build.baseId + "&pos=[" + pos.x + "," + pos.y + "]");
         } else {
         }
     },

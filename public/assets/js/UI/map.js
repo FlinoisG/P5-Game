@@ -185,6 +185,28 @@ Map.mainMap = {
                             }
                         }                    
                     }
+                } else if (object.type == "mineInConst") {
+                    if (object.owner == "player"){
+                    } else if (object.owner == "enemy"){
+                        relation = "enemy";
+                    } else {
+                        relation = "neutral";
+                    }
+                    mineInConstMarker = L.marker([y, x], {
+                        icon: mineInConstIcon,
+                    }).addTo(this.map);
+                    const mineInConstEntity = new MineInConstEntity(object.ownerName, relation);
+                    mineInConstMarker.addEventListener('click', function(ev) {
+                        mineInConstEntity.onClick();
+                    });
+                    if (relation == "owned"){
+                        if (window.location.search.includes('focus')){
+                            var target = (window.location.search.substr(14));
+                            if (target.startsWith('mine') && target[5] == object.id){
+                                mineEntity.onClick();
+                            }
+                        }                    
+                    }
                 }
             });
         }

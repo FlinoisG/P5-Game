@@ -271,7 +271,7 @@ class Auth
         return $SoldierSpace[0]["soldierSpace"];
     }
     
-    public function newTask($action, $target = null, $origin = null, $time = 0, $pos = null, $authorId="")
+    public function newTask($action, $target = null, $origin = null, $time = 0, $pos = null, $authorId=null)
     {
         $sqlQuery = new sqlQuery();
         $query = 'INSERT INTO game_tasks (action, target, targetPos, origin, time, author) VALUES (\''.$action.'\', \''.$target.'\', \''.$pos.'\', \''.$origin.'\', '.$time.', \''.$authorId.'\')';

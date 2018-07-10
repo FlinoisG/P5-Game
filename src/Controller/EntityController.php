@@ -178,4 +178,87 @@ class EntityController extends DefaultController
         }
     }
 
+    public function buy()
+    {
+        if (!isset($_SESSION)) { 
+            session_start(); 
+        }
+        $baseId = $_GET["baseId"];
+        $entitiesService = new EntitiesService;
+        $auth = new Auth;
+        $available = true;
+        $type = $_GET['type'];
+        $class = $entitiesService->getType($type)['class'];
+        $cost = $entitiesService->getType($type)['cost'];
+        $playerMetal = $auth->getMetal($_SESSION['auth']);
+        
+        if ($playerMetal < $cost) {
+            $available = false;
+            $cause = "not enough metal";
+        }
+        if ($class == 'unit') {
+            $constructions = 0;
+            $tasks = $auth->getTasks();
+            foreach ($tasks as $task) {
+                if ($task['origin'] == 'base['.$baseId.']' && $task['action'] == 'buy' && $task['target'] == $type){
+                    $constructions++;
+                }
+            }
+            if ($type == 'worker') {
+                $baseWorker = $auth->getBaseWorker($baseId);
+                $slots = (int)$constructions + (int)$baseWorker;
+                $workerSpace = $auth->getWorkerSpace($baseId);
+                if ($slots > $workerSpace) {
+                    $available = false;
+                    $cause = "space";
+                }
+            } else if ($type == 'soldier') {
+                $baseSoldier = $auth->getBaseSoldier($baseId);
+                $slots = (int)$constructions + (int)$baseSoldier;
+                $soldierSpace = $auth->getSoldierSpace($baseId);
+                if ($slots > $soldierSpace) {
+                    $available = false;
+                    $cause = "space";
+                }
+            }
+        } else if ($class == 'building') {
+
+        } else if ($class == 'upgrade') {
+            $upgradeInConstruct = $auth->getEntityInConst($type, $baseId);
+            if ($soldierSpaceInConstruct){
+                $available = false;
+                $cause = "already upgrading";
+            }
+            if ($type == 'workerSpace') {
+                $workerSpace = $auth->getWorkerSpace($baseId);
+                if ($workerSpace >= 99) {
+                    $available = false;
+                    $cause = "can't upgrade anymore";
+                }
+            } else if ($type == 'soldierSpace') {
+                $soldierSpace = $auth->getSoldierSpace($baseId);
+                if ($soldierSpace >= 99) {
+                    $available = false;
+                    $cause = "can't upgrade anymore";
+                }
+                
+            }
+        }
+        $origin = "base[".$baseId."]"; 
+        if ($available){
+            $time = time() + $entitiesService->getType($type)["buildTime"];
+            $auth->addMetal($_SESSION['auth'], ($cost * -1));
+            $authorId = $auth->getIdByUsername($_SESSION['auth']);
+            $auth->newTask("buy", $type, $origin, $time, null, $authorId);
+            if ($type == 'soldier' || $type == 'soldierSpace'){
+                header('Location: ?p=home&focus='.$origin.'&soldierTab');
+            } else {
+                header('Location: ?p=home&focus='.$origin);
+            }
+        } else {
+            echo $cause;
+            //header('Location: ?p=home&focus='.$origin.'&soldierTab');
+        }
+    }
+
 }
