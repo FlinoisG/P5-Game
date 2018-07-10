@@ -12,38 +12,46 @@ class EntitiesService
         "subPanelAction"=>"",
     ];
     private $base = [
+        "type"=>"base",
         "cost"=>500,
         "buildTime"=>3600,
         "imgName"=>"unit_slot_base",
         "onClick"=>"panelInterface.select(this);",
-        "subPanelAction"=>"build()",
+    ];
+    private $baseInConstruct = [
+        "type"=>"baseInConstruct",
+        "onClick"=>"panelInterface.select(this);",
     ];
     private $main = [
+        "type"=>"base",
     ];
     private $mine = [
+        "type"=>"mine",
         "cost"=>500,
         "buildTime"=>3600,
         "imgName"=>"unit_slot_mine",
         "onClick"=>"panelInterface.select(this);",
     ];
     private $worker = [
+        "type"=>"worker",
         "cost"=>500,
         "buildTime"=>3600,
         "imgName"=>"unit_slot_worker_finished",
     ];
     private $soldier = [
+        "type"=>"soldier",
         "cost"=>500,
         "buildTime"=>3600,
         "imgName"=>"unit_slot_soldier_finished",
     ];
     private $workerSpace = [
-        "class"=>"workerSpace",
+        "type"=>"workerSpace",
         "cost"=>500,
         "buildTime"=>60,
         "imgName"=>"unit_slot_base",
     ];
     private $soldierSpace = [
-        "class"=>"soldierSpace",
+        "type"=>"soldierSpace",
         "cost"=>500,
         "buildTime"=>3600,
         "imgName"=>"unit_slot_base",
@@ -61,7 +69,7 @@ class EntitiesService
         class DefaultEntity {
     
             constructor() {
-                this.class = \"defaultEntity\";
+                this.type = \"defaultEntity\";
                 this.imgName = \"".$this->default["imgName"]."\";
                 //this.cost = ".$this->default["cost"].";
                 //this.buildTime = ".$this->default["buildTime"].";
@@ -78,7 +86,7 @@ class EntitiesService
             constructor(id=0, ownerName=\"\", relation=\"neutral\", content=\"\", workerSpace=\"\", soldierSpace=\"\") {
                 super();
                 this.id = id;
-                this.class = \"base\";
+                this.type = \"".$this->base["type"]."\";
                 this.imgName = \"".$this->base["imgName"]."\";
                 this.ownerName = ownerName;
                 this.relation = relation;
@@ -99,15 +107,35 @@ class EntitiesService
             }
 
             subPanelAction(baseId){
-                ".$this->base["subPanelAction"].";
+                build.build('base', baseId);
             };
+        
+        }
+
+        class BaseInConstEntity extends DefaultEntity {
+    
+            constructor(ownerName=\"\", relation=\"neutral\") {
+                super();
+                this.type = \"".$this->baseInConstruct["type"]."\";
+                this.ownerName = ownerName;
+                this.relation = relation;
+            }
+            
+            onClick() {
+                var sessionAuth = '".$sessionAuth."';
+                if (sessionAuth !== '') {
+                    ".$this->base["onClick"]."
+                } else {
+                    console.log(sessionAuth);
+                }
+            }
         
         }
 
         class MainEntity extends BaseEntity {
     
             constructor(){
-                this.class = \"main\";
+                this.type = \"".$this->main["type"]."\";
             }
             
         }
@@ -117,7 +145,7 @@ class EntitiesService
             constructor(id=0, ownerName=\"\", relation=\"neutral\", content=\"\") {
                 super();
                 this.id = id;
-                this.class = \"mine\";
+                this.type = \"".$this->mine["type"]."\";
                 this.imgName = \"".$this->mine["imgName"]."\";
                 this.ownerName = ownerName;
                 this.relation = relation;
@@ -129,6 +157,10 @@ class EntitiesService
             onClick() {
                 ".$this->mine["onClick"]."
             }
+
+            subPanelAction(baseId){
+                build.build('mine');
+            };
             
         }
 
@@ -136,7 +168,7 @@ class EntitiesService
     
             constructor(ownerName=\"\", relation=\"neutral\") {
                 super();
-                this.class = \"worker\";
+                this.type = \"".$this->worker["type"]."\";
                 this.imgName = \"".$this->worker["imgName"]."\";
                 this.ownerName = ownerName;
                 this.relation = relation;
@@ -154,7 +186,7 @@ class EntitiesService
     
             constructor(ownerName=\"\", relation=\"neutral\") {
                 super();
-                this.class = \"soldier\";
+                this.type = \"".$this->soldier["type"]."\";
                 this.imgName = \"".$this->soldier["imgName"]."\";
                 this.ownerName = ownerName;
                 this.relation = relation;
@@ -172,7 +204,7 @@ class EntitiesService
     
             constructor(){
                 super();
-                this.class = \"".$this->workerSpace["class"]."\";
+                this.type = \"".$this->workerSpace["type"]."\";
                 this.imgName = \"".$this->workerSpace["imgName"]."\";
                 this.cost = ".$this->workerSpace["cost"].";
                 this.buildTime = ".$this->workerSpace["buildTime"].";
@@ -188,7 +220,7 @@ class EntitiesService
     
             constructor(){
                 super();
-                this.class = \"".$this->soldierSpace["class"]."\";
+                this.type = \"".$this->soldierSpace["type"]."\";
                 this.imgName = \"".$this->soldierSpace["imgName"]."\";
                 this.cost = ".$this->soldierSpace["cost"].";
                 this.buildTime = ".$this->soldierSpace["buildTime"].";

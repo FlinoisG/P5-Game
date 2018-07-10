@@ -137,9 +137,9 @@ panelInterface = {
             soldierTabButton.addEventListener("click", (ev) => {
                 this.soldierTab(toSelect);
             });
+
             if (toSelect.content.workerSpaceInConst !== undefined && toSelect.content.workersInConst != 0){
                 var workerSpaceCooldown = document.createElement('div');
-                workerSpaceCooldown.id = "workerSpaceCooldown";
                 workerSpaceCooldown.className = "workerSpaceCooldown subPanelCooldown";
                 workerSpaceCooldown.textContent = "Contruction en cours...";
 
@@ -155,11 +155,11 @@ panelInterface = {
                 var displayTime = mins + ":" + secs;
 
                 var timer = document.createElement('div');
-                timer.className = 'panelUnitTimer panelSubTimer';
+                timer.className = 'panelSubTimer';
                 timer.textContent = displayTime;
 
                 workerSpaceCooldown.appendChild(timer);
-                document.getElementById('panelSubworkerSpace').appendChild(workerSpaceCooldown);
+                document.getElementById('optionInnerworkerSpace').appendChild(workerSpaceCooldown);
                 countDown(timer, toSelect.content.workerSpaceInConst);
             }
         } else {
@@ -286,7 +286,7 @@ panelInterface = {
             var displayTime = mins + ":" + secs;
 
             var timer = document.createElement('div');
-            timer.className = 'panelUnitTimer panelSubTimer';
+            timer.className = 'panelSubTimer';
             timer.textContent = displayTime;
 
             soldierSpaceCooldown.appendChild(timer);
@@ -336,8 +336,8 @@ panelInterface = {
 
         options.forEach(option => {
             var panelSubOption = document.createElement('div');
-            panelSubOption.id = "panelSub"+option.class;
-            panelSubOption.className = "panelSubOption " + "panelSub" + option.class;
+            panelSubOption.id = "panelSub"+option.type;
+            panelSubOption.className = "panelSubOption " + "panelSub" + option.type;
 
             var SubOptionIcon = document.createElement('img');
             SubOptionIcon.className = 'panelSubIcon';
@@ -349,19 +349,22 @@ panelInterface = {
 
             var SubOptionText = document.createElement('span');
             SubOptionText.className = 'panelSubText';
-            SubOptionText.innerHTML = "Acheter "+option.class+"<br>Cout: "+option.cost+"metal, "+option.buildTime+"mn";
+            SubOptionText.innerHTML = "Acheter "+option.type+"<br>Cout: "+option.cost+"metal, "+option.buildTime+"mn";
 
-            if (userMetal < option.cost){
+            if (typeof option.cost !== 'undefined'){
+                if (userMetal < option.cost){
 
-                SubOptionText.innerHTML = "Acheter "+option.class+"<br>Cout: <span style=\"color:#FF0000;\">"+option.cost+"metal</span>, "+option.buildTime+"mn";
-                var optionDisabled = document.createElement('div');
-                optionDisabled.id = "workerSpaceCooldown";
-                optionDisabled.className = "workerSpaceCooldown subPanelDisabled";
+                    SubOptionText.innerHTML = "Acheter "+option.type+"<br>Cout: <span style=\"color:#FF0000;\">"+option.cost+"metal</span>, "+option.buildTime+"mn";
+                    var optionDisabled = document.createElement('div');
+                    optionDisabled.className = "workerSpaceCooldown subPanelDisabled";
 
+                }
             }
 
+            
             var optionInner = document.createElement('div');
-            optionInner.id = "optionInner";
+            optionInner.id = "optionInner"+option.type;
+            optionInner.className = "optionInner";
 
             optionInner.appendChild(SubOptionIcon);
             optionInner.appendChild(SubOptionText);

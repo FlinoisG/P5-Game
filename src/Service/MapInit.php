@@ -11,39 +11,49 @@ class MapInit {
     {
         $auth = new Auth;
         $objects = $auth->getMapObjects();
+        $buildingTasks = $auth->getTasks('build');
+        foreach ($buildingTasks as $task) {
+            array_push($objects, [
+                "type"=>$task["target"]."InConst",
+                "pos"=>$task["targetPos"],
+                "player"=>$task["author"],
+            ]);
+        }
         $result = '<script>var objectMapObj = [';
         foreach ($objects as $object) {
-            $content = [];
 
-            $workers = $auth->getBaseWorker($object["id"]);
-            if ($workers != 0){
-                $content["workers"] = $workers;      
-            }
-            $workersInConstruct = $auth->getEntityInConst("worker", $object["id"]);
-            if ($workersInConstruct){
-                for ($i=0; $i < sizeof($workersInConstruct); $i++) { 
-                    $content["workersInConst"][$i] = (int)$workersInConstruct[$i]["time"]; 
+            if ($object['type'] == "base" || $object['type'] == "mine") {
+                $content = [];
+                $workers = $auth->getBaseWorker($object["id"]);
+                if ($workers != 0) {
+                    $content["workers"] = $workers;
                 }
-            }
-
-            $soldiers = $auth->getBaseSoldier($object["id"]);
-            if ($soldiers != 0){
-                $content["soldiers"] = $soldiers;      
-            }
-            $soldiersInConstruct = $auth->getEntityInConst("soldier", $object["id"]);
-            if ($soldiersInConstruct){
-                for ($i=0; $i < sizeof($soldiersInConstruct); $i++) { 
-                    $content["soldiersInConst"][$i] = (int)$soldiersInConstruct[$i]["time"]; 
+                $workersInConstruct = $auth->getEntityInConst("worker", $object["id"]);
+                if ($workersInConstruct) {
+                    for ($i=0; $i < sizeof($workersInConstruct); $i++) {
+                        $content["workersInConst"][$i] = (int)$workersInConstruct[$i]["time"];
+                    }
                 }
-            }
 
-            $workerSpaceInConstruct = $auth->getEntityInConst("workerSpace", $object["id"]);
-            if ($workerSpaceInConstruct){
-                $content["workerSpaceInConst"] = (int)$workerSpaceInConstruct[0]["time"];
-            }
-            $soldierSpaceInConstruct = $auth->getEntityInConst("soldierSpace", $object["id"]);
-            if ($soldierSpaceInConstruct){
-                $content["soldierSpaceInConst"] = (int)$soldierSpaceInConstruct[0]["time"];
+                $soldiers = $auth->getBaseSoldier($object["id"]);
+                if ($soldiers != 0) {
+                    $content["soldiers"] = $soldiers;
+                }
+                $soldiersInConstruct = $auth->getEntityInConst("soldier", $object["id"]);
+                if ($soldiersInConstruct) {
+                    for ($i=0; $i < sizeof($soldiersInConstruct); $i++) {
+                        $content["soldiersInConst"][$i] = (int)$soldiersInConstruct[$i]["time"];
+                    }
+                }
+
+                $workerSpaceInConstruct = $auth->getEntityInConst("workerSpace", $object["id"]);
+                if ($workerSpaceInConstruct) {
+                    $content["workerSpaceInConst"] = (int)$workerSpaceInConstruct[0]["time"];
+                }
+                $soldierSpaceInConstruct = $auth->getEntityInConst("soldierSpace", $object["id"]);
+                if ($soldierSpaceInConstruct) {
+                    $content["soldierSpaceInConst"] = (int)$soldierSpaceInConstruct[0]["time"];
+                }
             }
 
             if (isset($_SESSION['auth'])){
@@ -56,12 +66,13 @@ class MapInit {
                 $owner = "neutral";
             }            
             $pos = json_decode($object["pos"]);
-            $workerSpace = $auth->getWorkerSpace($object["id"]);
-            $soldierSpace = $auth->getSoldierSpace($object["id"]);
+            
             if ($object['type'] == 'base') {
+                $workerSpace = $auth->getWorkerSpace($object["id"]);
+                $soldierSpace = $auth->getSoldierSpace($object["id"]);
                 $result .= '
                     {
-                        "type": "'.$object["type"].'",
+                        "type": "base",
                         "x": '.$pos[0].', 
                         "y": '.$pos[1].', 
                         "id": '.$object["id"].', 
@@ -72,10 +83,12 @@ class MapInit {
                         "workerSpace": '.$workerSpace.',
                         "soldierSpace": '.$soldierSpace.'
                     },';
-            } else {
+            } else if ($object['type'] == 'mine') {
+                $workerSpace = $auth->getWorkerSpace($object["id"]);
+                $soldierSpace = $auth->getSoldierSpace($object["id"]);
                 $result .= '
                     {
-                        "type": "'.$object["type"].'",
+                        "type": "mine",
                         "x": '.$pos[0].', 
                         "y": '.$pos[1].', 
                         "id": '.$object["id"].', 
@@ -86,6 +99,15 @@ class MapInit {
                         "soldierSpace": '.$soldierSpace.'
                     },';
 
+            } else if ($object['type'] == 'baseInConst') {
+                $result .= '
+                {
+                    "type": "baseInConst",
+                    "x": '.$pos[0].', 
+                    "y": '.$pos[1].', 
+                    "owner": "'.$owner.'", 
+                    "ownerName": "'.$object["player"].'"
+                },';
             }
         }
         $result[strrpos($result, ',')] = ' ';

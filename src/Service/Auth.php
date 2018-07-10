@@ -179,6 +179,13 @@ class Auth
         return $users;
     }
 
+    public function getIdByUsername($username){
+        $sqlQuery = new sqlQuery();
+        $query = "SELECT ID FROM game_users WHERE username='".$username."'";
+        $result = $sqlQuery->sqlQuery($query);
+        return $result[0]['ID'];
+    }
+
     public function getMapObjects()
     {
         $sqlQuery = new sqlQuery();
@@ -263,11 +270,11 @@ class Auth
         $SoldierSpace = $sqlQuery->sqlQuery("SELECT soldierSpace FROM game_bases WHERE id='".$baseId."'");
         return $SoldierSpace[0]["soldierSpace"];
     }
-
-    public function newTask($action, $target = null, $origin = null, $time = 0)
+    
+    public function newTask($action, $target = null, $origin = null, $time = 0, $pos = null, $authorId="")
     {
         $sqlQuery = new sqlQuery();
-        $query = 'INSERT INTO game_tasks (action, target, origin, time) VALUES (\''.$action.'\', \''.$target.'\', \''.$origin.'\',  '.$time.')';
+        $query = 'INSERT INTO game_tasks (action, target, targetPos, origin, time, author) VALUES (\''.$action.'\', \''.$target.'\', \''.$pos.'\', \''.$origin.'\', '.$time.', \''.$authorId.'\')';
         $sqlQuery->sqlQuery($query);
     }
 
@@ -278,10 +285,14 @@ class Auth
         $sqlQuery->sqlQuery($query);
     }
 
-    public function getTasks()
+    public function getTasks($action=null)
     {
         $sqlQuery = new sqlQuery();
-        $tasks = $sqlQuery->sqlQuery("SELECT * FROM game_tasks");
+        if ($action == null){
+            $tasks = $sqlQuery->sqlQuery("SELECT * FROM game_tasks");
+        } else {
+            $tasks = $sqlQuery->sqlQuery("SELECT * FROM game_tasks WHERE action='".$action."'");
+        }
         return $tasks;
     }
 

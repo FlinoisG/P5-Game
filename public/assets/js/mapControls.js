@@ -14,9 +14,11 @@ document.addEventListener("mousemove", function(){
     }    
 }, false);
 
-document.addEventListener('mouseup', function(ev) {
+document.addEventListener('mouseup', unSelect);
+
+function unSelect(ev) {
     if (ev.target.id == "mapid" && !drag){
         panelInterface.unSelect();
     }    
-});
+}
 

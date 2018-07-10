@@ -34,6 +34,7 @@ body {
     color: white;
     background-color: rgb(15, 15, 15);
     text-align: center;
+    overflow: hidden;
 }
 
 .btn-logout{
@@ -113,6 +114,6 @@ div{
     position: absolute;
     float: left;
     z-index: 999;
-    opacity: 0.5;
-    transition: transform 0.05s;  
+    opacity: 0;
+    pointer-events: none; 
 }

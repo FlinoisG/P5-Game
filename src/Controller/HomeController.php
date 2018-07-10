@@ -32,7 +32,7 @@ class HomeController extends DefaultController
         $scriptHead .= $this->setScript('panelUnitCountdown'); 
         $waterMap = file_get_contents('../deposit/Maps/waterMap.json');
         $scriptHead .= '<script>var waterMapObj = '.$waterMap.'</script>'; 
-        $scriptHead .= $this->setScript('build'); 
+        $scriptHead .= $this->setScript('build');
         $auth = new Auth;
         //$objects = $auth->getMapObjects();
         //$scriptHead .= '<script>var objects = '.json_encode($objects).'</script>'; 

@@ -27,7 +27,7 @@ class EntityController extends DefaultController
         $baseWorker = $auth->getBaseWorker($baseId);
         $slots = (int)$constructions + (int)$baseWorker;
         $available = true;
-        if (!$playerMetal >= $entitiesService->getWorker()["cost"]) {
+        if ($playerMetal < $entitiesService->getWorker()["cost"]) {
             $available = false;
             $cause = "metal";
         }
@@ -66,7 +66,7 @@ class EntityController extends DefaultController
         $baseSoldiers = $auth->getBaseSoldier($baseId);
         $slots = (int)$constructions + (int)$baseSoldiers;
         $available = true;
-        if (!$playerMetal >= $entitiesService->getSoldier()["cost"]) {
+        if ($playerMetal < $entitiesService->getSoldier()["cost"]) {
             $available = false;
         }
         $soldierSpace = $auth->getSoldierSpace($baseId);
@@ -94,14 +94,14 @@ class EntityController extends DefaultController
         $auth = new Auth;
         $available = true;
         $playerMetal = $auth->getMetal($_SESSION['auth']);
-        if (!$playerMetal >= $entitiesService->getWorkerSpace()["cost"]) {
+        if ($playerMetal < $entitiesService->getWorkerSpace()["cost"]) {
             $available = false;
             $cause = "metal";
         }
         $workerSpace = $auth->getWorkerSpace($baseId);
         if ($workerSpace >= 99) {
             $available = false;
-            $cause = "space";
+            $cause = "can't upgrade anymore";
         }
         $workerSpaceInConstruct = $auth->getEntityInConst("workerSpace", $baseId);
         if ($workerSpaceInConstruct){
@@ -129,14 +129,14 @@ class EntityController extends DefaultController
         $auth = new Auth;
         $available = true;
         $playerMetal = $auth->getMetal($_SESSION['auth']);
-        if (!$playerMetal >= $entitiesService->getSoldierSpace()["cost"]) {
+        if ($playerMetal < $entitiesService->getSoldierSpace()["cost"]) {
             $available = false;
             $cause = "not enough metal";
         }
         $soldierSpace = $auth->getSoldierSpace($baseId);
         if ($soldierSpace >= 99) {
             $available = false;
-            $cause = "not enough space";
+            $cause = "can't upgrade anymore";
         }
         $soldierSpaceInConstruct = $auth->getEntityInConst("soldierSpace", $baseId);
         if ($soldierSpaceInConstruct){
@@ -152,6 +152,29 @@ class EntityController extends DefaultController
         } else {
             echo $cause;
             //header('Location: ?p=home&focus='.$origin.'&soldierTab');
+        }
+    }
+
+    public function buyBase()
+    {
+        if (!isset($_SESSION)) { 
+            session_start(); 
+        }
+        $baseId = $_GET["baseId"];
+        $pos = $_GET["pos"];
+        $entitiesService = new EntitiesService;
+        $auth = new Auth;
+        $playerMetal = $auth->getMetal($_SESSION['auth']);
+        if ($playerMetal < $entitiesService->getBase()["cost"]) {
+            echo "not enough metal";
+            //header('Location: ?p=home&focus='.$origin);
+        } else {
+            $origin = "base[".$baseId."]"; 
+            $authorId = $auth->getIdByUsername($_SESSION['auth']);
+            $time = time() + $entitiesService->getBase()["buildTime"];
+            $auth->addMetal($_SESSION['auth'], ($entitiesService->getBase()["cost"] * -1));
+            $auth->newTask("build", "base", $origin, $time, $pos, $authorId);
+            header('Location: ?p=home&focus='.$origin);
         }
     }
 
