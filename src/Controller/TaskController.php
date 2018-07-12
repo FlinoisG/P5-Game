@@ -5,11 +5,12 @@ namespace App\Controller;
 use App\Service\Auth;
 use App\Service\EntitiesService;
 
-class EntityController extends DefaultController
+class TaskController extends DefaultController
 {
 
     public function buy()
     {
+        
         if (!isset($_SESSION)) { 
             session_start(); 
         }
@@ -24,8 +25,7 @@ class EntityController extends DefaultController
         $class = $entitiesService->getType($type)['class'];
         $cost = $entitiesService->getType($type)['cost'];
         $playerMetal = $auth->getMetal($_SESSION['auth']);
-        
-        if ($playerMetal < $cost) {
+        if ($auth->getNewUser($_SESSION['authId']) != 1 && $playerMetal < $cost) {
             $available = false;
             $cause = "not enough metal";
         }
@@ -47,7 +47,10 @@ class EntityController extends DefaultController
             }
         } else if ($class == 'building') {
             $action = "build";
-            $auth->buyUnit('worker', $origin, -1);
+            if ($auth->getNewUser($_SESSION['authId']) != 1) {
+                $auth->buyUnit('worker', $origin, -1);
+            }
+            var_dump('allo');
         } else if ($class == 'upgrade') {
             $action = "buy";
             $upgradeInConstruct = $auth->getEntityInConst($type, $originId);
@@ -62,6 +65,7 @@ class EntityController extends DefaultController
                 $cause = "can't upgrade anymore";
             }
         }
+        
         if ($available){
             $time = time() + $entitiesService->getType($type)["buildTime"];
             if (isset($_GET["pos"])){
@@ -69,8 +73,11 @@ class EntityController extends DefaultController
             } else {
                 $pos = null;
             }
-            $auth->addMetal($_SESSION['auth'], ($cost * -1));
+            if ($auth->getNewUser($_SESSION['authId']) != 1) {
+                $auth->addMetal($_SESSION['auth'], ($cost * -1));
+            }
             $authorId = $auth->getIdByUsername($_SESSION['auth']);
+            
             $auth->newTask($action, $type, $origin, $time, $pos, $authorId);
             if ($type == 'soldier' || $type == 'soldierSpace'){
                 header('Location: ?p=home&focus='.$origin.'&soldierTab');
@@ -81,6 +88,27 @@ class EntityController extends DefaultController
             echo $cause;
             //header('Location: ?p=home&focus='.$origin.'&soldierTab');
         }
+    }
+
+    public function sendToBuild()
+    {
+        
+    }
+
+    public function newUserBase()
+    {
+        $auth = new Auth;
+        if (!isset($_SESSION)) { 
+            session_start(); 
+        }
+        if ($auth->getNewUser($_SESSION['authId']) != 1) {
+            die($this->error('500'));
+        }
+        $entitiesService = new EntitiesService;
+        $pos = $_GET["pos"];
+        $auth->build('base', $pos, $_SESSION['authId'], 1);
+        $auth->changeNewUser($_SESSION['authId']);
+        header('Location: ?p=home');
     }
 
 }

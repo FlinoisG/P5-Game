@@ -38,13 +38,15 @@ class Auth
     public function login($username, $password)
     {   
         $sqlQuery = new sqlQuery();
-        $user = $sqlQuery->sqlQuery("SELECT username, password FROM game_users WHERE username='".$username."'");
+        $user = $sqlQuery->sqlQuery("SELECT username, password, id, newUser FROM game_users WHERE username='".$username."'");
         $path = __DIR__ . '/../Service/PasswordService.php';
         if ($user != [] && $this->hash_equals($user['0']['password'], crypt($password, $user['0']['password']))) {
             if (!isset($_SESSION)) {
                 session_start();
             }
             $_SESSION['auth'] = $user['0']['username'];
+            $_SESSION['authId'] = $user['0']['id'];
+            $_SESSION['authNewUser'] = $user['0']['newUser'];
         } else {
             $DefaultController = new DefaultController();
             die($DefaultController->error(403));
@@ -225,7 +227,11 @@ class Auth
         $buildingType = $arr[0];
         $buildingId = $arr[1];
         $baseUnit = $sqlQuery->sqlQuery("SELECT ".$unit."s FROM game_".$buildingType."s WHERE id='".$buildingId."'");
-        return $baseUnit[0][$unit."s"];
+        if ($baseUnit == []) {
+            return false;
+        } else {
+            return $baseUnit[0][$unit."s"];
+        }
     }
 
     public function buyUnit($unit, $origin, $amount=1)
@@ -250,11 +256,11 @@ class Auth
         $sqlQuery->sqlQuery("UPDATE game_".$originType."s SET ".$type."Space = ".$space." WHERE id='".$originId."'");
     } 
 
-    public function build($type, $pos, $author)
+    public function build($type, $pos, $author, $main=0)
     {
         $sqlQuery = new sqlQuery();
         $username = $this->getUsernameById($author);
-        $query = 'INSERT INTO game_'.$type.'s (player, player_id, pos) VALUES (\''.$username.'\', \''.$author.'\', \''.$pos.'\')';
+        $query = 'INSERT INTO game_'.$type.'s (player, playerId, pos, main) VALUES (\''.$username.'\', \''.$author.'\', \''.$pos.'\', \''.$main.'\')';
         $sqlQuery->sqlQuery($query);
     }
 
@@ -272,7 +278,23 @@ class Auth
     public function newTask($action, $target = null, $origin = null, $time = 0, $pos = null, $authorId=null)
     {
         $sqlQuery = new sqlQuery();
-        $query = 'INSERT INTO game_tasks (action, target, targetPos, origin, time, author) VALUES (\''.$action.'\', \''.$target.'\', \''.$pos.'\', \''.$origin.'\', '.$time.', \''.$authorId.'\')';
+        $query = 'INSERT INTO game_tasks (
+            action, 
+            target, 
+            targetPos, 
+            origin, 
+            start, 
+            time, 
+            author
+        ) VALUES (
+            \''.$action.'\', 
+            \''.$target.'\', 
+            \''.$pos.'\', 
+            \''.$origin.'\', 
+            '.time().', 
+            '.$time.', 
+            \''.$authorId.'\'
+        )';
         $sqlQuery->sqlQuery($query);
     }
 
@@ -299,6 +321,19 @@ class Auth
         $sqlQuery = new sqlQuery();
         $targetInConstruct = $sqlQuery->sqlQuery("SELECT time FROM game_tasks WHERE origin='base,".$baseId."' AND target='".$target."'");
         return $targetInConstruct;
+    }
+
+    public function getNewUser($userId)
+    {
+        $sqlQuery = new sqlQuery();
+        $newUser = $sqlQuery->sqlQuery("SELECT newUser FROM game_users WHERE id='".$userId."'");
+        return $newUser[0]['newUser'];
+    }
+
+    public function changeNewUser($userId, $value=0)
+    {
+        $sqlQuery = new sqlQuery();
+        $sqlQuery->sqlQuery("UPDATE game_users SET newUser = ".$value." WHERE id='".$userId."'");
     }
 
 }

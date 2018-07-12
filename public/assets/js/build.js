@@ -1,8 +1,10 @@
 build = {
 
-    build(type, origin) //baseId
+    build(type, origin, toSelect)
     {
-
+        console.log(toSelect)
+        this.toSelect = toSelect;
+        this.buildMode = true;
         document.removeEventListener('mouseup', unSelect);
 
         this.origin = origin
@@ -10,13 +12,13 @@ build = {
         if (type == "mine"){
             this.validImg = "../public/assets/img/mine_valid.png";
             this.invalidImg = "../public/assets/img/mine_invalid.png";
-            this.imgOffsetX = 10;
-            this.imgOffsetY = 10;
+            this.imgOffsetX = -19;
+            this.imgOffsetY = -22;
         } else {
             this.validImg = "../public/assets/img/base_valid.png";
             this.invalidImg = "../public/assets/img/base_invalid.png";
-            this.imgOffsetX = -19;
-            this.imgOffsetY = -22;
+            this.imgOffsetX = -15;
+            this.imgOffsetY = -17;
         }
 
         var buildingImg = document.createElement('img');
@@ -24,29 +26,56 @@ build = {
         buildingImg.className = 'buildingImg';
         buildingImg.src = '../public/assets/img/base_neutral.png';
 
+        if (type == "mine"){
+            this.marker = '';
+            Map.mainMap.map.addEventListener("mousemove", this.mine);
+        }
+        
         document.body.appendChild(buildingImg);
-        var validated = true;
 
         document.addEventListener("mousemove", this.checkMousePos);
         Map.mainMap.map.addEventListener("mousemove", this.checkPosValidity);
         Map.mainMap.map.addEventListener("click", this.eventOnClick);
+        
+        var panelSub = document.createElement('div');
+        panelSub.id = 'panelSub';
+        panelSub.className = 'panelSubOption panelSubbase';
 
-        if (type == "base"){
-            var panelSubIcon = document.createElement('img');
-            panelSubIcon.className = 'panelSubIcon';
-            panelSubIcon.src = "../public/assets/img/unit_slot_red_cross.png";
+        var optionInner = document.createElement('div');
+        optionInner.id = 'optionInner';
+        optionInner.className = 'optionInner';
 
-            panelSubIcon.addEventListener('click', this.cancelBuild);
+        var panelSubIcon = document.createElement('img');
+        panelSubIcon.className = 'panelSubIcon';
+        panelSubIcon.src = "../public/assets/img/unit_slot_red_cross.png";
 
-            var panelSubText = document.createElement('span');
-            panelSubText.className = 'panelSubText';
-            panelSubText.innerHTML = "Annuler";
+        panelSubIcon.addEventListener('click', this.cancelBuild);
 
-            document.getElementById('optionInnerbase').innerHTML = "";
-            document.getElementById('optionInnerbase').appendChild(panelSubIcon);
-            document.getElementById('optionInnerbase').appendChild(panelSubText);
+        var panelSubText = document.createElement('span');
+        panelSubText.className = 'panelSubText';
+        panelSubText.innerHTML = "Annuler";
+
+        optionInner.appendChild(panelSubIcon);
+        optionInner.appendChild(panelSubText);
+        panelSub.appendChild(optionInner);
+
+        document.getElementById('subPanelMain').innerHTML = "";
+        document.getElementById('subPanelMain').appendChild(panelSub);
+
+    },
+
+    
+    mine(e){
+        if (build.marker != ''){
+            Map.mainMap.map.removeLayer(Map.mainMap.map._layers[build.marker]);
         }
-
+        build.mineRangeMarker = L.circle([e.latlng.lat, e.latlng.lng], {
+            color: 'green',
+            radius: 50000,
+            clickable: false,
+            interactive: false,
+        }).addTo(Map.mainMap.map);
+        build.marker = build.mineRangeMarker._leaflet_id;
     },
 
     checkMousePos(e){
@@ -54,8 +83,14 @@ build = {
             buildingImg.style.left=e.pageX+build.imgOffsetX+"px";
             buildingImg.style.top=e.pageY+build.imgOffsetY+"px";
             buildingImg.style.opacity = 0.5;
+            if (build.type == "mine"){
+                //build.setMineRadius();
+            }
         } else {
             buildingImg.style.opacity = 0;
+            if (build.type == "mine"){
+                //build.mineRangeMarker.style.opacity = 0;
+            }
         }
     },
 
@@ -78,7 +113,7 @@ build = {
         }
         objectMapObj.forEach(object => {
             var dist = gridDistance([object.y, object.x], [y, x]);
-            if (dist < 4) {
+            if (dist < 3) {
                 validated = "distance";
             }
         });
@@ -93,18 +128,28 @@ build = {
     eventOnClick(e){
         if (validated == true){
             pos = coordinatesToGrid(e.latlng.lng, e.latlng.lat);
-            window.location.replace("?p=entity.buy&type="+build.type+"&origin=" + build.origin + "&pos=[" + pos.x + "," + pos.y + "]");
+            if (build.origin == 'none,none'){
+                window.location.replace("?p=task.newUserBase&type="+build.type+"&pos=[" + pos.x + "," + pos.y + "]");
+            } else {
+                window.location.replace("?p=task.buy&type="+build.type+"&origin=" + build.origin + "&pos=[" + pos.x + "," + pos.y + "]");
+            }
         } else {
         }
     },
 
     cancelBuild(){
-        panelInterface.selectWorker(build.origin);
+        build.buildMode = false;
+        if (build.type == "mine"){
+            Map.mainMap.map.removeEventListener("mousemove", build.mine);
+            Map.mainMap.map.removeLayer(Map.mainMap.map._layers[build.marker]);
+        }
         document.removeEventListener("mousemove", build.checkMousePos);
         Map.mainMap.map.removeEventListener("mousemove", build.checkPosValidity);
         Map.mainMap.map.removeEventListener("click", build.eventOnClick);
         buildingImg.parentNode.removeChild(buildingImg);
         document.addEventListener('mouseup', unSelect);
-    }
+        panelInterface.select(build.toSelect);
+        panelInterface.selectWorkerSlot(build.toSelect);
+    },
 
 }

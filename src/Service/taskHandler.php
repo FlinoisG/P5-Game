@@ -18,15 +18,13 @@ class TaskHandler
             if ($task["action"] == "buy"){
                 if ($task["time"] < time()){
                     if ($task["target"] == "worker" || $task["target"] == "soldier"){
-                        var_dump($task["origin"]);
                         $auth->buyUnit($task["target"], $task["origin"]);
-                    } else if ($task["target"] == "workerSpace"){
-                        $auth->buySpace($task["origin"]);
-                    } else if ($task["target"] == "soldierSpace"){
-                        $auth->buySpace($task["origin"]);
+                    } else {
+                        $shortTarget = str_replace("Space", "", $task["target"]);
+                        $auth->buySpace($shortTarget, $task["origin"]);
                     }
                 }
-                //$auth->removeTask($task["id"]);
+                $auth->removeTask($task["id"]);
             } else if ($task["action"] == "build"){
                 if ($task["time"] < time()) {
                     $auth->build($task["target"], $task["targetPos"], $task["author"]);

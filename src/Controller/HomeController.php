@@ -8,6 +8,7 @@ use App\Service\MapGenerator;
 use App\Service\Grid;
 use App\Service\MapInit;
 use App\Service\Auth;
+use App\Service\OreRepo;
 
 class HomeController extends DefaultController
 {
@@ -34,15 +35,22 @@ class HomeController extends DefaultController
         $scriptHead .= '<script>var waterMapObj = '.$waterMap.'</script>'; 
         $scriptHead .= $this->setScript('build');
         $auth = new Auth;
-        //$objects = $auth->getMapObjects();
-        //$scriptHead .= '<script>var objects = '.json_encode($objects).'</script>'; 
         $oreMap = file_get_contents('../deposit/Maps/OreMap.json');
         $scriptBody = '<script>var oreMapObj = '.$oreMap.'</script>';
         $scriptBody .= $this->setScript('grid');
         $mapInit = new MapInit;
         $scriptBody .= $mapInit->mapInit();
         $scriptBody .= $this->setScript('UI/panelInterface');
-        $scriptBody .= $this->setScript('UI/map');        
+        if ($_SESSION) {
+            if ($auth->getNewUser($_SESSION['authId']) == 1) {
+                $mapScript = $this->setScript('UI/newUserMap');
+            } else {
+                $mapScript = $this->setScript('UI/map');
+            }
+        } else {
+            $mapScript = $this->setScript('UI/visitorMap');
+        }
+        $scriptBody .= $mapScript;        
         $scriptBody .= $this->setScript('mapControls');      
         $title = 'Home';
         if (isset($_GET['logout'])) {
@@ -52,15 +60,16 @@ class HomeController extends DefaultController
         if ($_SESSION) {
             $metal = $auth->getMetal($_SESSION['auth']);
             $scriptHead .= "<script> var userMetal = ".$metal."; </script>";
-            ob_start();
-            include "../src/View/Panel/PanelLoggedView.php";
-            $panel = ob_get_clean();
+            if ($auth->getNewUser($_SESSION['authId']) == 1){
+                $scriptBody .= $this->setScript('newUserPanel'); 
+                
+            }
+                require('../src/View/HomeView.php');
+                    
         } else {
-            ob_start();
-            include "../src/View/Panel/PanelView.php";
-            $panel = ob_get_clean();
+            require('../src/View/VisitorHomeView.php');
         }
-        require('../src/View/HomeView.php');
+        
     }
 
     public function settings() 
@@ -114,21 +123,14 @@ class HomeController extends DefaultController
     }
 
     public function testArea1(){
-        $content = '
-            <form class="center" action="?p=home.testArea" method="post">
-                <input type="text" name="test">
-                <input type="submit" value="Submit">
-            </form>
-        ';
+        $oreRepo = new OreRepo;
 
         require('../src/View/base.php');
     }
 
     public function testArea(){
         $content = "";
-
         $safe_data=filter_input(INPUT_POST, 'test', FILTER_SANITIZE_SPECIAL_CHARS);
-        //var_dump($_POST['test']);
         echo '<br>';
         var_dump($safe_data);
         require('../src/View/base.php');

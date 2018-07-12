@@ -2,16 +2,24 @@ panelInterface = {
   
     select(toSelect) 
     {
-        switch (toSelect.constructor.name){
-            case "BaseEntity":
-                this.selectBase(toSelect);
+        console.log(toSelect);
+        switch (toSelect.type){
+            case "base":
+                this.selectBuilding(toSelect);
                 break;
-            case "PeonEntity":
-                this.selectPeon(toSelect);
+            case "mine":
+                this.selectBuilding(toSelect);
+                break;
+            case "baseInConstruct":
+                this.selectConstruction(toSelect);
+                break;
+            case "mineInConstruct":
+                this.selectConstruction(toSelect);
                 break;
             default:
                 this.unSelect();
                 console.log('Selection inconnue');
+                
         }
         
     },
@@ -22,12 +30,11 @@ panelInterface = {
     },
 
 
-    selectBase(toSelect) 
-    {
-        
+    selectBuilding(toSelect) 
+    {        
         if (toSelect.relation == "owned") {
             var title = document.createElement('h4');
-            title.textContent = '#' + toSelect.id + " Base";
+            title.textContent = '#' + toSelect.id + " " + toSelect.type;
 
             var slotTabs = document.createElement('div');
             slotTabs.id = "slotTabs"
@@ -63,13 +70,16 @@ panelInterface = {
                         container.appendChild(img);
                         panelSlots.appendChild(container);
                         container.addEventListener("click", (ev) => {
+                            if (build.buildMode){
+                                build.cancelBuild();
+                            }
                             var slots = document.getElementsByClassName('unitSlot')
                             for (i = 0; i < slots.length; i++) {
                                 slots[i].style.border = "1px solid #292929";
                                 slots[i].className = slots[i].className.replace(' slotSelected','');
                             }
                             ev.target.className += " slotSelected";
-                            this.selectWorker(toSelect);
+                            this.selectWorkerSlot(toSelect);
                         });
                         freeSlots--;
                     }
@@ -81,11 +91,7 @@ panelInterface = {
                         if (time < 0){
                             time = 0;
                         }
-                        var mins = Math.floor(time / 60);
-                        if (mins == 0) mins = "00";
-                        var secs = time - mins * 60;
-                        if (secs == 0) secs = "00";
-                        var displayTime = mins + ":" + secs;
+                        var displayTime = timestampToTime(time);
                         var container = document.createElement('div');
                         container.className = 'unitSlotContainer';                        
                         var img = document.createElement('img');
@@ -123,20 +129,26 @@ panelInterface = {
             document.getElementById('panelInterface').appendChild(panelSlots); 
             document.getElementById('panelInterface').appendChild(panelSub);
 
-            var workerEntity = new WorkerEntity; 
-            var workerSpaceEntity = new WorkerSpaceEntity; 
+            switch(toSelect.type){
+                case 'base':
+                    options = [
+                        new WorkerEntity,
+                        new WorkerSpaceEntity
+                    ]
+                    break;
+                case 'mine':
+                    options = [
+                        new WorkerSpaceEntity
+                    ]
+                    break;
+            }
 
-            SoldierEntity.link = toSelect.id;
-            workerSpaceEntity.link = toSelect.id;
+            document.getElementById('panelSub').appendChild(this.buildSubPanel(options, toSelect));
 
-            baseOptions = [
-                workerEntity,
-                workerSpaceEntity
-            ]
-
-            document.getElementById('panelSub').appendChild(this.buildSubPanel(baseOptions, toSelect));
-
-            soldierTabButton.addEventListener("click", (ev) => {
+            soldierTabButton.addEventListener("click", () => {
+                if (build.buildMode){
+                    build.cancelBuild();
+                }
                 this.soldierTab(toSelect);
             });
 
@@ -150,12 +162,7 @@ panelInterface = {
                 if (time < 0){
                     time = 0;
                 }
-                var mins = Math.floor(time / 60);
-                if (mins == 0) mins = "00";
-                var secs = time - mins * 60;
-                if (secs == 0) secs = "00";
-                var displayTime = mins + ":" + secs;
-
+                var displayTime = timestampToTime(time);
                 var timer = document.createElement('div');
                 timer.className = 'panelSubTimer';
                 timer.textContent = displayTime;
@@ -165,9 +172,9 @@ panelInterface = {
                 countDown(timer, toSelect.content.workerSpaceInConst);
             }
         } else {
-            content = "<h4>#" + toSelect.id + " Base de " + toSelect.ownerName + "</h4>"
+            //content = "<h4>#" + toSelect.id + " " + toSelect.type + " de " + toSelect.ownerName + "</h4>"
             var title = document.createElement('h4');
-            title.textContent = '#' + toSelect.id + " Base de " + toSelect.ownerName;
+            title.textContent = '#' + toSelect.id + " " + toSelect.type + " de " + toSelect.ownerName;
             document.getElementById('panelInterface').innerHTML = "";
             document.getElementById('panelInterface').appendChild(title);
         }     
@@ -188,7 +195,9 @@ panelInterface = {
         soldierTabButton.textContent = "soldiers";        
 
         var freeSlots = toSelect.soldierSpace +1;
-        if (toSelect.content.length != 0) {                
+
+        if (toSelect.content.length != 0) { 
+
             if (toSelect.content.soldiers !== undefined && toSelect.content.soldiers != 0){
                 for (i = 0; i < toSelect.content.soldiers; i++) {
                     var container = document.createElement('div');
@@ -203,7 +212,6 @@ panelInterface = {
                         var slots = document.getElementsByClassName('unitSlot')
                         for (i = 0; i < slots.length; i++) {
                             slots[i].style.border = "1px solid #292929";
-                            
                         }
                         ev.target.style.border = "1px solid #90b2d6";
                         this.selectSoldier(toSelect);
@@ -212,6 +220,7 @@ panelInterface = {
                     freeSlots--;
                 }
             }
+
             if (toSelect.content.soldiersInConst !== undefined && toSelect.content.soldiersInConst != 0){
                 toSelect.content.soldiersInConst.forEach(soldier => {
                     var timestamp = Math.floor(Date.now() / 1000);
@@ -219,11 +228,7 @@ panelInterface = {
                     if (time < 0){
                         time = 0;
                     }
-                    var mins = Math.floor(time / 60);
-                    if (mins == 0) mins = "00";
-                    var secs = time - mins * 60;
-                    if (secs == 0) secs = "00";
-                    var displayTime = mins + ":" + secs;
+                    var displayTime = timestampToTime(time);
                     var container = document.createElement('div');
                     container.className = 'unitSlotContainer';                        
                     var img = document.createElement('img');
@@ -239,7 +244,9 @@ panelInterface = {
                     freeSlots--;
                 });
             }
+
         }
+
         for (i = 0; i < freeSlots; i++) {
             var container = document.createElement('div');
             container.className = 'unitSlotContainer';
@@ -253,22 +260,29 @@ panelInterface = {
         document.getElementById('slotTabs').appendChild(workerTabButton);
         document.getElementById('slotTabs').appendChild(soldierTabButton);
 
-        soldierEntity = new SoldierEntity; 
-        soldierSpaceEntity = new SoldierSpaceEntity; 
-
-        soldierEntity.link = toSelect.id;
-        soldierSpaceEntity.link = toSelect.id;
-
-        soldierOptions = [
-            soldierEntity,
-            soldierSpaceEntity
-        ]
+        switch(toSelect.type){
+            case 'base':
+                soldierOptions = [
+                    new SoldierEntity,
+                    new SoldierSpaceEntity
+                ]
+                break;
+            case 'mine':
+                soldierOptions = [
+                    new SoldierSpaceEntity
+                ]
+                break;
+        }
+        
 
         document.getElementById('panelSub').innerHTML = "";
         document.getElementById('panelSub').appendChild(this.buildSubPanel(soldierOptions, toSelect));
 
         workerTabButton.addEventListener("click", () => {
-            this.selectBase(toSelect);
+            if (build.buildMode){
+                build.cancelBuild();
+            }
+            this.selectBuilding(toSelect);
         });
 
         if (toSelect.content.soldierSpaceInConst !== undefined && toSelect.content.soldierInConst != 0){
@@ -283,12 +297,7 @@ panelInterface = {
             if (time < 0){
                 time = 0;
             }
-            var mins = Math.floor(time / 60);
-            if (mins == 0) mins = "00";
-            var secs = time - mins * 60;
-            if (secs == 0) secs = "00";
-            var displayTime = mins + ":" + secs;
-
+            var displayTime = timestampToTime(time);
             var timer = document.createElement('div');
             timer.className = 'panelSubTimer';
             timer.textContent = displayTime;
@@ -299,19 +308,41 @@ panelInterface = {
         }
     },
 
-    selectWorker(toSelect) {
+    selectConstruction(toSelect)
+    {
+        var now = Math.floor(Date.now() / 1000);
+        var buildTime = toSelect.time - toSelect.start;
+        var timeLeft = toSelect.time - now;
+        var displayTime = timestampToTime(timeLeft);
+
+        var displayPercent = (Math.floor((timeLeft / buildTime) * 100));
+        if (displayPercent < 0) displayPercent = 100;
+
+        var title = document.createElement('h4');
+        title.textContent = toSelect.type + " de " + toSelect.ownerName;
         
+        var pTime = document.createElement('p');
+        pTime.textContent = displayTime; 
+
+        var pPercent = document.createElement('p');
+        pPercent.textContent = displayPercent + "%"; 
+
+        document.getElementById('panelInterface').innerHTML = "";
+        document.getElementById('panelInterface').appendChild(title);
+        document.getElementById('panelInterface').appendChild(pTime);
+        document.getElementById('panelInterface').appendChild(pPercent);
+
+        countDown(pTime, toSelect.time);
+    },
+
+    selectWorkerSlot(toSelect) {
+        console.log(toSelect);
         document.getElementById('panelSub').innerHTML = "";
-
-        baseEntity = new BaseEntity; 
-        mineEntity = new MineEntity; 
-
-        baseEntity.link = toSelect.Id;
-        mineEntity.link = toSelect.Id;
-
+        
         workerOptions = [
-            baseEntity,
-            mineEntity
+            new MoveEntity, 
+            new BaseEntity, 
+            new MineEntity
         ]
 
         document.getElementById('panelSub').appendChild(this.buildSubPanel(workerOptions, toSelect));
@@ -320,15 +351,9 @@ panelInterface = {
     selectSoldier(toSelect) {
         document.getElementById('panelSub').innerHTML = "";
 
-        baseEntity = new BaseEntity; 
-        mineEntity = new MineEntity; 
-
-        baseEntity.link = toSelect.Id;
-        mineEntity.link = toSelect.Id;
-
         workerOptions = [
-            baseEntity,
-            mineEntity
+            new BaseEntity,
+            new MineEntity
         ]
 
         document.getElementById('panelSub').appendChild(this.buildSubPanel(workerOptions, toSelect));
@@ -336,7 +361,7 @@ panelInterface = {
 
     buildSubPanel(options, toSelect)
     {
-        
+        console.log(toSelect);
         var subPanelMain = document.createElement('div');
         subPanelMain.id = "subPanelMain";
 
@@ -350,7 +375,7 @@ panelInterface = {
             SubOptionIcon.src = '../public/assets/img/' + option.imgName + '.png';
 
             SubOptionIcon.addEventListener("click", function () {
-                option.subPanelAction(toSelect.type+","+toSelect.id);
+                option.subPanelAction(toSelect.type+","+toSelect.id, toSelect);
             });
 
             var SubOptionText = document.createElement('span');
@@ -366,7 +391,6 @@ panelInterface = {
 
                 }
             }
-
             
             var optionInner = document.createElement('div');
             optionInner.id = "optionInner"+option.type;
@@ -381,6 +405,7 @@ panelInterface = {
             if (userMetal < option.cost){
                 optionInner.appendChild(optionDisabled);
             }
+
         });
         return subPanelMain; 
     },

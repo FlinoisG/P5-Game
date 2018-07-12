@@ -16,7 +16,10 @@ class MapInit {
             array_push($objects, [
                 "type"=>$task["target"]."InConst",
                 "pos"=>$task["targetPos"],
-                "player"=>$task["author"],
+                "player"=>$auth->getUsernameById($task["author"]),
+                "playerId"=>$task["author"],
+                "start"=>$task["start"],
+                "time"=>$task["time"],
             ]);
         }
         $result = '<script>var objectMapObj = [';
@@ -106,7 +109,9 @@ class MapInit {
                     "x": '.$pos[0].', 
                     "y": '.$pos[1].', 
                     "owner": "'.$owner.'", 
-                    "ownerName": "'.$object["player"].'"
+                    "ownerName": "'.$object["player"].'",
+                    "start": "'.$object["start"].'",
+                    "time": "'.$object["time"].'"
                 },';
             }
         }

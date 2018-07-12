@@ -42,10 +42,14 @@ class LoginController extends DefaultController
         if (isset($_GET['register'])) {
             $Auth = new Auth();
             if($Auth->checkRegister($this->sanitize('username'), $this->sanitize('email'), $this->sanitize('password'))){
+                $title = 'Connection';
                 $link = "<span>Compte créer avec succès !</span>";
+                $customStyle = $this->setCustomStyle('form');
                 require('../src/View/loginView.php');
             } else {
+                $title = 'Connection';
                 $link = "<span>Erreur lors de la création de compte</span>";
+                $customStyle = $this->setCustomStyle('form');
                 require('../src/View/loginView.php');
             }
         } else {

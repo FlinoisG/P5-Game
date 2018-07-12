@@ -11,7 +11,7 @@ Map.mainMap = {
 
     mapInit: function(){
         this.map = L.map('mapid', {
-            minZoom: 7,
+            minZoom: 8,
             maxZoom: 18,
             maxBounds: [
                 //south west
@@ -21,12 +21,6 @@ Map.mainMap = {
                 ], 
             maxBoundsViscosity: 1.0
         }).setView([gridToCoordinates(0, 131.48, "y"), gridToCoordinates(224.83, 0, "x")], 2);
-        this.map.addEventListener('click', function(ev) {
-            x = coordinatesToGrid(ev.latlng.lng, 0, "x");
-            y = coordinatesToGrid(0, ev.latlng.lat, "y");
-            //console.log('grid x: ' + (x) + ', y: ' + (y));
-            //console.log(Map.mainMap.map.getBounds());
-        });     
         
         //this.map.dragging.disable();
         this.map.touchZoom.disable();
@@ -118,7 +112,7 @@ Map.mainMap = {
                 if (object.type == "base"){
                     if (object.owner == "player"){
                         if (object.main == 1){
-                            this.map.setView([y, x], 9);
+                            this.map.setView([y, x], 10);
                         }
                         icon = this.baseOwnerIcon;
                         relation = "owned";
@@ -133,28 +127,6 @@ Map.mainMap = {
                         icon: icon,
                         riseOnHover: true,
                     }).addTo(this.map);
-                    const baseEntity = new BaseEntity(object.id, object.ownerName, relation, object.content, object.workerSpace, object.soldierSpace, baseMarker);
-                    baseMarker.bindPopup("#"+object.id+" base de "+object.ownerName);
-                    baseMarker.addEventListener('click', function(e) {
-                    baseEntity.onClick();
-                    });
-                    if (relation == "owned"){
-                        if (window.location.search.includes('focus')){
-                            var target = (window.location.search.substr(14));
-                            var origin = target.split(",");
-                            var originType = origin[0];
-                            var str = origin[1].split("&");
-                            var originId = str[0];
-                            if (originType == "base" && originId == object.id){
-                                console.log(baseEntity.marker._latlng);
-                                baseEntity.onClick();
-                                Map.mainMap.map.setView(baseEntity.marker._latlng)
-                                if (window.location.search.includes('soldierTab')){
-                                    panelInterface.soldierTab(baseEntity);
-                                }
-                            }
-                        }                    
-                    }
                 } else if (object.type == "mine") {
                     if (object.owner == "player"){
                         icon = this.mineOwnerIcon;
@@ -170,23 +142,6 @@ Map.mainMap = {
                         icon: icon,
                         riseOnHover: true,
                     }).addTo(this.map);
-                    const mineEntity = new MineEntity(object.id, object.ownerName, relation, object.content, object.workerSpace, object.soldierSpace);
-                    mineMarker.addEventListener('click', function(ev) {
-                        mineEntity.onClick();
-                    });
-                    if (relation == "owned"){
-                        if (window.location.search.includes('focus')){
-                            var target = (window.location.search.substr(14));
-                            var origin = target.split(",");
-                            var originType = origin[0];
-                            var str = origin[1].split("&");
-                            var originId = str[0];
-                            if (originType == 'mine' && originId == object.id){
-                                Map.mainMap.map.setView(mineEntity.marker._latlng)
-                                mineEntity.onClick();
-                            }
-                        }                    
-                    }
                 } else if (object.type == "baseInConst") {
                     if (object.owner == "player"){
                     } else if (object.owner == "enemy"){
@@ -195,25 +150,8 @@ Map.mainMap = {
                         relation = "neutral";
                     }
                     baseInConstMarker = L.marker([y, x], {
-                    icon: this.baseInConstIcon,
+                        icon: this.baseInConstIcon,
                     }).addTo(this.map);
-                    const baseInConstEntity = new BaseInConstEntity(object.ownerName, relation, object.start, object.time);
-                    baseInConstMarker.addEventListener('click', function(ev) {
-                        baseInConstEntity.onClick();
-                    });
-                    if (relation == "owned"){
-                        if (window.location.search.includes('focus')){
-                            var target = (window.location.search.substr(14));
-                            var origin = target.split(",");
-                            var originType = origin[0];
-                            var str = origin[1].split("&");
-                            var originId = str[0];
-                            if (originType == 'mine' && originId == object.id){
-                                Map.mainMap.map.setView(baseEntity.marker._latlng)
-                                baseEntity.onClick();
-                            }
-                        }                    
-                    }
                 } else if (object.type == "mineInConst") {
                     if (object.owner == "player"){
                     } else if (object.owner == "enemy"){
@@ -224,23 +162,6 @@ Map.mainMap = {
                     mineInConstMarker = L.marker([y, x], {
                         icon: mineInConstIcon,
                     }).addTo(this.map);
-                    const mineInConstEntity = new MineInConstEntity(object.ownerName, relation, object.start, object.time);
-                    mineInConstMarker.addEventListener('click', function(ev) {
-                        mineInConstEntity.onClick();
-                    });
-                    if (relation == "owned"){
-                        if (window.location.search.includes('focus')){
-                            var target = (window.location.search.substr(14));
-                            var origin = target.split(",");
-                            var originType = origin[0];
-                            var str = origin[1].split("&");
-                            var originId = str[0];
-                            if (originType == 'mine' && originId == object.id){
-                                Map.mainMap.map.setView(mineEntity.marker._latlng)
-                                mineEntity.onClick();
-                            }
-                        }                    
-                    }
                 }
             });
         }

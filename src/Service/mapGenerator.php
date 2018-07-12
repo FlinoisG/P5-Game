@@ -87,7 +87,11 @@ class MapGenerator {
                     $num = dechex( $raw*255 );                
                     if (strlen($num) < 2) $num = "0".$num;                
                     if ($raw > $nodeSize){
-                        $content = $content . '{"x": '.$grid->gridToCoordinates($x, 0, 'x').', "y": '.$grid->gridToCoordinates(0, $y, 'y').'},
+                        if ($raw > 1) $raw = 1; 
+                        $min = $nodeSize;
+                        $max = 1;
+                        $normalized = ($raw-$min) / ($max-$min);
+                        $content = $content . '{"x": '.$grid->gridToCoordinates($x, 0, 'x').', "y": '.$grid->gridToCoordinates(0, $y, 'y').', "value": '.$normalized.'},
     ';                   
                     } 
                 }              

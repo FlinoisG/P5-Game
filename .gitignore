@@ -1,4 +1,5 @@
 composer.phar
+todolist
 /vendor/
 /src/Service/mysqlConfig.json
 /deposit/User_Avatar/

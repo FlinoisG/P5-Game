@@ -5,8 +5,6 @@ require_once "../vendor/autoload.php";
 use App\Controller\DefaultController;
 use App\Controller\testController;
 
-
-
 if (isset($_GET['p'])) {
     $routeTemp = explode('.', $_GET['p']);
     if (count($routeTemp) === 2) {

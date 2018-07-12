@@ -43,3 +43,15 @@ function gridDistance(a, b)
     d = Math.pow((a[1]-b[1]), 2);
     return Math.sqrt(c+d);
 }
+
+function timestampToTime(timestamp)
+{
+    var mins = Math.floor(timestamp / 60);
+    if (mins < 0) mins = 0;
+    if (mins < 10) mins = "0"+mins;
+    var secs = timestamp - mins * 60;
+    if (secs < 0) secs = 0;
+    if (secs < 10) secs = "0"+secs;
+    var time = mins + ":" + secs;
+    return time;
+}
