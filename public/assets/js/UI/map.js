@@ -198,7 +198,7 @@ Map.mainMap = {
                     icon: this.baseInConstIcon,
                     }).addTo(this.map);
                     const baseInConstEntity = new BaseInConstEntity(object.ownerName, relation, object.start, object.time);
-                    baseInConstMarker.addEventListener('click', function(ev) {
+                    baseInConstMarker.addEventListener('click', function() {
                         baseInConstEntity.onClick();
                     });
                     if (relation == "owned"){
@@ -222,7 +222,7 @@ Map.mainMap = {
                         relation = "neutral";
                     }
                     mineInConstMarker = L.marker([y, x], {
-                        icon: mineInConstIcon,
+                        icon: this.mineInConstIcon,
                     }).addTo(this.map);
                     const mineInConstEntity = new MineInConstEntity(object.ownerName, relation, object.start, object.time);
                     mineInConstMarker.addEventListener('click', function(ev) {

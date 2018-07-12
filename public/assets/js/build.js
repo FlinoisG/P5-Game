@@ -2,6 +2,8 @@ build = {
 
     build(type, origin, toSelect)
     {
+        console.log(type)
+        console.log(origin)
         console.log(toSelect)
         this.toSelect = toSelect;
         this.buildMode = true;

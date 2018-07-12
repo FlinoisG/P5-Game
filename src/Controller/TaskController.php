@@ -22,8 +22,8 @@ class TaskController extends DefaultController
         $auth = new Auth;
         $available = true;
         $type = $_GET['type'];
-        $class = $entitiesService->getType($type)['class'];
-        $cost = $entitiesService->getType($type)['cost'];
+        $class = str_replace("'", "", $entitiesService->getType($type)["attributes"]['class']);
+        $cost = str_replace("'", "", $entitiesService->getType($type)["attributes"]['cost']);
         $playerMetal = $auth->getMetal($_SESSION['auth']);
         if ($auth->getNewUser($_SESSION['authId']) != 1 && $playerMetal < $cost) {
             $available = false;
@@ -50,7 +50,6 @@ class TaskController extends DefaultController
             if ($auth->getNewUser($_SESSION['authId']) != 1) {
                 $auth->buyUnit('worker', $origin, -1);
             }
-            var_dump('allo');
         } else if ($class == 'upgrade') {
             $action = "buy";
             $upgradeInConstruct = $auth->getEntityInConst($type, $originId);
@@ -67,7 +66,7 @@ class TaskController extends DefaultController
         }
         
         if ($available){
-            $time = time() + $entitiesService->getType($type)["buildTime"];
+            $time = time() + $entitiesService->getType($type)["attributes"]["buildTime"];
             if (isset($_GET["pos"])){
                 $pos = $_GET["pos"];
             } else {

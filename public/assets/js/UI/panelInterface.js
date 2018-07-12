@@ -2,7 +2,6 @@ panelInterface = {
   
     select(toSelect) 
     {
-        console.log(toSelect);
         switch (toSelect.type){
             case "base":
                 this.selectBuilding(toSelect);
@@ -10,10 +9,10 @@ panelInterface = {
             case "mine":
                 this.selectBuilding(toSelect);
                 break;
-            case "baseInConstruct":
+            case "baseInConst":
                 this.selectConstruction(toSelect);
                 break;
-            case "mineInConstruct":
+            case "mineInConst":
                 this.selectConstruction(toSelect);
                 break;
             default:
@@ -310,6 +309,7 @@ panelInterface = {
 
     selectConstruction(toSelect)
     {
+        console.log(toSelect);
         var now = Math.floor(Date.now() / 1000);
         var buildTime = toSelect.time - toSelect.start;
         var timeLeft = toSelect.time - now;
