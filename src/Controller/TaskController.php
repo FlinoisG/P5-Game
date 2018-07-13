@@ -8,16 +8,19 @@ use App\Service\EntitiesService;
 class TaskController extends DefaultController
 {
 
+    private $workerTimeFactor = 70;
+    private $defaultTimeFactor = 10;
+
     public function buy()
     {
         
         if (!isset($_SESSION)) { 
             session_start(); 
         }
-        $origin = $_GET['origin'];
-        $arr = explode(",", $_GET["origin"]);
-        $originType = $arr[0];
-        $originId = $arr[1];
+        $startOrigin = $_GET['origin'];
+        $arr = explode(",", $startOrigin);
+        $startOriginType = $arr[0];
+        $startOriginId = $arr[1];
         $entitiesService = new EntitiesService;
         $auth = new Auth;
         $available = true;
@@ -31,34 +34,34 @@ class TaskController extends DefaultController
         }
         if ($class == 'unit') {
             $action = "buy";
-            $constructions = 0;
+            $inConstruct = 0;
             $tasks = $auth->getTasks();
             foreach ($tasks as $task) {
-                if ($task['origin'] == 'base,'.$originId && $task['action'] == 'buy' && $task['target'] == $type){
-                    $constructions++;
+                if ($task['origin'] == 'base,'.$startOriginId && $task['action'] == 'buy' && $task['target'] == $type){
+                    $inConstruct++;
                 }
             }
-            $units = $auth->getUnit($type, $origin);
-            $slots = (int)$constructions + (int)$units;
-            $space = $auth->getSpace($type, $origin);
+            $units = $auth->getUnit($type, $startOrigin);
+            $slots = (int)$inConstruct + (int)$units;
+            $space = $auth->getSpace($type, $startOrigin);
             if ($slots > $space) {
                 $available = false;
                 $cause = "space";
             }
         } else if ($class == 'building') {
             $action = "build";
-            if ($auth->getNewUser($_SESSION['authId']) != 1) {
-                $auth->buyUnit('worker', $origin, -1);
-            }
+            //if ($auth->getNewUser($_SESSION['authId']) != 1) {
+            $auth->buyUnit('worker', $startOrigin, -1);
+            //}
         } else if ($class == 'upgrade') {
             $action = "buy";
-            $upgradeInConstruct = $auth->getEntityInConst($type, $originId);
+            $upgradeInConstruct = $auth->getEntityInConst($type, $startOriginId);
             if ($upgradeInConstruct){
                 $available = false;
                 $cause = "already upgrading";
             }
             $shortType = str_replace("Space","",$type);
-            $space = $auth->getSpace($shortType, $origin);
+            $space = $auth->getSpace($shortType, $startOrigin);
             if ($space >= 99) {
                 $available = false;
                 $cause = "can't upgrade anymore";
@@ -68,20 +71,40 @@ class TaskController extends DefaultController
         if ($available){
             $time = time() + $entitiesService->getType($type)["attributes"]["buildTime"];
             if (isset($_GET["pos"])){
-                $pos = $_GET["pos"];
+                $targetPos = $_GET["pos"];
             } else {
-                $pos = null;
+                $targetPos = null;
             }
-            if ($auth->getNewUser($_SESSION['authId']) != 1) {
-                $auth->addMetal($_SESSION['auth'], ($cost * -1));
-            }
+            //if ($auth->getNewUser($_SESSION['authId']) != 1) {
+            $auth->addMetal($_SESSION['auth'], ($cost * -1));
+            //}
             $authorId = $auth->getIdByUsername($_SESSION['auth']);
-            
-            $auth->newTask($action, $type, $origin, $time, $pos, $authorId);
+            $startTime = 0;
+            if ($class == 'building') {
+                if (isset($targetOrigin)) {
+                    $startTime = $this->moveUnit('worker', $startOrigin, $targetOrigin, 1, true);
+                } else {
+                    $startTime = $this->moveUnit('worker', $startOrigin, $targetPos, 1, true);
+                }
+            }
+            $startPos = json_decode($auth->getPos($startOrigin));
+            $task = [
+                'action'=>$action, 
+                'subject'=>$type, 
+                'startOrigin'=>$startOrigin, 
+                'startPos'=>$startPos, 
+                'targetOrigin'=>null, 
+                'targetPos'=>$targetPos, 
+                'startTime'=>$startTime + time(), 
+                'endTime'=>$startTime + $time, 
+                'author'=>$authorId
+            ];
+            $auth->newTask($task);
+            var_dump($startTime);
             if ($type == 'soldier' || $type == 'soldierSpace'){
-                header('Location: ?p=home&focus='.$origin.'&soldierTab');
+                header('Location: ?p=home&focus='.$startOrigin.'&soldierTab');
             } else {
-                header('Location: ?p=home&focus='.$origin);
+                header('Location: ?p=home&focus='.$startOrigin);
             }
         } else {
             echo $cause;
@@ -89,32 +112,62 @@ class TaskController extends DefaultController
         }
     }
 
-    public function moveUnit($type, $originStart, $originTarget, $amount=1)
+    public function moveUnit($type, $startOrigin, $target, $amount=1, $isBuilding=false)
     {
         if (!isset($_SESSION)) { 
             session_start(); 
         }
+        //  var_dump($target);
         $auth = new Auth;
         if ($type == 'worker'){
-            $timeFactor = 70;
+            $timeFactor = $this->workerTimeFactor;
         } else {
-            $timeFactor = 100;
+            $timeFactor = $this->defaultTimeFactor;
         }
-        $originStartPos = json_decode($auth->getPos($originStart));
-        $originTargetPos = json_decode($auth->getPos($originTarget));
-        $dist = $auth->getDistance($originStartPos, $originTargetPos);
+        $startPos = json_decode($auth->getPos($startOrigin));
+        if (preg_match('/[\[]/', $target)) {
+            //var_dump('$target is pos');
+            $targetPos = json_decode($target);
+            $dist = $auth->getDistance($startPos, json_decode($target));
+            $targetType = 'pos';
+        } else {
+            //var_dump('$target is origin');
+            $targetOrigin = $target;
+            $arr = explode(',', $target);
+            $originType = $arr[0];
+            $originId = $arr[1];
+            $targetPos = json_decode($auth->getPos($target));
+            $dist = $auth->getDistance($startPos, $targetPos);
+            $targetType = 'origin';
+        }
+        
         $duration = (int)$dist * $timeFactor;
         $time = time() + $duration;
-        var_dump($duration);
         if ($dist < 0){
             $dist = ($dist * -1);
         }
         $negAmount = ($amount * -1);
-        $originUnits = $auth->getUnit($type, $originStart);
+        $originUnits = $auth->getUnit($type, $startOrigin);
         if ($originUnits >= $amount){
-            //$auth->buyUnit($type, $originStart, $negAmount);
-            //$auth->newTask("move", $type.",".$amount, $originStart, $time, null, $_SESSION['authId'], $originTarget);
-            //header('Location: ?p=home&focus='.$originStart);
+            $auth->buyUnit($type, $startOrigin, $negAmount);
+            $startPos = $auth->getPos($startOrigin);
+            $task = [
+                'action'=>'move', 
+                'subject'=>$type.",".$amount, 
+                'startOrigin'=>$startOrigin, 
+                'startPos'=>$startPos, 
+                'targetOrigin'=>$targetOrigin, 
+                'targetPos'=>$targetPos, 
+                'startTime'=>time(), 
+                'endTime'=>$time, 
+                'author'=>$_SESSION['authId']
+            ];
+            $auth->newTask($task);
+            if ($isBuilding) {
+                return $duration;
+            } else {
+                header('Location: ?p=home&focus='.$originStart);
+            }
         } else {
             echo 'pas asser d\'unitées';
         }
@@ -127,7 +180,7 @@ class TaskController extends DefaultController
             session_start(); 
         }
         if ($auth->getNewUser($_SESSION['authId']) != 1) {
-            die($this->error('500'));
+            die($this->error('403'));
         }
         $entitiesService = new EntitiesService;
         $pos = $_GET["pos"];

@@ -12,29 +12,50 @@ class MapInit {
         $auth = new Auth;
         $objects = $auth->getMapObjects();
         $buildingTasks = $auth->getTasks('build');
+        $moveTasks = $auth->getTasks('move');
         foreach ($buildingTasks as $task) {
             array_push($objects, [
                 "type"=>$task["subject"]."InConst",
                 "pos"=>$task["targetPos"],
                 "player"=>$auth->getUsernameById($task["author"]),
                 "playerId"=>$task["author"],
-                "start"=>$task["start"],
-                "time"=>$task["time"],
+                "start"=>$task["startTime"],
+                "time"=>$task["endTime"]
             ]);
         }
+        foreach ($moveTasks as $task) {
+            $arr = explode(',', $task['subject']);
+            $subjectType = $arr[0];
+            //$subjectAmount = $arr[1];
+            array_push($objects, [
+                "type"=>$subjectType,
+                "startPos"=>$task["startPos"],
+                "pos"=>$task["targetPos"],
+                "player"=>$auth->getUsernameById($task["author"]),
+                "playerId"=>$task["author"],
+                "posStart"=>$task["startPos"],
+                "posEnd"=>$task["targetPos"],
+                "start"=>$task["startTime"],
+                "time"=>$task["endTime"]
+            ]);
+        }
+        
         $result = '<script>var objectMapObj = [';
+        
         foreach ($objects as $object) {
 
             if ($object['type'] == "base" || $object['type'] == "mine") {
                 $content = [];
+                
                 $workers = $auth->getUnit('worker', 'base,'.$object["id"]);
+                
                 if ($workers != 0) {
                     $content["workers"] = $workers;
                 }
                 $workersInConstruct = $auth->getEntityInConst("worker", $object["id"]);
                 if ($workersInConstruct) {
                     for ($i=0; $i < sizeof($workersInConstruct); $i++) {
-                        $content["workersInConst"][$i] = (int)$workersInConstruct[$i]["time"];
+                        $content["workersInConst"][$i] = (int)$workersInConstruct[$i]["endTime"];
                     }
                 }
 
@@ -102,6 +123,20 @@ class MapInit {
                         "soldierSpace": '.$soldierSpace.'
                     },';
 
+            } else if ($object['type'] == 'worker' || $object['type'] == 'soldier') {
+                $result .= '
+                    {
+                        "type": "'.$object['type'].'",
+                    "x": '.$pos[0].', 
+                    "y": '.$pos[1].', 
+                    "owner": "'.$owner.'", 
+                    "ownerName": "'.$object["player"].'",
+                    "start": "'.$object["start"].'",
+                    "time": "'.$object["time"].'",
+                    "posStart": '.$object["posStart"].',
+                    "posEnd": '.$object["posEnd"].'
+                    },';
+
             } else {
                 $result .= '
                 {
@@ -111,12 +146,13 @@ class MapInit {
                     "owner": "'.$owner.'", 
                     "ownerName": "'.$object["player"].'",
                     "start": "'.$object["start"].'",
-                    "time": "'.$object["time"].'"
+                    "time": "'.$object["time"].'"                    
                 },';
             }
         }
         $result[strrpos($result, ',')] = ' ';
         $result = $result . ']</script>';
+        
         return $result;
     }
     

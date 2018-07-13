@@ -15,10 +15,10 @@ class TaskHandler
     {
         $auth = new Auth;
         foreach ($tasks as $task) {
-            if ($task["time"] < time()) {
+            if ($task["endTime"] < time()) {
                 if ($task["action"] == "buy") {
                     if ($task["subject"] == "worker" || $task["subject"] == "soldier") {
-                        $auth->buyUnit($task["subject"], $task["origin"]);
+                        $auth->buyUnit($task["subject"], $task["startOrigin"]);
                     } else {
                         $shortTarget = str_replace("Space", "", $task["subject"]);
                         $auth->buySpace($shortTarget, $task["origin"]);
@@ -26,10 +26,12 @@ class TaskHandler
                 } elseif ($task["action"] == "build") {
                     $auth->build($task["subject"], $task["targetPos"], $task["author"]);
                 } elseif ($task["action"] == "move") {
-                    $arr = explode(',', $task["subject"]);
-                    $targetType = $arr[0];
-                    $targetAmount = $arr[1];
-                    $auth->buyUnit($targetType, $task["targetOrigin"], $targetAmount);
+                    if ($task["targetOrigin"] != "") {
+                        $arr = explode(',', $task["subject"]);
+                        $targetType = $arr[0];
+                        $targetAmount = $arr[1];
+                        $auth->buyUnit($targetType, $task["targetOrigin"], $targetAmount);
+                    }
                 }
                 $auth->removeTask($task["id"]);
             }

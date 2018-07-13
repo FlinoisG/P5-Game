@@ -309,7 +309,6 @@ panelInterface = {
 
     selectConstruction(toSelect)
     {
-        console.log(toSelect);
         var now = Math.floor(Date.now() / 1000);
         var buildTime = toSelect.time - toSelect.start;
         var timeLeft = toSelect.time - now;
@@ -361,7 +360,6 @@ panelInterface = {
 
     buildSubPanel(options, toSelect)
     {
-        console.log(toSelect);
         var subPanelMain = document.createElement('div');
         subPanelMain.id = "subPanelMain";
 

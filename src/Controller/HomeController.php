@@ -32,6 +32,7 @@ class HomeController extends DefaultController
             integrity=\"sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw==\"
             crossorigin=\"\"></script>";
         $scriptHead .= $this->setScript('panelUnitCountdown'); 
+        $scriptHead .= $this->setScript('unitMovementUpdator'); 
         $waterMap = file_get_contents('../deposit/Maps/waterMap.json');
         $scriptHead .= '<script>var waterMapObj = '.$waterMap.'</script>'; 
         $scriptHead .= $this->setScript('build');
@@ -125,9 +126,8 @@ class HomeController extends DefaultController
 
     public function testArea(){
         $auth = new Auth;
-        $taskController = new TaskController;
-        $taskController->moveUnit('worker', "base,38", "base,25");
-        $content = "";
+        var_dump(json_decode("[[-2.4,47.8],[-2.5,47.7],[-2.7,47.6],[-2.6,47.6],[-2.5,47.6],[-2.7,47.5],[-2.6,47.5],[-2.5,47.5],[-2.7,47.4],[-2.6,47.4]]"));
+        
         require('../src/View/base.php');
     }
 

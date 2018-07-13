@@ -55,3 +55,10 @@ function timestampToTime(timestamp)
     var time = mins + ":" + secs;
     return time;
 }
+
+function getPosFromDist(a, b, percent)
+{
+    var x = ((b[0] - a[0]) * (percent/100)) + a[0];
+    var y = ((b[1] - a[1]) * (percent/100)) + a[1];
+    return [x,y];
+}

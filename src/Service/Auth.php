@@ -261,11 +261,44 @@ class Auth
         $sqlQuery = new sqlQuery();
         $username = $this->getUsernameById($author);
         if ($type == 'base') {
-            $query = 'INSERT INTO game_'.$type.'s (player, playerId, pos, main) VALUES (\''.$username.'\', \''.$author.'\', \''.$pos.'\', \''.$main.'\')';
-        } else {
-            $query = 'INSERT INTO game_'.$type.'s (player, playerId, pos) VALUES (\''.$username.'\', \''.$author.'\', \''.$pos.'\')';
+            $query = 'INSERT INTO game_bases (player, playerId, pos, main) VALUES (\''.$username.'\', \''.$author.'\', \''.$pos.'\', \''.$main.'\')';
+        } else if ($type == 'mine') {
+            $auth = new Auth;
+            $grid = new Grid;
+            $posArr = str_replace(array( '[', ']' ), '', $pos);
+            $posArr = explode(',', $posArr);
+            $posArr = $grid->gridToCoordinates($posArr[0], $posArr[1]);
+            $metalNodes = $this->getMetalNodes($posArr);
+            $metalNodes = json_encode($metalNodes);
+            var_dump($metalNodes);
+            $query = 'INSERT INTO game_mines (player, playerId, pos, metalNodes) VALUES (\''.$username.'\', \''.$author.'\', \''.$pos.'\', \''.$metalNodes.'\')';
         }
         $sqlQuery->sqlQuery($query);
+    }
+
+    public function getMetalNodes ($pos, $radius=50000)
+    {
+        $oreMap = json_decode(file_get_contents(__DIR__.'/../../deposit/Maps/OreMap.json'), true);
+        $metalNodes = [];
+        foreach ($oreMap["oreMap"] as $ore) {
+            $dist = $this->latlngToMeters([$pos["x"],$pos["y"]], [$ore["x"], $ore["y"]]);
+            if ($dist < $radius){
+                array_push($metalNodes, [$ore["x"],$ore["y"]]);
+            }
+        }
+        return $metalNodes;
+
+    }
+
+    public function latlngToMeters($a, $b)
+    {
+        $R = 6378.137;
+        $dLat = $b[1] * pi() / 180 - $a[1] * pi() / 180;
+        $dLon = $b[0] * pi() / 180 - $a[0] * pi() / 180;
+        $a = sin($dLat/2) * sin($dLat/2) + cos($a[1] * pi() / 180) * cos($b[1] * pi() / 180) * sin($dLon/2) * sin($dLon/2);
+        $c = 2 * atan2(sqrt($a), sqrt(1-$a));
+        $d = $R * $c;
+        return $d * 1000; // meters
     }
 
     public function getSpace($type, $origin)
@@ -279,28 +312,36 @@ class Auth
         return $space[0][$type."Space"];
     }
     
-    public function newTask($action, $subject = null, $origin = null, $time = 0, $pos = null, $authorId=null, $targetOrigin=null, $start=null)
+    public function newTask($task)
     {
         $sqlQuery = new sqlQuery();
-        if ($start == null) $start = time();
+        if ($task['startTime'] == null) $task['startTime'] = time();
+        if (gettype($task['startPos']) == 'array'){
+            $task['startPos'] = "[".$task['startPos'][0].",".$task['startPos'][1]."]";
+        }
+        if (gettype($task['targetPos']) == 'array'){
+            $task['targetPos'] = "[".$task['targetPos'][0].",".$task['targetPos'][1]."]";
+        }
         $query = 'INSERT INTO game_tasks (
             action, 
             subject, 
+            startOrigin, 
+            startPos, 
+            targetOrigin, 
             targetPos, 
-            origin, 
-            start, 
-            time, 
-            author,
-            targetOrigin
+            startTime, 
+            endTime, 
+            author
         ) VALUES ( 
-            \''.$action.'\', 
-            \''.$subject.'\', 
-            \''.$pos.'\', 
-            \''.$origin.'\', 
-            '.$start.', 
-            '.$time.', 
-            \''.$authorId.'\',
-            \''.$targetOrigin.'\'
+            \''.$task['action'].'\', 
+            \''.$task['subject'].'\', 
+            \''.$task['startOrigin'].'\', 
+            \''.$task['startPos'].'\', 
+            \''.$task['targetOrigin'].'\', 
+            \''.$task['targetPos'].'\', 
+            '.$task['startTime'].', 
+            '.$task['endTime'].', 
+            \''.$task['author'].'\'
         )';
         //var_dump($query);
         $sqlQuery->sqlQuery($query);
@@ -327,7 +368,9 @@ class Auth
     public function getEntityInConst($subject, $baseId)
     {
         $sqlQuery = new sqlQuery();
-        $subjectInConstruct = $sqlQuery->sqlQuery("SELECT time FROM game_tasks WHERE origin='base,".$baseId."' AND subject='".$subject."'");
+        $query = "SELECT endTime FROM game_tasks WHERE startOrigin='base,".$baseId."' AND subject='".$subject."'";
+        $subjectInConstruct = $sqlQuery->sqlQuery($query);
+        
         return $subjectInConstruct;
     }
 
