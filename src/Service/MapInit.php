@@ -14,7 +14,7 @@ class MapInit {
         $buildingTasks = $auth->getTasks('build');
         foreach ($buildingTasks as $task) {
             array_push($objects, [
-                "type"=>$task["target"]."InConst",
+                "type"=>$task["subject"]."InConst",
                 "pos"=>$task["targetPos"],
                 "player"=>$auth->getUsernameById($task["author"]),
                 "playerId"=>$task["author"],

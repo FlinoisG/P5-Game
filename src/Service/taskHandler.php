@@ -15,21 +15,23 @@ class TaskHandler
     {
         $auth = new Auth;
         foreach ($tasks as $task) {
-            if ($task["action"] == "buy"){
-                if ($task["time"] < time()){
-                    if ($task["target"] == "worker" || $task["target"] == "soldier"){
-                        $auth->buyUnit($task["target"], $task["origin"]);
+            if ($task["time"] < time()) {
+                if ($task["action"] == "buy") {
+                    if ($task["subject"] == "worker" || $task["subject"] == "soldier") {
+                        $auth->buyUnit($task["subject"], $task["origin"]);
                     } else {
-                        $shortTarget = str_replace("Space", "", $task["target"]);
+                        $shortTarget = str_replace("Space", "", $task["subject"]);
                         $auth->buySpace($shortTarget, $task["origin"]);
                     }
+                } elseif ($task["action"] == "build") {
+                    $auth->build($task["subject"], $task["targetPos"], $task["author"]);
+                } elseif ($task["action"] == "move") {
+                    $arr = explode(',', $task["subject"]);
+                    $targetType = $arr[0];
+                    $targetAmount = $arr[1];
+                    $auth->buyUnit($targetType, $task["targetOrigin"], $targetAmount);
                 }
                 $auth->removeTask($task["id"]);
-            } else if ($task["action"] == "build"){
-                if ($task["time"] < time()) {
-                    $auth->build($task["target"], $task["targetPos"], $task["author"]);
-                    $auth->removeTask($task["id"]);
-                }
             }
         }
     }

@@ -89,9 +89,35 @@ class TaskController extends DefaultController
         }
     }
 
-    public function sendToBuild()
+    public function moveUnit($type, $originStart, $originTarget, $amount=1)
     {
-        
+        if (!isset($_SESSION)) { 
+            session_start(); 
+        }
+        $auth = new Auth;
+        if ($type == 'worker'){
+            $timeFactor = 70;
+        } else {
+            $timeFactor = 100;
+        }
+        $originStartPos = json_decode($auth->getPos($originStart));
+        $originTargetPos = json_decode($auth->getPos($originTarget));
+        $dist = $auth->getDistance($originStartPos, $originTargetPos);
+        $duration = (int)$dist * $timeFactor;
+        $time = time() + $duration;
+        var_dump($duration);
+        if ($dist < 0){
+            $dist = ($dist * -1);
+        }
+        $negAmount = ($amount * -1);
+        $originUnits = $auth->getUnit($type, $originStart);
+        if ($originUnits >= $amount){
+            //$auth->buyUnit($type, $originStart, $negAmount);
+            //$auth->newTask("move", $type.",".$amount, $originStart, $time, null, $_SESSION['authId'], $originTarget);
+            //header('Location: ?p=home&focus='.$originStart);
+        } else {
+            echo 'pas asser d\'unitées';
+        }
     }
 
     public function newUserBase()

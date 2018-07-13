@@ -260,7 +260,11 @@ class Auth
     {
         $sqlQuery = new sqlQuery();
         $username = $this->getUsernameById($author);
-        $query = 'INSERT INTO game_'.$type.'s (player, playerId, pos, main) VALUES (\''.$username.'\', \''.$author.'\', \''.$pos.'\', \''.$main.'\')';
+        if ($type == 'base') {
+            $query = 'INSERT INTO game_'.$type.'s (player, playerId, pos, main) VALUES (\''.$username.'\', \''.$author.'\', \''.$pos.'\', \''.$main.'\')';
+        } else {
+            $query = 'INSERT INTO game_'.$type.'s (player, playerId, pos) VALUES (\''.$username.'\', \''.$author.'\', \''.$pos.'\')';
+        }
         $sqlQuery->sqlQuery($query);
     }
 
@@ -275,26 +279,30 @@ class Auth
         return $space[0][$type."Space"];
     }
     
-    public function newTask($action, $target = null, $origin = null, $time = 0, $pos = null, $authorId=null)
+    public function newTask($action, $subject = null, $origin = null, $time = 0, $pos = null, $authorId=null, $targetOrigin=null, $start=null)
     {
         $sqlQuery = new sqlQuery();
+        if ($start == null) $start = time();
         $query = 'INSERT INTO game_tasks (
             action, 
-            target, 
+            subject, 
             targetPos, 
             origin, 
             start, 
             time, 
-            author
-        ) VALUES (
+            author,
+            targetOrigin
+        ) VALUES ( 
             \''.$action.'\', 
-            \''.$target.'\', 
+            \''.$subject.'\', 
             \''.$pos.'\', 
             \''.$origin.'\', 
-            '.time().', 
+            '.$start.', 
             '.$time.', 
-            \''.$authorId.'\'
+            \''.$authorId.'\',
+            \''.$targetOrigin.'\'
         )';
+        //var_dump($query);
         $sqlQuery->sqlQuery($query);
     }
 
@@ -316,11 +324,11 @@ class Auth
         return $tasks;
     }
 
-    public function getEntityInConst($target, $baseId)
+    public function getEntityInConst($subject, $baseId)
     {
         $sqlQuery = new sqlQuery();
-        $targetInConstruct = $sqlQuery->sqlQuery("SELECT time FROM game_tasks WHERE origin='base,".$baseId."' AND target='".$target."'");
-        return $targetInConstruct;
+        $subjectInConstruct = $sqlQuery->sqlQuery("SELECT time FROM game_tasks WHERE origin='base,".$baseId."' AND subject='".$subject."'");
+        return $subjectInConstruct;
     }
 
     public function getNewUser($userId)
@@ -336,4 +344,21 @@ class Auth
         $sqlQuery->sqlQuery("UPDATE game_users SET newUser = ".$value." WHERE id='".$userId."'");
     }
 
+    public function getDistance($a, $b)
+    {
+        $c = pow(($a[0]-$b[0]), 2);
+        $d = pow(($a[1]-$b[1]), 2);
+        return sqrt($c+$d);
+    }
+
+    public function getPos($origin)
+    {
+        $sqlQuery = new sqlQuery();
+        $arr = explode(",", $origin);
+        $originType = $arr[0];
+        $originId = $arr[1];
+        $query = "SELECT pos FROM game_".$originType."s WHERE id='".$originId."'";
+        $pos = $sqlQuery->sqlQuery($query);
+        return $pos[0]['pos'];
+    }
 }

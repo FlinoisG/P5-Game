@@ -74,7 +74,7 @@ class EntitiesService
                 "type"=>"'base'",
                 "class"=>"'building'",
                 "cost"=>500,
-                "buildTime"=>3,
+                "buildTime"=>3600,
                 "imgName"=>"'unit_slot_base'"
             ],
             "parameters"=>[

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Controller\TaskController;
 use App\Service\EntitiesService;
 use App\Service\AvatarHandler;
 use App\Service\MapGenerator;
@@ -122,17 +123,16 @@ class HomeController extends DefaultController
         require('../src/View/base.php');
     }
 
-    public function testArea1(){
-        $oreRepo = new OreRepo;
-
+    public function testArea(){
+        $auth = new Auth;
+        $taskController = new TaskController;
+        $taskController->moveUnit('worker', "base,38", "base,25");
+        $content = "";
         require('../src/View/base.php');
     }
 
-    public function testArea(){
-        $content = "";
-        $safe_data=filter_input(INPUT_POST, 'test', FILTER_SANITIZE_SPECIAL_CHARS);
-        echo '<br>';
-        var_dump($safe_data);
+    public function testArea1(){
+        $oreRepo = new OreRepo;
         require('../src/View/base.php');
     }
 
