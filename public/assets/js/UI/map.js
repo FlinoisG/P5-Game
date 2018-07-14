@@ -10,15 +10,16 @@ const Map = {"tilemap": Tilelayers.Stamen};
 Map.mainMap = {
 
     mapInit: function(){
+        var t0 = performance.now();
         this.map = L.map('mapid', {
-            minZoom: 7,
+            //minZoom: 7,
             maxZoom: 18,
-            maxBounds: [
+            //maxBounds: [
                 //south west
-                [32.7, -11.3269],
+            //    [32.7, -11.3269],
                 //north east
-                [61.37567, 32.39868]
-                ], 
+            //    [61.37567, 32.39868]
+            //    ], 
             maxBoundsViscosity: 1.0
         }).setView([gridToCoordinates(0, 131.48, "y"), gridToCoordinates(224.83, 0, "x")], 2);
         this.map.addEventListener('click', function(ev) {
@@ -40,6 +41,8 @@ Map.mainMap = {
         this.setObjectMap();
         this.setTileLayer();
         Map.miniMap.mapInit();
+        var t1 = performance.now();
+        console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.");
     },
 
     setMarkers: function(){
@@ -283,6 +286,7 @@ Map.mainMap = {
                         }                    
                     }
                 } else if (object.type == "worker") {
+                    console.log(object);
                     if (object.owner == "player"){
                         relation = "owner";
                         icon = this.workerOwnerIcon;

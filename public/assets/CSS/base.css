@@ -34,7 +34,7 @@ body {
     color: white;
     background-color: rgb(15, 15, 15);
     text-align: center;
-    overflow: hidden;
+    /*overflow: hidden;*/
 }
 
 .btn-logout{

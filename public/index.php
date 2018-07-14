@@ -1,5 +1,7 @@
 <?php
 
+$starttime = microtime(true); // Top of page
+
 require_once "../vendor/autoload.php";
 
 use App\Controller\DefaultController;
@@ -40,3 +42,8 @@ if (class_exists($controller, true)) {
     $controller = new DefaultController();
     $controller->error('404');
 }
+
+
+$endtime = microtime(true); // Bottom of page
+
+printf("Page loaded in %f seconds in total", $endtime - $starttime );

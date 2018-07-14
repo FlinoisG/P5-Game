@@ -62,5 +62,6 @@
       <?= $content ?>
     </div>
     <?php if (isset($scriptBody)) echo $scriptBody; ?>
+    
     </body>
 </html>

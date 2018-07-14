@@ -20,7 +20,9 @@ class HomeController extends DefaultController
         if (!isset($_SESSION)) { 
             session_start(); 
         } 
+
         
+
         $customStyle = $this->setCustomStyle('panel');
         $entitiesService = new EntitiesService;
         $scriptHead = $entitiesService->entitiesScripts();  
@@ -41,8 +43,15 @@ class HomeController extends DefaultController
         $scriptBody = '<script>var oreMapObj = '.$oreMap.'</script>';
         $scriptBody .= $this->setScript('grid');
         $mapInit = new MapInit;
+
+
+
+
         $scriptBody .= $mapInit->mapInit();
+
         $scriptBody .= $this->setScript('UI/panelInterface');
+
+
         if ($_SESSION) {
             if ($auth->getNewUser($_SESSION['authId']) == 1) {
                 $mapScript = $this->setScript('UI/newUserMap');
@@ -53,12 +62,13 @@ class HomeController extends DefaultController
             $mapScript = $this->setScript('UI/visitorMap');
         }
         $scriptBody .= $mapScript;        
-        $scriptBody .= $this->setScript('mapControls');      
+        $scriptBody .= $this->setScript('mapControls');     
         $title = 'Home';
         if (isset($_GET['logout'])) {
             session_destroy(); 
             header('Location: ?p=home');
         }
+        
         if ($_SESSION) {
             $metal = $auth->getMetal($_SESSION['auth']);
             $scriptHead .= "<script> var userMetal = ".$metal."; </script>";
@@ -71,6 +81,8 @@ class HomeController extends DefaultController
         } else {
             require('../src/View/VisitorHomeView.php');
         }
+
+        
         
     }
 

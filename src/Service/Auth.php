@@ -234,6 +234,31 @@ class Auth
         }
     }
 
+    public function getAllUnit()
+    {
+        $sqlQuery = new sqlQuery();
+        $query = "SELECT id, workers, soldiers FROM game_bases";
+        $baseUnit = $sqlQuery->sqlQuery($query);
+        $query = "SELECT id, workers, soldiers FROM game_mines";
+        $mineUnit = $sqlQuery->sqlQuery($query);
+        
+        if ($baseUnit == [] && $mineUnit == []) {
+            return false;
+        } else {
+            $units["base"] = [];
+            foreach ($baseUnit as $base) {
+                $units["base"][$base["id"]]["workers"] = $base["workers"];
+                $units["base"][$base["id"]]["soldiers"] = $base["soldiers"];
+            }
+            $units["mine"] = [];
+            foreach ($mineUnit as $base) {
+                $units["mine"][$base["id"]]["workers"] = $base["workers"];
+                $units["mine"][$base["id"]]["soldiers"] = $base["soldiers"];
+            }
+            return $units;
+        }
+    }
+
     public function buyUnit($unit, $origin, $amount=1)
     {
         $sqlQuery = new sqlQuery();
@@ -372,6 +397,14 @@ class Auth
         $subjectInConstruct = $sqlQuery->sqlQuery($query);
         
         return $subjectInConstruct;
+    }
+
+    public function getUnitsUpgradesInConst()
+    {
+        $sqlQuery = new sqlQuery();
+        $query = "SELECT startOrigin, subject, endTime FROM game_tasks WHERE action='buy' OR action='buy'";
+        $UnitsInConst = $sqlQuery->sqlQuery($query);
+        return $UnitsInConst;
     }
 
     public function getNewUser($userId)
