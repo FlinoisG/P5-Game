@@ -10,7 +10,6 @@ const Map = {"tilemap": Tilelayers.Stamen};
 Map.mainMap = {
 
     mapInit: function(){
-        var t0 = performance.now();
         this.map = L.map('mapid', {
             //minZoom: 7,
             maxZoom: 18,
@@ -25,12 +24,12 @@ Map.mainMap = {
         this.map.addEventListener('click', function(ev) {
             x = coordinatesToGrid(ev.latlng.lng, 0, "x");
             y = coordinatesToGrid(0, ev.latlng.lat, "y");
-            console.log('grid x: ' + (x) + ', y: ' + (y));
+            //console.log('grid x: ' + (x) + ', y: ' + (y));
             //console.log(Map.mainMap.map.getBounds());
         });     
         
         //this.map.dragging.disable();
-        this.map.touchZoom.disable();
+        //this.map.touchZoom.disable();
         this.map.doubleClickZoom.disable();
         //this.map.scrollWheelZoom.disable();
         this.map.boxZoom.disable();
@@ -41,8 +40,6 @@ Map.mainMap = {
         this.setObjectMap();
         this.setTileLayer();
         Map.miniMap.mapInit();
-        var t1 = performance.now();
-        console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.");
     },
 
     setMarkers: function(){
@@ -156,8 +153,8 @@ Map.mainMap = {
                     }).addTo(this.map);
                     const baseEntity = new BaseEntity(object.id, object.ownerName, relation, object.content, object.workerSpace, object.soldierSpace, baseMarker);
                     baseMarker.bindPopup("#"+object.id+" base de "+object.ownerName);
-                    baseMarker.addEventListener('click', function() {
-                    baseEntity.onClick();
+                    baseMarker.addEventListener('click', function(e) {
+                        baseEntity.onClick(e);
                     });
                     if (relation == "owned"){
                         if (window.location.search.includes('focus')){
@@ -194,8 +191,8 @@ Map.mainMap = {
                         riseOnHover: true,
                     }).addTo(this.map);
                     const mineEntity = new MineEntity(object.id, object.ownerName, relation, object.content, object.workerSpace, object.soldierSpace);
-                    mineMarker.addEventListener('click', function(ev) {
-                        mineEntity.onClick();
+                    mineMarker.addEventListener('click', function(e) {
+                        mineEntity.onClick(e);
                     });
                     if (relation == "owned"){
                         if (window.location.search.includes('focus')){
@@ -231,8 +228,8 @@ Map.mainMap = {
                         opacity: opacity
                     }).addTo(this.map);
                     const baseInConstEntity = new BaseInConstEntity(object.ownerName, relation, object.start, object.time);
-                    baseInConstMarker.addEventListener('click', function() {
-                        baseInConstEntity.onClick();
+                    baseInConstMarker.addEventListener('click', function(e) {
+                        baseInConstEntity.onClick(e);
                     });
                     if (relation == "owned"){
                         if (window.location.search.includes('focus')){
@@ -267,8 +264,8 @@ Map.mainMap = {
                         opacity: opacity
                     }).addTo(this.map);
                     const mineInConstEntity = new MineInConstEntity(object.ownerName, relation, object.start, object.time);
-                    mineInConstMarker.addEventListener('click', function(ev) {
-                        mineInConstEntity.onClick();
+                    mineInConstMarker.addEventListener('click', function(e) {
+                        mineInConstEntity.onClick(e);
                     });
                     if (relation == "owned"){
                         if (window.location.search.includes('focus')){
@@ -319,8 +316,8 @@ Map.mainMap = {
                             icon: icon,
                         }).addTo(this.map);
                         const workerEntity = new WorkerEntity(object.ownerName, relation, object.start, object.time);
-                        workerMarker.addEventListener('click', function(ev) {
-                            workerEntity.onClick();
+                        workerMarker.addEventListener('click', function(e) {
+                            workerEntity.onClick(e);
                         });
                         unitMovementUpdator(workerMarker, posStart, posEnd, object.start, object.time);
                     }                    

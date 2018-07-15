@@ -21,7 +21,8 @@ class TaskHandler
                         $auth->buyUnit($task["subject"], $task["startOrigin"]);
                     } else {
                         $shortTarget = str_replace("Space", "", $task["subject"]);
-                        $auth->buySpace($shortTarget, $task["origin"]);
+                        var_dump($task);
+                        $auth->buySpace($shortTarget, $task["startOrigin"]);
                     }
                 } elseif ($task["action"] == "build") {
                     $auth->build($task["subject"], $task["targetPos"], $task["author"]);

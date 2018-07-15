@@ -34,24 +34,19 @@ class HomeController extends DefaultController
             integrity=\"sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw==\"
             crossorigin=\"\"></script>";
         $scriptHead .= $this->setScript('panelUnitCountdown'); 
+        $scriptHead .= $this->setScript('numberSelector'); 
         $scriptHead .= $this->setScript('unitMovementUpdator'); 
         $waterMap = file_get_contents('../deposit/Maps/waterMap.json');
         $scriptHead .= '<script>var waterMapObj = '.$waterMap.'</script>'; 
-        $scriptHead .= $this->setScript('build');
+        $scriptHead .= $this->setScript('buildOrder');
+        $scriptHead .= $this->setScript('moveOrder');
         $auth = new Auth;
         $oreMap = file_get_contents('../deposit/Maps/OreMap.json');
         $scriptBody = '<script>var oreMapObj = '.$oreMap.'</script>';
         $scriptBody .= $this->setScript('grid');
         $mapInit = new MapInit;
-
-
-
-
         $scriptBody .= $mapInit->mapInit();
-
         $scriptBody .= $this->setScript('UI/panelInterface');
-
-
         if ($_SESSION) {
             if ($auth->getNewUser($_SESSION['authId']) == 1) {
                 $mapScript = $this->setScript('UI/newUserMap');

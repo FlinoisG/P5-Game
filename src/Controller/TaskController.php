@@ -112,12 +112,15 @@ class TaskController extends DefaultController
         }
     }
 
-    public function moveUnit($type, $startOrigin, $target, $amount=1, $isBuilding=false)
+    public function moveUnit($type=null, $startOrigin=null, $target=null, $amount=1, $isBuilding=false)
     {
         if (!isset($_SESSION)) { 
             session_start(); 
         }
-        //  var_dump($target);
+        if ($type == null) $type = $_GET['type'];
+        if ($startOrigin == null) $startOrigin = $_GET['startOrigin'];
+        if ($target == null) $target = $_GET['target'];
+        if ($amount == null) $amount = $_GET['amount'];
         $auth = new Auth;
         if ($type == 'worker'){
             $timeFactor = $this->workerTimeFactor;

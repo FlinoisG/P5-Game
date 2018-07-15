@@ -1,12 +1,9 @@
-build = {
+buildOrder = {
 
     build(type, origin, toSelect)
     {
-        console.log(type)
-        console.log(origin)
-        console.log(toSelect)
         this.toSelect = toSelect;
-        this.buildMode = true;
+        this.orderMode = true;
         document.removeEventListener('mouseup', unSelect);
 
         this.origin = origin
@@ -30,7 +27,7 @@ build = {
 
         if (type == "mine"){
             this.marker = '';
-            Map.mainMap.map.addEventListener("mousemove", this.mine);
+            Map.mainMap.map.addEventListener("mousemove", this.mineField);
         }
         
         document.body.appendChild(buildingImg);
@@ -51,7 +48,7 @@ build = {
         panelSubIcon.className = 'panelSubIcon';
         panelSubIcon.src = "../public/assets/img/unit_slot_red_cross.png";
 
-        panelSubIcon.addEventListener('click', this.cancelBuild);
+        panelSubIcon.addEventListener('click', this.cancel);
 
         var panelSubText = document.createElement('span');
         panelSubText.className = 'panelSubText';
@@ -65,33 +62,32 @@ build = {
         document.getElementById('subPanelMain').appendChild(panelSub);
 
     },
-
     
-    mine(e){
-        if (build.marker != ''){
-            Map.mainMap.map.removeLayer(Map.mainMap.map._layers[build.marker]);
+    mineField(e){
+        if (buildOrder.marker != ''){
+            Map.mainMap.map.removeLayer(Map.mainMap.map._layers[buildOrder.marker]);
         }
-        build.mineRangeMarker = L.circle([e.latlng.lat, e.latlng.lng], {
+        buildOrder.mineRangeMarker = L.circle([e.latlng.lat, e.latlng.lng], {
             color: 'green',
             radius: 50000,
             clickable: false,
             interactive: false,
         }).addTo(Map.mainMap.map);
-        build.marker = build.mineRangeMarker._leaflet_id;
+        buildOrder.marker = buildOrder.mineRangeMarker._leaflet_id;
     },
 
     checkMousePos(e){
         if (e.target.id == "mapid"){
-            buildingImg.style.left=e.pageX+build.imgOffsetX+"px";
-            buildingImg.style.top=e.pageY+build.imgOffsetY+"px";
+            buildingImg.style.left=e.pageX+buildOrder.imgOffsetX+"px";
+            buildingImg.style.top=e.pageY+buildOrder.imgOffsetY+"px";
             buildingImg.style.opacity = 0.5;
-            if (build.type == "mine"){
-                //build.setMineRadius();
+            if (buildOrder.type == "mine"){
+                //buildOrder.setMineRadius();
             }
         } else {
             buildingImg.style.opacity = 0;
-            if (build.type == "mine"){
-                //build.mineRangeMarker.style.opacity = 0;
+            if (buildOrder.type == "mine"){
+                //buildOrder.mineRangeMarker.style.opacity = 0;
             }
         }
     },
@@ -120,9 +116,9 @@ build = {
             }
         });
         if (validated == true){
-            buildingImg.src = build.validImg; 
+            buildingImg.src = buildOrder.validImg; 
         } else {
-            buildingImg.src = build.invalidImg;
+            buildingImg.src = buildOrder.invalidImg;
         }
 
     },
@@ -130,28 +126,30 @@ build = {
     eventOnClick(e){
         if (validated == true){
             pos = coordinatesToGrid(e.latlng.lng, e.latlng.lat);
-            if (build.origin == 'none,none'){
-                window.location.replace("?p=task.newUserBase&type="+build.type+"&pos=[" + pos.x + "," + pos.y + "]");
+            if (buildOrder.origin == 'none,none'){
+                window.location.replace("?p=task.newUserBase&type="+buildOrder.type+"&pos=[" + pos.x + "," + pos.y + "]");
             } else {
-                window.location.replace("?p=task.buy&type="+build.type+"&origin=" + build.origin + "&pos=[" + pos.x + "," + pos.y + "]");
+                window.location.replace("?p=task.buy&type="+buildOrder.type+"&origin=" + buildOrder.origin + "&pos=[" + pos.x + "," + pos.y + "]");
             }
         } else {
         }
     },
 
-    cancelBuild(){
-        build.buildMode = false;
-        if (build.type == "mine"){
-            Map.mainMap.map.removeEventListener("mousemove", build.mine);
-            Map.mainMap.map.removeLayer(Map.mainMap.map._layers[build.marker]);
+    cancel(){
+        buildOrder.orderMode = false;
+        if (buildOrder.type == "mine"){
+            Map.mainMap.map.removeEventListener("mousemove", buildOrder.mineField);
+            if(typeof(Map.mainMap.map._layers[buildOrder.marker]) != 'undefined'){   
+                Map.mainMap.map.removeLayer(Map.mainMap.map._layers[buildOrder.marker]);
+            }
         }
-        document.removeEventListener("mousemove", build.checkMousePos);
-        Map.mainMap.map.removeEventListener("mousemove", build.checkPosValidity);
-        Map.mainMap.map.removeEventListener("click", build.eventOnClick);
+        document.removeEventListener("mousemove", buildOrder.checkMousePos);
+        Map.mainMap.map.removeEventListener("mousemove", buildOrder.checkPosValidity);
+        Map.mainMap.map.removeEventListener("click", buildOrder.eventOnClick);
         buildingImg.parentNode.removeChild(buildingImg);
         document.addEventListener('mouseup', unSelect);
-        panelInterface.select(build.toSelect);
-        panelInterface.selectWorkerSlot(build.toSelect);
+        panelInterface.select(buildOrder.toSelect);
+        panelInterface.selectWorkerSlot(buildOrder.toSelect);
     },
 
 }

@@ -2,6 +2,12 @@ panelInterface = {
   
     select(toSelect) 
     {
+        if (buildOrder.orderMode){
+            buildOrder.cancel();
+        }
+        if (moveOrder.orderMode){
+            moveOrder.cancel();
+        }
         switch (toSelect.type){
             case "base":
                 this.selectBuilding(toSelect);
@@ -32,6 +38,7 @@ panelInterface = {
     selectBuilding(toSelect) 
     {        
         if (toSelect.relation == "owned") {
+            this.tab = "workerTab";
             var title = document.createElement('h4');
             title.textContent = '#' + toSelect.id + " " + toSelect.type;
 
@@ -69,8 +76,11 @@ panelInterface = {
                         container.appendChild(img);
                         panelSlots.appendChild(container);
                         container.addEventListener("click", (ev) => {
-                            if (build.buildMode){
-                                build.cancelBuild();
+                            if (buildOrder.orderMode){
+                                buildOrder.cancel();
+                            }
+                            if (moveOrder.orderMode){
+                                moveOrder.cancel();
                             }
                             var slots = document.getElementsByClassName('unitSlot')
                             for (i = 0; i < slots.length; i++) {
@@ -145,8 +155,11 @@ panelInterface = {
             document.getElementById('panelSub').appendChild(this.buildSubPanel(options, toSelect));
 
             soldierTabButton.addEventListener("click", () => {
-                if (build.buildMode){
-                    build.cancelBuild();
+                if (buildOrder.orderMode){
+                    buildOrder.cancel();
+                }
+                if (moveOrder.orderMode){
+                    moveOrder.cancel();
                 }
                 this.soldierTab(toSelect);
             });
@@ -181,7 +194,7 @@ panelInterface = {
 
     soldierTab(toSelect) 
     {
-        
+        this.tab = "soldierTab";
         document.getElementById('slotTabs').innerHTML = "";
         document.getElementById('panelSlots').innerHTML = "";
 
@@ -278,8 +291,11 @@ panelInterface = {
         document.getElementById('panelSub').appendChild(this.buildSubPanel(soldierOptions, toSelect));
 
         workerTabButton.addEventListener("click", () => {
-            if (build.buildMode){
-                build.cancelBuild();
+            if (buildOrder.orderMode){
+                buildOrder.cancel();
+            }
+            if (moveOrder.orderMode){
+                moveOrder.cancel();
             }
             this.selectBuilding(toSelect);
         });
@@ -335,7 +351,6 @@ panelInterface = {
     },
 
     selectWorkerSlot(toSelect) {
-        console.log(toSelect);
         document.getElementById('panelSub').innerHTML = "";
         
         workerOptions = [
@@ -351,6 +366,7 @@ panelInterface = {
         document.getElementById('panelSub').innerHTML = "";
 
         workerOptions = [
+            new MoveEntity, 
             new BaseEntity,
             new MineEntity
         ]
@@ -360,9 +376,9 @@ panelInterface = {
 
     buildSubPanel(options, toSelect)
     {
+        
         var subPanelMain = document.createElement('div');
         subPanelMain.id = "subPanelMain";
-
         options.forEach(option => {
             var panelSubOption = document.createElement('div');
             panelSubOption.id = "panelSub"+option.type;
@@ -372,13 +388,31 @@ panelInterface = {
             SubOptionIcon.className = 'panelSubIcon';
             SubOptionIcon.src = '../public/assets/img/' + option.imgName + '.png';
 
+            
+
             SubOptionIcon.addEventListener("click", function () {
-                option.subPanelAction(toSelect.type+","+toSelect.id, toSelect);
+                if (option.type == "move"){
+                    var type = panelInterface.tab.replace('Tab','');;
+                    var amount = document.getElementById('numberSelectorNumber').textContent;
+                    option.subPanelAction(toSelect.type+","+toSelect.id, toSelect, [type, amount]);
+                } else {
+                    option.subPanelAction(toSelect.type+","+toSelect.id, toSelect);
+                }
             });
 
-            var SubOptionText = document.createElement('span');
+            var SubOptionText = document.createElement('div');
             SubOptionText.className = 'panelSubText';
-            SubOptionText.innerHTML = "Acheter "+option.type+"<br>Cout: "+option.cost+"metal, "+option.buildTime+"mn";
+            if (option.textContent == "regular"){
+                SubOptionText.innerHTML = "Acheter "+option.type+"<br>Cout: "+option.cost+"metal, "+option.buildTime+"mn";
+            } else if (option.textContent == "numberSelector"){
+                if (this.tab == "workerTab"){
+                    numberSelector(SubOptionText, toSelect.content.workers);
+                } else {
+                    numberSelector(SubOptionText, toSelect.content.soldiers);
+                }
+            } else {
+                SubOptionText.innerHTML = option.textContent;
+            }
 
             if (typeof option.cost !== 'undefined'){
                 if (userMetal < option.cost){

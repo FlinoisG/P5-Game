@@ -18,6 +18,7 @@ class EntitiesService
                 "class"=>"'building'",
                 "cost"=>500,
                 "buildTime"=>3,
+                "textContent"=>"'regular'"
                 ],    
             "onClick"=>"",    
             "subPanelAction"=>""
@@ -30,12 +31,19 @@ class EntitiesService
                 "buildTime"=>3,
             ],
             "onClick"=>"
-                var sessionAuth = '".$sessionAuth."';
-                if (sessionAuth !== '') {
-                    panelInterface.select(this);
+                if (moveOrder.moveMode == true){
+                    var targetOigin = this.type+\",\"+this.id;
+                    var url = \"?p=task.moveUnit&type=\"+moveOrder.type+\"&startOrigin=\"+moveOrder.origin+\"&target=\"+targetOigin+\"&amount=\"+moveOrder.amount
+                    console.log(url);
+                    window.location.replace(url);
                 } else {
-                    console.log(sessionAuth);
-                };", 
+                    var sessionAuth = '".$sessionAuth."';
+                    if (sessionAuth !== '') {
+                        panelInterface.select(this);
+                    } else {
+                        console.log(sessionAuth);
+                    }
+                }", 
             "subPanelAction"=>""
         ];
         $this->entities['defaultUnitEntity'] = [
@@ -86,7 +94,7 @@ class EntitiesService
                 "soldierSpace"=>"''",
                 "marker"=>"null"
             ],
-            "subPanelAction"=>"build.build('base', origin, toSelect);"
+            "subPanelAction"=>"buildOrder.build('base', origin, toSelect);"
         ];
         $this->entities['main'] = [
             "className"=>"Main",
@@ -131,7 +139,7 @@ class EntitiesService
                 "workerSpace"=>"''",
                 "soldierSpace"=>"''"
             ],  
-            "subPanelAction"=>"build.build('mine', origin, toSelect);"
+            "subPanelAction"=>"buildOrder.build('mine', origin, toSelect);"
         ];
         $this->entities['mineInConst'] = [
             "className"=>"MineInConst",
@@ -206,8 +214,10 @@ class EntitiesService
             "attributes"=>[
                 "type"=>"'move'",
                 "class"=>"'order'",
-                "imgName"=>"'unit_slot_worker_finished'",
+                "imgName"=>"'unit_slot_green_arrow'",
+                "textContent"=>"'numberSelector'"
             ],
+            "subPanelAction"=>"moveOrder.move(origin, toSelect, params);"
         ];
         $this->entities['ore'] = [
             "className"=>"Ore",
@@ -275,13 +285,13 @@ class EntitiesService
             $entitiesScript .= "};";
         
             if (isset($entity['onClick'])) {
-                $entitiesScript .= "onClick() {
+                $entitiesScript .= "onClick(e) {
                     ".$entity["onClick"]."
                 }";
             }
     
             if (isset($entity['subPanelAction'])) {
-                $entitiesScript .= "subPanelAction(origin=null, toSelect=null){
+                $entitiesScript .= "subPanelAction(origin=null, toSelect=null, params=null){
                     ".$entity["subPanelAction"]."
                 };";
             }

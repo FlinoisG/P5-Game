@@ -31,7 +31,7 @@ newUserPanelIcon.className = 'newUserPanelIcon panelSubIcon';
 newUserPanelIcon.src = "../public/assets/img/unit_slot_base.png";
 
 newUserPanelIcon.addEventListener('click', function(){
-    build.build('base', 'none,none');
+    buildOrder.build('base', 'none,none');
 });
 
 var newUserPanelText = document.createElement('span');
