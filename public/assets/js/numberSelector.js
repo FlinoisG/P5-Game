@@ -1,12 +1,28 @@
-function numberSelector(target, maxNumber) {
+function numberSelector(target, maxNumber, type) {
+
+    if (type == "move"){
+        title = "Déplacer";
+    } else if (type == "attack"){
+        title = "Attaquer";
+    }
 
     var numberSelectorMain = document.createElement('div');
     numberSelectorMain.id = "numberSelectorMain";
     numberSelectorMain.className = "numberSelectorMain";
 
+        var numberSelectorTitle = document.createElement('div');
+        numberSelectorTitle.id = "numberSelectorTitle";
+        numberSelectorTitle.className = "numberSelectorTitle";
+        numberSelectorTitle.textContent = title;
+
         var numberSelector = document.createElement('div');
         numberSelector.id = "numberSelector";
         numberSelector.className = "numberSelector";
+
+            var numberSelectorExtraLeft = document.createElement('div');
+            numberSelectorExtraLeft.id = "numberSelectorExtraLeft";
+            numberSelectorExtraLeft.className = "numberSelectorElem numberSelectorHandle numberSelectorExtraLeft";
+            numberSelectorExtraLeft.textContent = "<<";
 
             var numberSelectorLeft = document.createElement('div');
             numberSelectorLeft.id = "numberSelectorLeft";
@@ -23,6 +39,11 @@ function numberSelector(target, maxNumber) {
             numberSelectorRight.className = "numberSelectorElem numberSelectorHandle numberSelectorRight";
             numberSelectorRight.textContent = ">";
 
+            var numberSelectorExtraRight = document.createElement('div');
+            numberSelectorExtraRight.id = "numberSelectorExtraRight";
+            numberSelectorExtraRight.className = "numberSelectorElem numberSelectorHandle numberSelectorExtraRight";
+            numberSelectorExtraRight.textContent = ">>";
+
         var numberSelectorText = document.createElement('span');
         numberSelectorText.id = "numberSelectorText";
         numberSelectorText.className = "numberSelectorText";
@@ -33,9 +54,19 @@ function numberSelector(target, maxNumber) {
         numberSelectorTotalNum.className = "numberSelectorTotalNum";
         numberSelectorTotalNum.textContent = maxNumber;
 
+    numberSelectorExtraLeft.addEventListener('click', function(){
+        var number = Number(numberSelectorNumber.innerText);
+        if (number > 5){
+            number = number - 5;
+            numberSelectorNumber.innerText = number;
+        } else {
+            numberSelectorNumber.innerText = 1;
+        }
+    });
+
     numberSelectorLeft.addEventListener('click', function(){
         var number = Number(numberSelectorNumber.innerText);
-        if (number > 0){
+        if (number > 1){
             number--;
             numberSelectorNumber.innerText = number;
         }
@@ -49,10 +80,23 @@ function numberSelector(target, maxNumber) {
         }
     });
 
+    numberSelectorExtraRight.addEventListener('click', function(){
+        var number = Number(numberSelectorNumber.innerText);
+        if (number < (maxNumber - 4)){
+            number = number + 5;
+            numberSelectorNumber.innerText = number;
+        } else {
+            numberSelectorNumber.innerText = maxNumber;
+        }
+    });
+
+    numberSelector.appendChild(numberSelectorExtraLeft);
     numberSelector.appendChild(numberSelectorLeft);
     numberSelector.appendChild(numberSelectorNumber);
     numberSelector.appendChild(numberSelectorRight);
+    numberSelector.appendChild(numberSelectorExtraRight);
 
+    numberSelectorMain.appendChild(numberSelectorTitle);
     numberSelectorMain.appendChild(numberSelector);
     numberSelectorMain.appendChild(numberSelectorText);
     numberSelectorMain.appendChild(numberSelectorTotalNum);

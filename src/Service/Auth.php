@@ -195,6 +195,16 @@ class Auth
         return $result[0]['username'];
     }
 
+    public function getAllUsername(){
+        $sqlQuery = new sqlQuery();
+        $query = "SELECT id, username FROM game_users";
+        $results = $sqlQuery->sqlQuery($query);
+        foreach ($results as $result) {
+            $usernames[$result["id"]] = $result["username"];
+        }
+        return $usernames;
+    }
+
     public function getMapObjects()
     {
         $sqlQuery = new sqlQuery();
@@ -295,7 +305,7 @@ class Auth
             $posArr = $grid->gridToCoordinates($posArr[0], $posArr[1]);
             $metalNodes = $this->getMetalNodes($posArr);
             $metalNodes = json_encode($metalNodes);
-            var_dump($metalNodes);
+            //var_dump($metalNodes);
             $query = 'INSERT INTO game_mines (player, playerId, pos, metalNodes) VALUES (\''.$username.'\', \''.$author.'\', \''.$pos.'\', \''.$metalNodes.'\')';
         }
         $sqlQuery->sqlQuery($query);
@@ -395,8 +405,23 @@ class Auth
         $sqlQuery = new sqlQuery();
         $query = "SELECT endTime FROM game_tasks WHERE startOrigin='base,".$baseId."' AND subject='".$subject."'";
         $subjectInConstruct = $sqlQuery->sqlQuery($query);
-        
         return $subjectInConstruct;
+    }
+
+    public function getAllEntityInConst()
+    {
+        $sqlQuery = new sqlQuery();
+        $query = "SELECT subject, startOrigin, endTime FROM game_tasks WHERE subject='worker' OR subject='soldier'";
+        $entitiesInConstruct = $sqlQuery->sqlQuery($query);
+        $entityArray = [];
+        foreach ($entitiesInConstruct as $entity) {
+            $entityArray[$entity['subject']] = [$entity['startOrigin'], $entity['endTime']];
+        }
+        //print "<pre>";
+        //print_r($entitiesInConstruct);
+        //print "</pre>";
+        //var_dump($entitiesInConstruct);
+        return $entityArray;
     }
 
     public function getUnitsUpgradesInConst()

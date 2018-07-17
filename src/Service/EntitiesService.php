@@ -219,6 +219,17 @@ class EntitiesService
             ],
             "subPanelAction"=>"moveOrder.move(origin, toSelect, params);"
         ];
+        $this->entities['attack'] = [
+            "className"=>"Attack",
+            "extendsFrom"=>"DefaultOrderEntity",
+            "attributes"=>[
+                "type"=>"'attack'",
+                "class"=>"'order'",
+                "imgName"=>"'unit_slot_attack'",
+                "textContent"=>"'numberSelector'"
+            ],
+            "subPanelAction"=>"attackOrder.attack(origin, toSelect, params);"
+        ];
         $this->entities['ore'] = [
             "className"=>"Ore",
             "extendsFrom"=>"DefaultEntity",
@@ -231,6 +242,7 @@ class EntitiesService
                 "value"=>0
             ],
         ];
+        
 
     }
     /**

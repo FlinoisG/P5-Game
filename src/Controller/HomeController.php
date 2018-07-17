@@ -40,6 +40,7 @@ class HomeController extends DefaultController
         $scriptHead .= '<script>var waterMapObj = '.$waterMap.'</script>'; 
         $scriptHead .= $this->setScript('buildOrder');
         $scriptHead .= $this->setScript('moveOrder');
+        $scriptHead .= $this->setScript('attackOrder');
         $auth = new Auth;
         $oreMap = file_get_contents('../deposit/Maps/OreMap.json');
         $scriptBody = '<script>var oreMapObj = '.$oreMap.'</script>';
@@ -133,7 +134,7 @@ class HomeController extends DefaultController
 
     public function testArea(){
         $auth = new Auth;
-        var_dump(json_decode("[[-2.4,47.8],[-2.5,47.7],[-2.7,47.6],[-2.6,47.6],[-2.5,47.6],[-2.7,47.5],[-2.6,47.5],[-2.5,47.5],[-2.7,47.4],[-2.6,47.4]]"));
+        var_dump($auth->getAllUsername());
         
         require('../src/View/base.php');
     }

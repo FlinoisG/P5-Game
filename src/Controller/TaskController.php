@@ -8,8 +8,8 @@ use App\Service\EntitiesService;
 class TaskController extends DefaultController
 {
 
-    private $workerTimeFactor = 70;
-    private $defaultTimeFactor = 10;
+    private $workerTimeFactor = 1;
+    private $defaultTimeFactor = 100;
 
     public function buy()
     {
@@ -120,7 +120,7 @@ class TaskController extends DefaultController
         if ($type == null) $type = $_GET['type'];
         if ($startOrigin == null) $startOrigin = $_GET['startOrigin'];
         if ($target == null) $target = $_GET['target'];
-        if ($amount == null) $amount = $_GET['amount'];
+        if (isset($_GET['amount'])) $amount = $_GET['amount'];
         $auth = new Auth;
         if ($type == 'worker'){
             $timeFactor = $this->workerTimeFactor;
@@ -150,6 +150,8 @@ class TaskController extends DefaultController
             $dist = ($dist * -1);
         }
         $negAmount = ($amount * -1);
+        var_dump($amount);
+        var_dump($negAmount);
         $originUnits = $auth->getUnit($type, $startOrigin);
         if ($originUnits >= $amount){
             $auth->buyUnit($type, $startOrigin, $negAmount);

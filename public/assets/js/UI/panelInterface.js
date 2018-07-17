@@ -366,9 +366,8 @@ panelInterface = {
         document.getElementById('panelSub').innerHTML = "";
 
         workerOptions = [
-            new MoveEntity, 
-            new BaseEntity,
-            new MineEntity
+            new MoveEntity,
+            new AttackEntity
         ]
 
         document.getElementById('panelSub').appendChild(this.buildSubPanel(workerOptions, toSelect));
@@ -395,6 +394,10 @@ panelInterface = {
                     var type = panelInterface.tab.replace('Tab','');;
                     var amount = document.getElementById('numberSelectorNumber').textContent;
                     option.subPanelAction(toSelect.type+","+toSelect.id, toSelect, [type, amount]);
+                } else if (option.type == "attack"){
+                    var type = panelInterface.tab.replace('Tab','');;
+                    var amount = document.getElementById('numberSelectorNumber').textContent;
+                    option.subPanelAction(toSelect.type+","+toSelect.id, toSelect, amount);
                 } else {
                     option.subPanelAction(toSelect.type+","+toSelect.id, toSelect);
                 }
@@ -406,9 +409,9 @@ panelInterface = {
                 SubOptionText.innerHTML = "Acheter "+option.type+"<br>Cout: "+option.cost+"metal, "+option.buildTime+"mn";
             } else if (option.textContent == "numberSelector"){
                 if (this.tab == "workerTab"){
-                    numberSelector(SubOptionText, toSelect.content.workers);
+                    numberSelector(SubOptionText, toSelect.content.workers, option.type);
                 } else {
-                    numberSelector(SubOptionText, toSelect.content.soldiers);
+                    numberSelector(SubOptionText, toSelect.content.soldiers, option.type);
                 }
             } else {
                 SubOptionText.innerHTML = option.textContent;
