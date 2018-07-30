@@ -305,7 +305,7 @@ class Auth
             $posArr = $grid->gridToCoordinates($posArr[0], $posArr[1]);
             $metalNodes = $this->getMetalNodes($posArr);
             $metalNodes = json_encode($metalNodes);
-            //var_dump($metalNodes);
+            var_dump($metalNodes);
             $query = 'INSERT INTO game_mines (player, playerId, pos, metalNodes) VALUES (\''.$username.'\', \''.$author.'\', \''.$pos.'\', \''.$metalNodes.'\')';
         }
         $sqlQuery->sqlQuery($query);
@@ -415,10 +415,15 @@ class Auth
         $entitiesInConstruct = $sqlQuery->sqlQuery($query);
         $entityArray = [];
         foreach ($entitiesInConstruct as $entity) {
-            $entityArray[$entity['subject']] = [$entity['startOrigin'], $entity['endTime']];
+            if (isset($entityArray[$entity['subject']])){
+                $size = sizeof($entityArray[$entity['subject']]);
+            } else {
+                $size = 0;
+            }
+            $entityArray[$entity['subject']][$size] = [$entity['startOrigin'], $entity['endTime']];
         }
         //print "<pre>";
-        //print_r($entitiesInConstruct);
+        //print_r($entityArray);
         //print "</pre>";
         //var_dump($entitiesInConstruct);
         return $entityArray;
@@ -427,9 +432,18 @@ class Auth
     public function getUnitsUpgradesInConst()
     {
         $sqlQuery = new sqlQuery();
-        $query = "SELECT startOrigin, subject, endTime FROM game_tasks WHERE action='buy' OR action='buy'";
-        $UnitsInConst = $sqlQuery->sqlQuery($query);
-        return $UnitsInConst;
+        $query = "SELECT startOrigin, subject, endTime FROM game_tasks WHERE subject='soldierSpace' OR subject='workerSpace'";
+        $upgradesInConstruction = $sqlQuery->sqlQuery($query);
+        $entityArray = [];
+        foreach ($upgradesInConstruction as $entity) {
+            if (isset($entityArray[$entity['subject']])){
+                $size = sizeof($entityArray[$entity['subject']]);
+            } else {
+                $size = 0;
+            }
+            $entityArray[$entity['subject']][$size] = ["startOrigin"=>$entity['startOrigin'], "subject"=>$entity['subject'], "endTime"=>$entity['endTime']];
+        }
+        return $entityArray;
     }
 
     public function getNewUser($userId)

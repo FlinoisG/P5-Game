@@ -46,24 +46,24 @@ class MapInit {
         $allUnits = $auth->getAllUnit();
         $unitsUpgradesInConst = $auth->getUnitsUpgradesInConst();
         $unitsInConst = $auth->getAllEntityInConst();
-        print "<pre>";
-        //print_r($unitsInConst);
-        print "</pre>";
-        //var_dump($unitsInConst);
+        
+
         foreach ($objects as $object) {   
             
             if ($object['type'] == "base" || $object['type'] == "mine") {
                 $object["origin"] = $object['type'].",".$object['id'];
                 $content = [];
-
-                if ($object['type'] == "base") {
-                    $workers = $allUnits["base"][$object["id"]]["workers"];
-                    $soldiers = $allUnits["base"][$object["id"]]["soldiers"];
-                }
-                if ($object['type'] == "mine") {
-                    $workers = $allUnits["mine"][$object["id"]]["workers"];
-                    $soldiers = $allUnits["mine"][$object["id"]]["soldiers"];
-                }
+                
+                //if ($object['type'] == "base" || $object['type'] == "mine") {
+                    $workers = $allUnits[$object['type']][$object["id"]]["workers"];
+                    $soldiers = $allUnits[$object['type']][$object["id"]]["soldiers"];
+                //}
+                //if ($object['type'] == "mine") {
+                //    $workers = $allUnits["mine"][$object["id"]]["workers"];
+                //    $soldiers = $allUnits["mine"][$object["id"]]["soldiers"];
+                //}
+                //$workers = $allUnits[$object['type']][$object["id"]]["workers"];
+                //$soldiers = $allUnits[$object['type']][$object["id"]]["soldiers"];
                 if ($workers != 0) {
                     $content["workers"] = $workers;
                 }
@@ -91,11 +91,17 @@ class MapInit {
                 if ($soldierSpaceInConstruct) {
                     $content["soldierSpaceInConst"] = (int)$soldierSpaceInConstruct[0]["time"];
                 }*/
-
+                
                 if (isset($unitsInConst["worker"])) {
+                   
                     foreach ($unitsInConst["worker"] as $worker) {
+                        //print_r($worker);
+                        //print_r("<br>");
                         if ($worker[0] == $object["origin"]){
+                            //var_dump("MERDE");
                             if (!array_key_exists("workersInConst",$content)) $content["workersInConst"] = [];
+                            //var_dump($worker[1]);
+                            
                             array_push($content["workersInConst"], $worker[1]);
                         }
                     }
@@ -109,20 +115,18 @@ class MapInit {
                         }
                     }
                     //$content["soldiersInConst"] = (int)$soldierSpaceInConstruct[0]["time"];
-                }
-
+                }                
                 foreach ($unitsUpgradesInConst as $unit) {
-                    if ($unit["startOrigin"] == $object["origin"]) {
-                        if ($unit["subject"] == "worker") {
+                    if ($unit[0]["startOrigin"] == $object["origin"]) {
+                        if ($unit[0]["subject"] == "workerSpace") {
                             if (!array_key_exists("workerSpaceInConst",$content)) $content["workerSpaceInConst"] = [];
-                            array_push($content["workerSpaceInConst"], $unit["endTime"]);
-                        } else if ($unit["subject"] == "soldier") {
+                            array_push($content["workerSpaceInConst"], $unit[0]["endTime"]);
+                        } else if ($unit[0]["subject"] == "soldierSpace") {
                             if (!array_key_exists("soldierSpaceInConst",$content)) $content["soldierSpaceInConst"] = [];
-                            array_push($content["soldierSpaceInConst"], $unit["endTime"]);
+                            array_push($content["soldierSpaceInConst"], $unit[0]["endTime"]);
                         }
                     }
                 }
-                
             }
             
             if (isset($_SESSION['auth'])){
@@ -149,6 +153,9 @@ class MapInit {
                         "soldierSpace": '.$object["soldierSpace"].'
                     },';
             } else if ($object['type'] == 'mine') {
+                if (!isset($object["metalNodes"])){
+                    $object["metalNodes"] = "[]";
+                }
                 $result .= '{
                         "type": "mine",
                         "x": '.$pos[0].', 
@@ -158,7 +165,8 @@ class MapInit {
                         "ownerName": "'.$object["player"].'",
                         "content": '.json_encode($content).',
                         "workerSpace": '.$object["workerSpace"].',
-                        "soldierSpace": '.$object["soldierSpace"].'
+                        "soldierSpace": '.$object["soldierSpace"].',
+                        "metalNodes": '.$object["metalNodes"].'
                     },';
             } else if ($object['type'] == 'worker' || $object['type'] == 'soldier') {
                 $result .= '{

@@ -2,6 +2,7 @@ panelInterface = {
   
     select(toSelect) 
     {
+        console.log(toSelect);
         if (buildOrder.orderMode){
             buildOrder.cancel();
         }
@@ -386,8 +387,6 @@ panelInterface = {
             var SubOptionIcon = document.createElement('img');
             SubOptionIcon.className = 'panelSubIcon';
             SubOptionIcon.src = '../public/assets/img/' + option.imgName + '.png';
-
-            
 
             SubOptionIcon.addEventListener("click", function () {
                 if (option.type == "move"){

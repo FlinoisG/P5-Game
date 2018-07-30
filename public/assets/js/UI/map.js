@@ -112,17 +112,50 @@ Map.mainMap = {
     },
    
     setOreMap: function(){
+        if (typeof objectMapObj !== 'undefined') {
+            var mineArray = [];
+            objectMapObj.forEach(object => {
+                if (object.type == "mine"){
+                    if (object.owner == "player"){
+                        object.metalNodes.forEach(node => {
+                            mineArray.push(node);
+                            //console.log("node[1] : " + coordinatesToGrid(0, node[1], "y") + ", node[0] : " + coordinatesToGrid(node[0], 0, "x"));
+                        });
+                    }
+                }
+                
+            });
+        }
+        //console.log
         if (typeof oreMapObj !== 'undefined') {
             oreMapObj.oreMap.forEach(ore => {
                 var R = Math.round(ore.value * 51)+51;
                 var G = Math.round(ore.value * 41)+61;
                 var B = Math.round(ore.value * 197)+58;
+                mineArray.forEach(node => {
+                    //console.log("ore.y : " + ore.y + ", ore.x : " + ore.x);
+                    //console.log("node[0] : " + coordinatesToGrid(0, node[0], "y") + ", node[1] : " + coordinatesToGrid(node[1], 0, "x"));
+                    
+                    if(ore.x == node[0] && ore.y == node[1]){
+                        R = Math.round(ore.value * 51)+11;
+                        G = Math.round(ore.value * 237)+18;
+                        B = Math.round(ore.value * 41)+21;
+                    } //else {
+                    //   R = Math.round(ore.value * 51)+51;
+                    //    G = Math.round(ore.value * 41)+61;
+                    //    B = Math.round(ore.value * 197)+58;
+                    //    m = "non";
+                    //}
+                });
+                //var R = Math.round(ore.value * 51)+51;
+                //var G = Math.round(ore.value * 41)+61;
+                //var B = Math.round(ore.value * 197)+58;
                 var oreMarker = L.circle([ore.y, ore.x], {
                     //color: '#55719e',
                     color: 'rgb('+R+', '+G+', '+B+')',
                     radius: 2000
                 }).addTo(this.map);
-                oreMarker.bindPopup("bonjour " + ore.value);
+                oreMarker.bindPopup(ore.value);
             });
         }
     },
@@ -210,7 +243,6 @@ Map.mainMap = {
                         }                    
                     }
                 } else if (object.type == "baseInConst") {
-                    console.log(object);
                     var now = Math.floor(Date.now() / 1000);
                     if (object.start > now) {
                         opacity = 0.3;
@@ -283,7 +315,6 @@ Map.mainMap = {
                         }                    
                     }
                 } else if (object.type == "worker") {
-                    console.log(object);
                     if (object.owner == "player"){
                         relation = "owner";
                         icon = this.workerOwnerIcon;
