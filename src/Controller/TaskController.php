@@ -143,18 +143,21 @@ class TaskController extends DefaultController
             $dist = $auth->getDistance($startPos, $targetPos);
             $targetType = 'origin';
         }
-        
         $duration = (int)$dist * $timeFactor;
         $time = time() + $duration;
         if ($dist < 0){
             $dist = ($dist * -1);
         }
         $negAmount = ($amount * -1);
-        var_dump($amount);
-        var_dump($negAmount);
         $originUnits = $auth->getUnit($type, $startOrigin);
-        if ($originUnits >= $amount){
-            $auth->buyUnit($type, $startOrigin, $negAmount);
+        $owner = $auth->getOwnerUsernameWithOrigin($target);
+        $spaceLeft = $auth->getSpaceLeftAtOrigin($type, $target);
+        if ($_SESSION["auth"] != $owner){
+            echo 'wrong owner';
+        } else if ($spaceLeft < $amount){
+            echo 'pas asser de place';
+        } else if ($originUnits >= $amount){
+            //$auth->buyUnit($type, $startOrigin, $negAmount);
             $startPos = $auth->getPos($startOrigin);
             $task = [
                 'action'=>'move', 
@@ -167,11 +170,11 @@ class TaskController extends DefaultController
                 'endTime'=>$time, 
                 'author'=>$_SESSION['authId']
             ];
-            $auth->newTask($task);
+            //$auth->newTask($task);
             if ($isBuilding) {
                 return $duration;
             } else {
-                header('Location: ?p=home&focus='.$originStart);
+                //header('Location: ?p=home&focus='.$originStart);
             }
         } else {
             echo 'pas asser d\'unitées';

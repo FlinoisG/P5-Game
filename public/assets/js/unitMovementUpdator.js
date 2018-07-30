@@ -8,6 +8,7 @@ function unitMovementUpdator(target, posStart, posEnd, timeStart, timeEnd) {
         target.setLatLng(newPos);
         if (percent > 100) {
             clearInterval(x);
+            target.setLatLng(posEnd);
         }
     }, 1000);
 

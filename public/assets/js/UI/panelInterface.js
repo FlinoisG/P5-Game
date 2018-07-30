@@ -341,7 +341,7 @@ panelInterface = {
         pTime.textContent = displayTime; 
 
         var pPercent = document.createElement('p');
-        pPercent.textContent = displayPercent + "%"; 
+        pPercent.textContent = (displayPercent * -1 + 100) + "%"; 
 
         document.getElementById('panelInterface').innerHTML = "";
         document.getElementById('panelInterface').appendChild(title);

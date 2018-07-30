@@ -476,4 +476,28 @@ class Auth
         $pos = $sqlQuery->sqlQuery($query);
         return $pos[0]['pos'];
     }
+
+    public function getOwnerUsernameWithOrigin($origin)
+    {
+        $sqlQuery = new sqlQuery();
+        $arr = explode(",", $origin);
+        $originType = $arr[0];
+        $originId = $arr[1];
+        $query = "SELECT player FROM game_".$originType."s WHERE id='".$originId."'";
+        $pos = $sqlQuery->sqlQuery($query);
+        return $pos[0]['player'];
+    }
+
+    public function getSpaceLeftAtOrigin($type, $origin)
+    {
+        $sqlQuery = new sqlQuery();
+        $arr = explode(",", $origin);
+        $originType = $arr[0];
+        $originId = $arr[1];
+        $query = "SELECT ".$type."Space, ".$type."s FROM game_".$originType."s WHERE id='".$originId."'";
+        $result = $sqlQuery->sqlQuery($query);
+        $spaceLeft = ($result[0][$type."Space"] - $result[0][$type."s"]) + 1;
+        return $spaceLeft;
+    }
+
 }
