@@ -77,8 +77,6 @@ class HomeController extends DefaultController
         } else {
             require('../src/View/VisitorHomeView.php');
         }
-
-        
         
     }
 
@@ -89,6 +87,11 @@ class HomeController extends DefaultController
         }
         $title = 'User Settings';
         require('../src/View/UserSettingsView.php');
+    }
+
+    public function phpinfo() 
+    {
+        die(phpinfo());
     }
 
     public function avatarUpload() 

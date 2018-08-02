@@ -1,5 +1,5 @@
 <?php
-
+//phpinfo();
 $startTime = microtime(true); // Top of page
 
 require_once "../vendor/autoload.php";

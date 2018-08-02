@@ -35,7 +35,10 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" href="?p=home">Aide</a>
-          </li>          
+          </li>   
+          <li class="nav-item">
+            <a class="nav-link" href="?p=home.phpinfo">phpinfo</a>
+          </li>        
           <?php
             if (isset($_SESSION['auth'])) {
                 echo '

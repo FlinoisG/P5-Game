@@ -7,6 +7,7 @@ use App\Controller\LoginController;
 use App\Service\sqlQuery;
 use App\Service\GUID;
 use App\Service\PasswordService;
+use App\Service\SecurityService;
 
 /**
  * Auth class for authentification related functions
@@ -14,7 +15,7 @@ use App\Service\PasswordService;
 class Auth
 {
 
-    public function hash_equals($str1, $str2)
+    public function hash_equals($str1, $str2)   //SecurityService
     {
         if (strlen($str1) != strlen($str2)) {
             return false;
@@ -65,6 +66,22 @@ class Auth
         $scriptHead = "";
         $scriptBody = "";
         $title = '';
+        $securityService = new SecurityService;
+        $defaultController = new DefaultController;
+        $username = $securityService->sanitize($username);
+        if ($username == false) {
+            $available = false;
+        }
+        $email = $securityService->sanitize($email);
+        if ($email == false) {
+            $available = false;
+        }
+        if (!$securityService->validateUsername($username)){
+            $available = false;
+        }
+        if (!$securityService->validateEmail($email)){
+            $available = false;
+        }
         $available = true;
         if (!preg_match('/^[a-zA-Z0-9]{2,26}$/', $username)){
             $available = false;
@@ -168,7 +185,7 @@ class Auth
      * @param string $tokenClient
      * @return $users
      */
-    public function checkTokenValidity($username, $tokenClient)
+    public function checkTokenValidity($username, $tokenClient)//SecurityService
     {
         $sqlQuery = new sqlQuery();
         $user = $sqlQuery->sqlQuery("SELECT token FROM game_users WHERE username='".$username."'");
