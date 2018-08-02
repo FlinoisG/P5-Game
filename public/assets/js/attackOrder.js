@@ -30,7 +30,7 @@ attackOrder = {
 
         document.addEventListener("mousemove", this.checkMousePos);
         //Map.mainMap.map.addEventListener("mousemove", this.checkPosValidity);
-        //Map.mainMap.map.addEventListener("click", this.eventOnClick);
+        Map.mainMap.map.addEventListener("click", this.eventOnClick);
         
         var panelSub = document.createElement('div');
         panelSub.id = 'panelSub';
@@ -83,16 +83,16 @@ attackOrder = {
             x++;  
         }
     },
-
+*/
     eventOnClick(e){
         console.log(attackOrder.validated);
-        if (attackOrder.validated == true){
-            pos = coordinatesToGrid(e.latlng.lng, e.latlng.lat);
-            window.location.replace("?p=task.attackUnit&type="+attackOrder.type+"&startOrigin=" + attackOrder.origin + "&$target="+"&$amount="+attackOrder.amount+"&$isBuilding=");
-            //attackUnit($type=null, $startOrigin=null, $target=null, $amount=1, $isBuilding=false)
-        } else {
-        }
-    },*/
+        //if (attackOrder.validated == true){
+        //    pos = coordinatesToGrid(e.latlng.lng, e.latlng.lat);
+        //    window.location.replace("?p=task.attackUnit&type="+attackOrder.type+"&startOrigin=" + attackOrder.origin + "&$target="+"&$amount="+attackOrder.amount+"&$isBuilding=");
+        //    //attackUnit($type=null, $startOrigin=null, $target=null, $amount=1, $isBuilding=false)
+        //} else {
+        //}
+    },
 
     cancel(){
         attackOrder.orderMode = false;

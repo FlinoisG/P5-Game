@@ -157,6 +157,75 @@ class TaskController extends DefaultController
         } else if ($spaceLeft < $amount){
             echo 'pas asser de place';
         } else if ($originUnits >= $amount){
+            $auth->buyUnit($type, $startOrigin, $negAmount);
+            $startPos = $auth->getPos($startOrigin);
+            $task = [
+                'action'=>'move', 
+                'subject'=>$type.",".$amount, 
+                'startOrigin'=>$startOrigin, 
+                'startPos'=>$startPos, 
+                'targetOrigin'=>$targetOrigin, 
+                'targetPos'=>$targetPos, 
+                'startTime'=>time(), 
+                'endTime'=>$time, 
+                'author'=>$_SESSION['authId']
+            ];
+            $auth->newTask($task);
+            if ($isBuilding) {
+                return $duration;
+            } else {
+                header('Location: ?p=home&focus='.$originStart);
+            }
+        } else {
+            echo 'pas asser d\'unitées';
+        }
+    }
+
+    public function attack($type=null, $startOrigin=null, $target=null, $amount=1, $isBuilding=false)
+    {
+        if (!isset($_SESSION)) { 
+            session_start(); 
+        }
+        if ($type == null) $type = $_GET['type'];
+        if ($startOrigin == null) $startOrigin = $_GET['startOrigin'];
+        if ($target == null) $target = $_GET['target'];
+        if (isset($_GET['amount'])) $amount = $_GET['amount'];
+        $auth = new Auth;
+        if ($type == 'worker'){
+            $timeFactor = $this->workerTimeFactor;
+        } else {
+            $timeFactor = $this->defaultTimeFactor;
+        }
+        $startPos = json_decode($auth->getPos($startOrigin));
+        if (preg_match('/[\[]/', $target)) {
+            //var_dump('$target is pos');
+            $targetPos = json_decode($target);
+            $dist = $auth->getDistance($startPos, json_decode($target));
+            $targetType = 'pos';
+        } else {
+            //var_dump('$target is origin');
+            $targetOrigin = $target;
+            $arr = explode(',', $target);
+            $originType = $arr[0];
+            $originId = $arr[1];
+            $targetPos = json_decode($auth->getPos($target));
+            $dist = $auth->getDistance($startPos, $targetPos);
+            $targetType = 'origin';
+        }
+        $duration = (int)$dist * $timeFactor;
+        $time = time() + $duration;
+        if ($dist < 0){
+            $dist = ($dist * -1);
+        }
+        $negAmount = ($amount * -1);
+        $originUnits = $auth->getUnit($type, $startOrigin);
+        $owner = $auth->getOwnerUsernameWithOrigin($target);
+        $spaceLeft = $auth->getSpaceLeftAtOrigin($type, $target);
+        if ($_SESSION["auth"] != $owner){
+            echo 'wrong owner';
+        } else if ($spaceLeft < $amount){
+            echo 'pas asser de place';
+        } else if ($originUnits >= $amount){
             //$auth->buyUnit($type, $startOrigin, $negAmount);
             $startPos = $auth->getPos($startOrigin);
             $task = [
@@ -174,7 +243,7 @@ class TaskController extends DefaultController
             if ($isBuilding) {
                 return $duration;
             } else {
-                //header('Location: ?p=home&focus='.$originStart);
+                header('Location: ?p=home&focus='.$originStart);
             }
         } else {
             echo 'pas asser d\'unitées';
