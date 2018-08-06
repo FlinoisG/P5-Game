@@ -4,6 +4,12 @@ namespace App\Service;
 
 class GUID
 {
+
+    /**
+     * Generate a GUID
+     *
+     * @return string GUID
+     */
     public function getGUID()
     {
         mt_srand((double)microtime()*10000);

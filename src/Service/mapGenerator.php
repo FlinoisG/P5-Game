@@ -48,9 +48,13 @@ class MapGenerator {
         }
         $content = $content . '</script>';
         return $content;
-
     }
 
+    /**
+     * Generate a new ore map into deposit/Maps/oreMap.json
+     *
+     * @return void
+     */
     public function getOreMap()
     {
         $perlin = new Perlin();

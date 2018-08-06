@@ -2,9 +2,20 @@
 
 namespace App\Service;
 
+/**
+ * Undocumented class
+ */
 class Grid
 {
 
+    /**
+     * Translate longitude and latitude to grid coordinate
+     *
+     * @param integer $x Longitude
+     * @param integer $y Latitude
+     * @param string $type x, y or both
+     * @return void
+     */
     public function coordinatesToGrid($x=0, $y=0, $type='both')
     {
         $x = $x * 10;
@@ -23,6 +34,14 @@ class Grid
         }
     }
 
+    /**
+     * Translate grid coordinate to longitude and latitude 
+     *
+     * @param integer $x Longitude
+     * @param integer $y Latitude
+     * @param string $type x, y or both
+     * @return void
+     */
     public function gridToCoordinates($x=0, $y=0, $type='both')
     {
         $x = $x - 117;

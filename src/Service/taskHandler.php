@@ -11,9 +11,14 @@ use App\Controller\BaseController;
 class TaskHandler
 {
 
+    /**
+     * Take a task from the database and execute it if condition are met
+     *
+     * @param object $tasks
+     * @return void
+     */
     public function handleTasks($tasks)
     {
-        var_dump("oui");
         $auth = new Auth;
         foreach ($tasks as $task) {
             if ($task["endTime"] < time()) {

@@ -7,11 +7,20 @@ use App\Service\Auth;
 
 class MapInit {
 
+    /**
+     * get all map object (bases, mines, tasks..) 
+     * and return a script to give them to map.js
+     *
+     * @return string 
+     */
     public function mapInit()
     {
         
         $auth = new Auth;
         $objects = $auth->getMapObjects();
+        print_r("<pre>");
+        print_r($objects);
+        print_r("</pre>");
         $buildingTasks = $auth->getTasks('build');
         $moveTasks = $auth->getTasks('move');
         $usernames = $auth->getAllUsername();
@@ -53,59 +62,24 @@ class MapInit {
             if ($object['type'] == "base" || $object['type'] == "mine") {
                 $object["origin"] = $object['type'].",".$object['id'];
                 $content = [];
-                
-                //if ($object['type'] == "base" || $object['type'] == "mine") {
-                    $workers = $allUnits[$object['type']][$object["id"]]["workers"];
-                    $soldiers = $allUnits[$object['type']][$object["id"]]["soldiers"];
-                //}
-                //if ($object['type'] == "mine") {
-                //    $workers = $allUnits["mine"][$object["id"]]["workers"];
-                //    $soldiers = $allUnits["mine"][$object["id"]]["soldiers"];
-                //}
-                //$workers = $allUnits[$object['type']][$object["id"]]["workers"];
-                //$soldiers = $allUnits[$object['type']][$object["id"]]["soldiers"];
+                $workers = $allUnits[$object['type']][$object["id"]]["workers"];
+                $soldiers = $allUnits[$object['type']][$object["id"]]["soldiers"];
                 if ($workers != 0) {
                     $content["workers"] = $workers;
                 }
                 if ($soldiers != 0) {
                     $content["soldiers"] = $soldiers;
                 }
-                /*
-                foreach ($unitsUpgradesInConst as $unit) {
-                    if ($unit["startOrigin"] == $object["origin"]) {
-                        if ($unit["subject"] == "worker") {
-                            if (!array_key_exists("workersInConst",$content)) $content["workersInConst"] = [];
-                            array_push($content["workersInConst"], $unit["endTime"]);
-                        } else if ($unit["subject"] == "soldier") {
-                            if (!array_key_exists("soldiersInConst",$content)) $content["soldiersInConst"] = [];
-                            array_push($content["soldiersInConst"], $unit["endTime"]);
-                        }
-                    }
-                }
-
-                $workerSpaceInConstruct = $auth->getEntityInConst("workerSpace", $object["id"]);
-                if ($workerSpaceInConstruct) {
-                    $content["workerSpaceInConst"] = (int)$workerSpaceInConstruct[0]["time"];
-                }
-                $soldierSpaceInConstruct = $auth->getEntityInConst("soldierSpace", $object["id"]);
-                if ($soldierSpaceInConstruct) {
-                    $content["soldierSpaceInConst"] = (int)$soldierSpaceInConstruct[0]["time"];
-                }*/
                 
                 if (isset($unitsInConst["worker"])) {
                    
                     foreach ($unitsInConst["worker"] as $worker) {
-                        //print_r($worker);
-                        //print_r("<br>");
+
                         if ($worker[0] == $object["origin"]){
-                            //var_dump("MERDE");
                             if (!array_key_exists("workersInConst",$content)) $content["workersInConst"] = [];
-                            //var_dump($worker[1]);
-                            
                             array_push($content["workersInConst"], $worker[1]);
                         }
                     }
-                    //$content["workersInConst"] = (int)$workerSpaceInConstruct[0]["time"];
                 }
                 if (isset($unitsInConst["soldier"])) {
                     foreach ($unitsInConst["soldier"] as $soldier) {
@@ -114,7 +88,6 @@ class MapInit {
                             array_push($content["soldiersInConst"], $soldier[1]);
                         }
                     }
-                    //$content["soldiersInConst"] = (int)$soldierSpaceInConstruct[0]["time"];
                 }                
                 foreach ($unitsUpgradesInConst as $unit) {
                     if ($unit[0]["startOrigin"] == $object["origin"]) {

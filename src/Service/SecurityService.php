@@ -5,6 +5,13 @@ namespace App\Service;
 class SecurityService
 {
 
+    /**
+     * Compare hashed strings
+     *
+     * @param string $str1 known string
+     * @param string $str2 user string
+     * @return boolean
+     */
     public function hash_equals($str1, $str2)
     {
         if (strlen($str1) != strlen($str2)) {
@@ -19,6 +26,12 @@ class SecurityService
         }
     }
 
+    /**
+     * Sanitize data before using them in SQL request
+     *
+     * @param string $data
+     * @return void
+     */
     public function sanitize($data)
     {
         $sanitizedData = htmlspecialchars($data);

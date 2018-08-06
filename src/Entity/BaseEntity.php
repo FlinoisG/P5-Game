@@ -4,17 +4,17 @@ namespace App\Entity;
 
 class BaseEntity
 {
-    private $id;
-    private $type;
-    private $player;
-    private $playerId;
-    private $hp;
-    private $main;
-    private $pos;
-    private $workerSpace;
-    private $soldierSpace;
-    private $workers;
-    private $soliders;
+    protected $id;
+    protected $type;
+    protected $player;
+    protected $playerId;
+    protected $hp;
+    protected $main;
+    protected $pos;
+    protected $workerSpace;
+    protected $soldierSpace;
+    protected $workers;
+    protected $soliders;
 
     public function __constructor($id, $type, $player, $playerId, $hp, $main, $pos, $workerSpace, $soldierSpace, $workers, $soldiers)
     {
