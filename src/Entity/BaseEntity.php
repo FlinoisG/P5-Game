@@ -16,8 +16,9 @@ class BaseEntity
     protected $workers;
     protected $soliders;
 
-    public function __constructor($id, $type, $player, $playerId, $hp, $main, $pos, $workerSpace, $soldierSpace, $workers, $soldiers)
+    public function __constructor($args) //$id, $type, $player, $playerId, $hp, $main, $pos, $workerSpace, $soldierSpace, $workers, $soldiers
     {
+        //  
         $this->setId($id);
         $this->setType($type);
         $this->setPlayer($player);
@@ -37,18 +38,6 @@ class BaseEntity
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set the value of id
-     *
-     * @return  self
-     */ 
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
     }
 
     /**

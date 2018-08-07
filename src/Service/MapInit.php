@@ -13,14 +13,14 @@ class MapInit {
      *
      * @return string 
      */
-    public function mapInit()
+    public function mapInit($objs = null) //À compléter
     {
         
         $auth = new Auth;
         $objects = $auth->getMapObjects();
-        print_r("<pre>");
-        print_r($objects);
-        print_r("</pre>");
+        //print_r("<pre>");
+        //print_r($objects);
+        //print_r("</pre>");
         $buildingTasks = $auth->getTasks('build');
         $moveTasks = $auth->getTasks('move');
         $usernames = $auth->getAllUsername();

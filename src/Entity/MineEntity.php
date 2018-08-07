@@ -5,21 +5,13 @@ namespace App\Entity;
 class MineEntity
 {
 	protected $id;
-
 	protected $type;
-
 	protected $player;
-
 	protected $hp;
-
 	protected $pos;
-
 	protected $workerSpace;
-
 	protected $soldierSpace;
-
 	protected $workers;
-
 	protected $soldiers;
 
     public function __construct($id, $type, $player, $hp, $pos, $workerSpace, $soldierSpace, $workers, $soldiers)
