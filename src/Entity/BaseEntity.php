@@ -14,22 +14,26 @@ class BaseEntity
     protected $workerSpace;
     protected $soldierSpace;
     protected $workers;
-    protected $soliders;
+    protected $soldiers;
 
-    public function __constructor($args) //$id, $type, $player, $playerId, $hp, $main, $pos, $workerSpace, $soldierSpace, $workers, $soldiers
+    public function __construct($args)
     {
-        //  
-        $this->setId($id);
-        $this->setType($type);
-        $this->setPlayer($player);
-        $this->setPlayerId($playerId);
-        $this->setHp($hp);
-        $this->setMain($main);
-        $this->setPos($pos);
-        $this->setWorkerSpace($workerSpace);
-        $this->setSoldierSpace($soldierSpace);
-        $this->setWorkers($workers);
-        $this->setSoldiers($soldiers);
+        $this->hydrate($args);
+    }
+
+    public function hydrate($args)
+    {
+        $this->id = ($args['id']);
+        $this->setType($args['type']);
+        $this->setPlayer($args['player']);
+        $this->setPlayerId($args['playerId']);
+        $this->setHp($args['HP']);
+        $this->setMain($args['main']);
+        $this->setPos($args['pos']);
+        $this->setWorkerSpace($args['workerSpace']);
+        $this->setSoldierSpace($args['soldierSpace']);
+        $this->setWorkers($args['workers']);
+        $this->setSoldiers($args['soldiers']);
     }
 
     /**
@@ -221,21 +225,21 @@ class BaseEntity
     }
 
     /**
-     * Get the value of soliders
+     * Get the value of soldiers
      */ 
-    public function getSoliders()
+    public function getSoldiers()
     {
-        return $this->soliders;
+        return $this->soldiers;
     }
 
     /**
-     * Set the value of soliders
+     * Set the value of soldiers
      *
      * @return  self
      */ 
-    public function setSoliders($soliders)
+    public function setSoldiers($soldiers)
     {
-        $this->soliders = $soliders;
+        $this->soldiers = $soldiers;
 
         return $this;
     }

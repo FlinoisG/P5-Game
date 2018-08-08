@@ -10,6 +10,7 @@ use App\Service\Grid;
 use App\Service\MapInit;
 use App\Service\Auth;
 use App\Service\OreRepo;
+use App\Repository\BaseRepository;
 
 class HomeController extends DefaultController
 {
@@ -136,8 +137,8 @@ class HomeController extends DefaultController
     }
 
     public function testArea(){
-        $auth = new Auth;
-        var_dump($auth->getAllUsername());
+        $baseRepo = new BaseRepository;
+        var_dump($baseRepo->getById(1));
         
         require('../src/View/base.php');
     }

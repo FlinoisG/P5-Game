@@ -62,7 +62,7 @@
       </div>
     </nav>
     <div id="main">
-      <?= $content ?>
+      <?php if (isset($content)) echo $content; ?>
     </div>
     <?php if (isset($scriptBody)) echo $scriptBody; ?>
     
