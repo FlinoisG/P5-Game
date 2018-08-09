@@ -138,8 +138,7 @@ class HomeController extends DefaultController
 
     public function testArea(){
         $baseRepo = new BaseRepository;
-        var_dump($baseRepo->getById(1));
-        
+        var_dump($baseRepo->getSpaceLeft("soldier", 1));
         require('../src/View/base.php');
     }
 
