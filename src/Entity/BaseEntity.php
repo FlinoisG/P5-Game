@@ -14,26 +14,45 @@ class BaseEntity
     protected $workerSpace;
     protected $soldierSpace;
     protected $workers;
-    protected $soldiers;
+    protected $soliders;
 
-    public function __construct($args)
+    public function __constructor($args)
     {
-        $this->hydrate($args);
-    }
-
-    public function hydrate($args)
-    {
-        $this->id = ($args['id']);
-        $this->setType($args['type']);
-        $this->setPlayer($args['player']);
-        $this->setPlayerId($args['playerId']);
-        $this->setHp($args['HP']);
-        $this->setMain($args['main']);
-        $this->setPos($args['pos']);
-        $this->setWorkerSpace($args['workerSpace']);
-        $this->setSoldierSpace($args['soldierSpace']);
-        $this->setWorkers($args['workers']);
-        $this->setSoldiers($args['soldiers']);
+        if (is_array($arg)){
+            if (isset($args['id'])) {
+                $this->id = ($args['id']);
+            }
+            if (isset($args['type'])){
+                $this->setType($args['type']);
+            }
+            if (isset($args['player'])){
+                $this->setPlayer($args['player']);
+            }
+            if (isset($args['playerId'])){
+                $this->setPlayerId($args['playerId']);
+            }
+            if (isset($args['HP'])){
+                $this->setHp($args['HP']);
+            }
+            if (isset($args['main'])){
+                $this->setMain($args['main']);
+            }
+            if (isset($args['pos'])){
+                $this->setPos($args['pos']);
+            }
+            if (isset($args['workerSpace'])){
+                $this->setWorkerSpace($args['workerSpace']);
+            }
+            if (isset($args['soldierSpace'])){
+                $this->setSoldierSpace($args['soldierSpace']);
+            }
+            if (isset($args['workers'])){
+                $this->setWorkers($args['workers']);
+            }
+            if (isset($args['soldiers'])){
+                $this->setSoldiers($args['soldiers']);
+            }
+        }
     }
 
     /**
@@ -225,21 +244,21 @@ class BaseEntity
     }
 
     /**
-     * Get the value of soldiers
+     * Get the value of soliders
      */ 
-    public function getSoldiers()
+    public function getSoliders()
     {
-        return $this->soldiers;
+        return $this->soliders;
     }
 
     /**
-     * Set the value of soldiers
+     * Set the value of soliders
      *
      * @return  self
      */ 
-    public function setSoldiers($soldiers)
+    public function setSoliders($soliders)
     {
-        $this->soldiers = $soldiers;
+        $this->soliders = $soliders;
 
         return $this;
     }
