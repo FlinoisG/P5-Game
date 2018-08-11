@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Service\Auth;
 use App\Service\EntitiesService;
+use App\Repository\BaseRepository;
+use App\Repository\MineRepository;
 
 class TaskController extends DefaultController
 {
@@ -151,6 +153,12 @@ class TaskController extends DefaultController
         $negAmount = ($amount * -1);
         $originUnits = $auth->getUnit($type, $startOrigin);
         $owner = $auth->getOwnerUsernameWithOrigin($target);
+        $baseRepository = new BaseRepository;
+        var_dump($target);
+        if ($type === "worker"){
+            $spaceLeft = $baseRepository->getSoldierSpaceLeft();
+        }
+        //$spaceLeft = $baseRepository->getSoldierSpaceLeft
         $spaceLeft = $auth->getSpaceLeftAtOrigin($type, $target);
         if ($_SESSION["auth"] != $owner){
             echo 'wrong owner';

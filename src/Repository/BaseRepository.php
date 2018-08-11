@@ -27,7 +27,6 @@ class BaseRepository extends ObjectRepository
     public function setType($type)
     {
         $this->type = $type;
-
         return $this;
     }
 
@@ -51,6 +50,28 @@ class BaseRepository extends ObjectRepository
         $query->execute();
         $obj = new BaseEntity($query->fetch());
         return $obj;
+    }
+
+    public function getWorkerSpaceLeft($id)
+    {
+        $DBConnection = $this->getDBConnection();
+        $query = $DBConnection->prepare("SELECT workerSpace, workers FROM game_bases WHERE id = :id");
+        $query->bindParam(':id', $id, PDO::PARAM_INT);
+        $query->execute();
+        $result = $query->fetch();
+        $spaceLeft = ($result["workerSpace"] - $result["workers"]) + 1;
+        return $spaceLeft;
+    }
+
+    public function getSoldierSpaceLeft($id)
+    {
+        $DBConnection = $this->getDBConnection();
+        $query = $DBConnection->prepare("SELECT soldierSpace, soldiers FROM game_bases WHERE id = :id");
+        $query->bindParam(':id', $id, PDO::PARAM_INT);
+        $query->execute();
+        $result = $query->fetch();
+        $spaceLeft = ($result["soldierSpace"] - $result["soldiers"]) + 1;
+        return $spaceLeft;
     }
     
 }
