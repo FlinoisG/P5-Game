@@ -4,31 +4,31 @@ namespace App\Repository;
 
 use PDO;
 use App\Model\Repository;
-use App\Entity\BaseEntity;
+use App\Entity\MineEntity;
 
-class BaseRepository extends ObjectRepository
+class MineRepository extends ObjectRepository
 {
 
-    public function getBases()
+    public function getMines()
     {
         $DBConnection = $this->getDBConnection();
-        $query = $DBConnection->prepare("SELECT * FROM game_bases");
+        $query = $DBConnection->prepare("SELECT * FROM game_mines");
         $query->execute();
-        $bases = $query->fetchAll();
-        $basesArray = [];
-        for ($i=0; $i < sizeof($bases); $i++) { 
-            $basesArray[$i] = new BaseEntity($bases[$i]);
+        $mines = $query->fetchAll();
+        $minesArray = [];
+        for ($i=0; $i < sizeof($mines); $i++) { 
+            $minesArray[$i] = new MineEntity($mines[$i]);
         }
-        return $bases;
+        return $mines;
     }
 
     public function getUnits($unit, $id)
     {
         $DBConnection = $this->getDBConnection();
         if ($unit === "worker") {
-            $query = $DBConnection->prepare("SELECT workers FROM game_bases WHERE id= :id");
+            $query = $DBConnection->prepare("SELECT workers FROM game_mines WHERE id= :id");
         } else if ($unit === "soldier") {
-            $query = $DBConnection->prepare("SELECT soldiers FROM game_bases WHERE id= :id");
+            $query = $DBConnection->prepare("SELECT soldiers FROM game_mines WHERE id= :id");
         } else {
             return false;
             die();

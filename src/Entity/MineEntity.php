@@ -14,17 +14,37 @@ class MineEntity
 	protected $workers;
 	protected $soldiers;
 
-    public function __construct($id, $type, $player, $hp, $pos, $workerSpace, $soldierSpace, $workers, $soldiers)
+    public function __construct($args)
     {
-        $this->id = $id;
-        $this->type = $type;
-        $this->player = $player;
-        $this->hp = $hp;
-        $this->pos = $pos;
-        $this->workerSpace = $workerSpace;
-        $this->soldierSpace = $soldierSpace;
-        $this->workers = $workers;
-        $this->soldiers = $soldiers;
+		if (is_array($args)){
+            if (isset($args['id'])) {
+                $this->id = $args['id'];
+			}
+			if (isset($args['type'])) {
+                $this->setType($args['type']);
+			}
+			if (isset($args['player'])) {
+                $this->setPlayer($args['player']);
+			}
+			if (isset($args['hp'])) {
+                $this->setHp($args['hp']);
+			}
+			if (isset($args['pos'])) {
+                $this->setPos($args['pos']);
+			}
+			if (isset($args['workerSpace'])) {
+                $this->setWorkerSpace($args['workerSpace']);
+			}
+			if (isset($args['soldierSpace'])) {
+                $this->setSoldierSpace($args['soldierSpace']);
+			}
+			if (isset($args['workers'])) {
+                $this->setWorkers($args['workers']);
+			}
+			if (isset($args['soldiers'])) {
+                $this->setSoldiers($args['soldiers']);
+			}
+		}
     }
 
     
@@ -35,18 +55,6 @@ class MineEntity
 	public function getId()
 	{
 		return $this->id;
-	}
-
-	/**
-	 * Set the value of id
-	 *
-	 * @return  self
-	 */ 
-	public function setId($id)
-	{
-		$this->id = $id;
-
-		return $this;
 	}
 
 	/**

@@ -11,6 +11,7 @@ use App\Service\MapInit;
 use App\Service\Auth;
 use App\Service\OreRepo;
 use App\Repository\BaseRepository;
+use App\Repository\MineRepository;
 
 class HomeController extends DefaultController
 {
@@ -21,8 +22,6 @@ class HomeController extends DefaultController
         if (!isset($_SESSION)) { 
             session_start(); 
         } 
-
-        
 
         $customStyle = $this->setCustomStyle('panel');
         $entitiesService = new EntitiesService;
@@ -43,7 +42,7 @@ class HomeController extends DefaultController
         $scriptHead .= $this->setScript('moveOrder');
         $scriptHead .= $this->setScript('attackOrder');
         $auth = new Auth;
-        $oreMap = file_get_contents('../deposit/Maps/OreMap.json');
+        $oreMap = file_get_contents('../deposit/Maps/oreMap.json');
         $scriptBody = '<script>var oreMapObj = '.$oreMap.'</script>';
         $scriptBody .= $this->setScript('grid');
         $mapInit = new MapInit;
@@ -138,7 +137,8 @@ class HomeController extends DefaultController
 
     public function testArea(){
         $baseRepo = new BaseRepository;
-        var_dump($baseRepo->getWorkerSpaceLeft(1));
+        $mineRepo = new MineRepository;
+        var_dump($mineRepo->getUnits("worker", 1));
         require('../src/View/base.php');
     }
 

@@ -32,9 +32,9 @@ body {
     padding-top: 55.6px;
     font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
     color: white;
-    background-color: rgb(15, 15, 15);
+    /*background-color: rgb(15, 15, 15);
+    overflow: hidden;*/
     text-align: center;
-    overflow: hidden;
 }
 
 .btn-logout{

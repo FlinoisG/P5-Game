@@ -43,7 +43,16 @@ class TaskController extends DefaultController
                     $inConstruct++;
                 }
             }
-            $units = $auth->getUnit($type, $startOrigin);
+            $baseRepository = new BaseRepository;
+            $mineRepository = new MineRepository;
+            $building = explode(",", $startOrigin)[0];
+            $id = explode(",", $startOrigin)[1];
+            if ($building === "base"){
+                $units = $baseRepository->getUnits($type, $id);
+            } else if ($building === "mine"){
+                $units = $mineRepository->getUnits($type, $id);
+            }
+            //$units = $auth->getUnit($type, $startOrigin);
             $slots = (int)$inConstruct + (int)$units;
             $space = $auth->getSpace($type, $startOrigin);
             if ($slots > $space) {
@@ -131,12 +140,10 @@ class TaskController extends DefaultController
         }
         $startPos = json_decode($auth->getPos($startOrigin));
         if (preg_match('/[\[]/', $target)) {
-            //var_dump('$target is pos');
             $targetPos = json_decode($target);
             $dist = $auth->getDistance($startPos, json_decode($target));
             $targetType = 'pos';
         } else {
-            //var_dump('$target is origin');
             $targetOrigin = $target;
             $arr = explode(',', $target);
             $originType = $arr[0];
@@ -151,15 +158,40 @@ class TaskController extends DefaultController
             $dist = ($dist * -1);
         }
         $negAmount = ($amount * -1);
-        $originUnits = $auth->getUnit($type, $startOrigin);
+        $baseRepository = new BaseRepository;
+        $mineRepository = new MineRepository;
+        $building = explode(",", $startOrigin)[0];
+        $id = explode(",", $startOrigin)[1];
+        if ($building === "base"){
+            $originUnits = $baseRepository->getUnits($type, $id);
+        } else if ($building === "mine"){
+            $originUnits = $mineRepository->getUnits($type, $id);
+        }
+        //$originUnits = $auth->getUnit($type, $startOrigin);
         $owner = $auth->getOwnerUsernameWithOrigin($target);
         $baseRepository = new BaseRepository;
-        var_dump($target);
+        $mineRepository = new MineRepository;
+        $building = explode(",", $target)[0];
+        $id = explode(",", $target)[1];
         if ($type === "worker"){
-            $spaceLeft = $baseRepository->getSoldierSpaceLeft();
+            if ($building === "base"){
+                $spaceLeft = $baseRepository->getWorkerSpaceLeft($id);
+            } else if ($building === "mine"){
+                $spaceLeft = $mineRepository->getWorkerSpaceLeft($id);
+            }
+        } else if ($type === "soldier") {
+            if ($building === "base"){
+                $spaceLeft = $baseRepository->getSoldierSpaceLeft($id);
+            } else if ($building === "mine"){
+                $spaceLeft = $mineRepository->getSoldierSpaceLeft($id);
+            } else {
+                $spaceLeft = 0;
+            }
+        } else {
+            $spaceLeft = 0;
         }
         //$spaceLeft = $baseRepository->getSoldierSpaceLeft
-        $spaceLeft = $auth->getSpaceLeftAtOrigin($type, $target);
+        //$spaceLeft = $auth->getSpaceLeftAtOrigin($type, $target);
         if ($_SESSION["auth"] != $owner){
             echo 'wrong owner';
         } else if ($spaceLeft < $amount){
@@ -226,9 +258,39 @@ class TaskController extends DefaultController
             $dist = ($dist * -1);
         }
         $negAmount = ($amount * -1);
-        $originUnits = $auth->getUnit($type, $startOrigin);
+        $baseRepository = new BaseRepository;
+        $mineRepository = new MineRepository;
+        $building = explode(",", $startOrigin)[0];
+        $id = explode(",", $startOrigin)[1];
+        if ($building === "base"){
+            $originUnits = $baseRepository->getUnits($type, $id);
+        } else if ($building === "mine"){
+            $originUnits = $mineRepository->getUnits($type, $id);
+        }
+        //$originUnits = $auth->getUnit($type, $startOrigin);
         $owner = $auth->getOwnerUsernameWithOrigin($target);
-        $spaceLeft = $auth->getSpaceLeftAtOrigin($type, $target);
+        $baseRepository = new BaseRepository;
+        $mineRepository = new MineRepository;
+        $id = explode(",", $target)[1];
+        $building = explode(",", $target)[0];
+        if ($type === "worker"){
+            if ($building === "base"){
+                $spaceLeft = $baseRepository->getWorkerSpaceLeft($id);
+            } else if ($building === "mine"){
+                $spaceLeft = $mineRepository->getWorkerSpaceLeft($id);
+            }
+        } else if ($type === "soldier") {
+            if ($building === "base"){
+                $spaceLeft = $baseRepository->getSoldierSpaceLeft($id);
+            } else if ($building === "mine"){
+                $spaceLeft = $mineRepository->getSoldierSpaceLeft($id);
+            } else {
+                $spaceLeft = 0;
+            }
+        } else {
+            $spaceLeft = 0;
+        }
+        //$spaceLeft = $auth->getSpaceLeftAtOrigin($type, $target);
         if ($_SESSION["auth"] != $owner){
             echo 'wrong owner';
         } else if ($spaceLeft < $amount){

@@ -224,11 +224,14 @@ class Auth
 
     public function getMapObjects()
     {
+        var_dump("getMapObjects");
+        /*
         $sqlQuery = new sqlQuery();
         $bases = $sqlQuery->sqlQuery("SELECT * FROM game_bases");
         $mines = $sqlQuery->sqlQuery("SELECT * FROM game_mines");
         $objects = array_merge($bases, $mines);
         return $objects;
+        */
     }
 
     public function getMetal($username)
@@ -249,6 +252,8 @@ class Auth
 
     public function getUnit($unit, $targetOrigin)
     {
+        var_dump("getUnit");
+        /*
         $sqlQuery = new sqlQuery();
         $arr = explode(',', $targetOrigin);
         $buildingType = $arr[0];
@@ -259,6 +264,7 @@ class Auth
         } else {
             return $baseUnit[0][$unit."s"];
         }
+        */
     }
 
     public function getAllUnit()
@@ -507,6 +513,8 @@ class Auth
 
     public function getSpaceLeftAtOrigin($type, $origin)
     {
+        var_dump("getSpaceLeftAtOrigin");
+        /*
         $sqlQuery = new sqlQuery();
         $arr = explode(",", $origin);
         $originType = $arr[0];
@@ -515,6 +523,7 @@ class Auth
         $result = $sqlQuery->sqlQuery($query);
         $spaceLeft = ($result[0][$type."Space"] - $result[0][$type."s"]) + 1;
         return $spaceLeft;
+        */
     }
 
 }

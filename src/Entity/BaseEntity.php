@@ -14,11 +14,11 @@ class BaseEntity
     protected $workerSpace;
     protected $soldierSpace;
     protected $workers;
-    protected $soliders;
+    protected $soldiers;
 
-    public function __constructor($args)
+    public function __construct($args)
     {
-        if (is_array($arg)){
+        if (is_array($args)){
             if (isset($args['id'])) {
                 $this->id = ($args['id']);
             }
@@ -244,21 +244,21 @@ class BaseEntity
     }
 
     /**
-     * Get the value of soliders
+     * Get the value of soldiers
      */ 
-    public function getSoliders()
+    public function getSoldiers()
     {
-        return $this->soliders;
+        return $this->soldiers;
     }
 
     /**
-     * Set the value of soliders
+     * Set the value of soldiers
      *
      * @return  self
      */ 
-    public function setSoliders($soliders)
+    public function setSoldiers($soldiers)
     {
-        $this->soliders = $soliders;
+        $this->soldiers = $soldiers;
 
         return $this;
     }

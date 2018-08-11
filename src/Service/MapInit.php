@@ -4,6 +4,8 @@ namespace App\Service;
 
 use App\Service\Grid;
 use App\Service\Auth;
+use App\Repository\BaseRepository;
+use App\Repository\MineRepository;
 
 class MapInit {
 
@@ -17,10 +19,16 @@ class MapInit {
     {
         
         $auth = new Auth;
-        $objects = $auth->getMapObjects();
-        //print_r("<pre>");
-        //print_r($objects);
-        //print_r("</pre>");
+        //$objectsOld = $auth->getMapObjects();
+
+        $baseRepository = new BaseRepository;
+        $mineRepository = new MineRepository;
+
+        $bases = $baseRepository->getBases();
+        $mines = $mineRepository->getMines();
+
+        $objects = array_merge($bases, $mines);
+
         $buildingTasks = $auth->getTasks('build');
         $moveTasks = $auth->getTasks('move');
         $usernames = $auth->getAllUsername();
