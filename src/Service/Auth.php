@@ -294,6 +294,8 @@ class Auth
 
     public function buyUnit($unit, $origin, $amount=1)
     {
+        var_dump("buyUnit");
+        /*
         $sqlQuery = new sqlQuery();
         $arr = explode(",", $origin);
         $originType = $arr[0];
@@ -301,6 +303,7 @@ class Auth
         $baseUnit = $this->getUnit($unit, $origin);
         $baseUnit = $baseUnit + $amount;
         $sqlQuery->sqlQuery("UPDATE game_".$originType."s SET ".$unit."s = ".$baseUnit." WHERE id='".$originId."'");
+        */
     }  
 
     public function buySpace($type, $origin, $amount=5)

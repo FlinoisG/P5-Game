@@ -138,7 +138,7 @@ class HomeController extends DefaultController
     public function testArea(){
         $baseRepo = new BaseRepository;
         $mineRepo = new MineRepository;
-        var_dump($mineRepo->getUnits("worker", 1));
+        var_dump($baseRepo->buySoldiers(1));
         require('../src/View/base.php');
     }
 

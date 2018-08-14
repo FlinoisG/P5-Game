@@ -25,9 +25,9 @@ class BaseRepository extends ObjectRepository
     public function getUnits($unit, $id)
     {
         $DBConnection = $this->getDBConnection();
-        if ($unit === "worker") {
+        if ($unit === "workers") {
             $query = $DBConnection->prepare("SELECT workers FROM game_bases WHERE id= :id");
-        } else if ($unit === "soldier") {
+        } else if ($unit === "soldiers") {
             $query = $DBConnection->prepare("SELECT soldiers FROM game_bases WHERE id= :id");
         } else {
             return false;
@@ -71,5 +71,27 @@ class BaseRepository extends ObjectRepository
         $spaceLeft = ($result["soldierSpace"] - $result["soldiers"]) + 1;
         return $spaceLeft;
     }
+
+    public function buyWorkers($id, $amount=1)
+    {
+        $DBConnection = $this->getDBConnection();
+        $baseUnit = $this->getUnits("workers", $id);
+        $baseUnit = $baseUnit + $amount;
+        $query = $DBConnection->prepare("UPDATE game_bases SET workers= :baseUnit WHERE id= :id");
+        $query->bindParam(':baseUnit', $baseUnit, PDO::PARAM_INT);
+        $query->bindParam(':id', $id, PDO::PARAM_INT);
+        $query->execute();
+    } 
+
+    public function buySoldiers($id, $amount=1)
+    {
+        $DBConnection = $this->getDBConnection();
+        $baseUnit = $this->getUnits("soldiers", $id);
+        $baseUnit = $baseUnit + $amount;
+        $query = $DBConnection->prepare("UPDATE game_bases SET soldiers= :baseUnit WHERE id= :id");
+        $query->bindParam(':baseUnit', $baseUnit, PDO::PARAM_INT);
+        $query->bindParam(':id', $id, PDO::PARAM_INT);
+        $query->execute();
+    } 
     
 }

@@ -25,6 +25,8 @@ class TaskController extends DefaultController
         $startOriginId = $arr[1];
         $entitiesService = new EntitiesService;
         $auth = new Auth;
+        $baseRepository = new BaseRepository;
+        $mineRepository = new MineRepository;
         $available = true;
         $type = $_GET['type'];
         $class = str_replace("'", "", $entitiesService->getType($type)["attributes"]['class']);
@@ -43,14 +45,10 @@ class TaskController extends DefaultController
                     $inConstruct++;
                 }
             }
-            $baseRepository = new BaseRepository;
-            $mineRepository = new MineRepository;
-            $building = explode(",", $startOrigin)[0];
-            $id = explode(",", $startOrigin)[1];
-            if ($building === "base"){
-                $units = $baseRepository->getUnits($type, $id);
-            } else if ($building === "mine"){
-                $units = $mineRepository->getUnits($type, $id);
+            if ($startOriginType === "base"){
+                $units = $baseRepository->getUnits($type, $startOriginId);
+            } else if ($startOriginType === "mine"){
+                $units = $mineRepository->getUnits($type, $startOriginId);
             }
             //$units = $auth->getUnit($type, $startOrigin);
             $slots = (int)$inConstruct + (int)$units;
@@ -62,7 +60,12 @@ class TaskController extends DefaultController
         } else if ($class == 'building') {
             $action = "build";
             //if ($auth->getNewUser($_SESSION['authId']) != 1) {
-            $auth->buyUnit('worker', $startOrigin, -1);
+            //$auth->buyUnit('worker', $startOrigin, -1);
+            if ($startOriginType === "base"){
+                $baseRepository->buyWorkers($startOriginId, -1);
+            } else if ($startOriginType === "mine"){
+                $mineRepository->buyWorkers($startOriginId, -1);
+            }
             //}
         } else if ($class == 'upgrade') {
             $action = "buy";
@@ -167,10 +170,7 @@ class TaskController extends DefaultController
         } else if ($building === "mine"){
             $originUnits = $mineRepository->getUnits($type, $id);
         }
-        //$originUnits = $auth->getUnit($type, $startOrigin);
         $owner = $auth->getOwnerUsernameWithOrigin($target);
-        $baseRepository = new BaseRepository;
-        $mineRepository = new MineRepository;
         $building = explode(",", $target)[0];
         $id = explode(",", $target)[1];
         if ($type === "worker"){
@@ -190,14 +190,26 @@ class TaskController extends DefaultController
         } else {
             $spaceLeft = 0;
         }
-        //$spaceLeft = $baseRepository->getSoldierSpaceLeft
-        //$spaceLeft = $auth->getSpaceLeftAtOrigin($type, $target);
         if ($_SESSION["auth"] != $owner){
             echo 'wrong owner';
         } else if ($spaceLeft < $amount){
             echo 'pas asser de place';
         } else if ($originUnits >= $amount){
             $auth->buyUnit($type, $startOrigin, $negAmount);
+            if ($type === "workers"){
+                if ($startOriginType === "base"){
+                    $baseRepository->buyWorkers($id, $negAmount);
+                } else if ($startOriginType === "mine"){
+                    $mineRepository->buyWorkers($id, $negAmount);
+                }
+            } else if ($type === "soldiers"){
+                if ($startOriginType === "base"){
+                    $baseRepository->buySoldiers($id, $negAmount);
+                } else if ($startOriginType === "mine"){
+                    $mineRepository->buySoldiers($id, $negAmount);
+                }
+            }
+            
             $startPos = $auth->getPos($startOrigin);
             $task = [
                 'action'=>'move', 
