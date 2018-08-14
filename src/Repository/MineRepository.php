@@ -71,5 +71,27 @@ class MineRepository extends ObjectRepository
         $spaceLeft = ($result["soldierSpace"] - $result["soldiers"]) + 1;
         return $spaceLeft;
     }
+
+    public function buyWorkers($id, $amount=1)
+    {
+        $DBConnection = $this->getDBConnection();
+        $baseUnit = $this->getUnits("workers", $id);
+        $baseUnit = $baseUnit + $amount;
+        $query = $DBConnection->prepare("UPDATE game_mines SET workers= :baseUnit WHERE id= :id");
+        $query->bindParam(':baseUnit', $baseUnit, PDO::PARAM_INT);
+        $query->bindParam(':id', $id, PDO::PARAM_INT);
+        $query->execute();
+    } 
+
+    public function buySoldiers($id, $amount=1)
+    {
+        $DBConnection = $this->getDBConnection();
+        $baseUnit = $this->getUnits("soldiers", $id);
+        $baseUnit = $baseUnit + $amount;
+        $query = $DBConnection->prepare("UPDATE game_mines SET soldiers= :baseUnit WHERE id= :id");
+        $query->bindParam(':baseUnit', $baseUnit, PDO::PARAM_INT);
+        $query->bindParam(':id', $id, PDO::PARAM_INT);
+        $query->execute();
+    } 
     
 }

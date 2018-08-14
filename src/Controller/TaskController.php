@@ -163,27 +163,29 @@ class TaskController extends DefaultController
         $negAmount = ($amount * -1);
         $baseRepository = new BaseRepository;
         $mineRepository = new MineRepository;
-        $building = explode(",", $startOrigin)[0];
-        $id = explode(",", $startOrigin)[1];
-        if ($building === "base"){
-            $originUnits = $baseRepository->getUnits($type, $id);
-        } else if ($building === "mine"){
-            $originUnits = $mineRepository->getUnits($type, $id);
+        $originBuilding = explode(",", $startOrigin)[0];
+        $originId = explode(",", $startOrigin)[1];
+        if ($originBuilding === "base"){
+            $originUnits = $baseRepository->getUnits($type, $originId);
+        } else if ($originBuilding === "mine"){
+            $originUnits = $mineRepository->getUnits($type, $originId);
         }
         $owner = $auth->getOwnerUsernameWithOrigin($target);
-        $building = explode(",", $target)[0];
-        $id = explode(",", $target)[1];
+        $targetBuilding = explode(",", $target)[0];
+        $targetId = explode(",", $target)[1];
+        var_dump($targetBuilding);
+        var_dump($type);
         if ($type === "worker"){
-            if ($building === "base"){
-                $spaceLeft = $baseRepository->getWorkerSpaceLeft($id);
-            } else if ($building === "mine"){
-                $spaceLeft = $mineRepository->getWorkerSpaceLeft($id);
+            if ($targetBuilding === "base"){
+                $spaceLeft = $baseRepository->getWorkerSpaceLeft($targetId);
+            } else if ($targetBuilding === "mine"){
+                $spaceLeft = $mineRepository->getWorkerSpaceLeft($targetId);
             }
         } else if ($type === "soldier") {
-            if ($building === "base"){
-                $spaceLeft = $baseRepository->getSoldierSpaceLeft($id);
-            } else if ($building === "mine"){
-                $spaceLeft = $mineRepository->getSoldierSpaceLeft($id);
+            if ($targetBuilding === "base"){
+                $spaceLeft = $baseRepository->getSoldierSpaceLeft($targetId);
+            } else if ($targetBuilding === "mine"){
+                $spaceLeft = $mineRepository->getSoldierSpaceLeft($targetId);
             } else {
                 $spaceLeft = 0;
             }
@@ -193,20 +195,19 @@ class TaskController extends DefaultController
         if ($_SESSION["auth"] != $owner){
             echo 'wrong owner';
         } else if ($spaceLeft < $amount){
-            echo 'pas asser de place';
+            echo 'pas asser de place. ';
         } else if ($originUnits >= $amount){
-            $auth->buyUnit($type, $startOrigin, $negAmount);
-            if ($type === "workers"){
-                if ($startOriginType === "base"){
-                    $baseRepository->buyWorkers($id, $negAmount);
-                } else if ($startOriginType === "mine"){
-                    $mineRepository->buyWorkers($id, $negAmount);
+            if ($type === "worker"){
+                if ($originBuilding === "base"){
+                    $baseRepository->buyWorkers($originId, $negAmount);
+                } else if ($originBuilding === "mine"){
+                    $mineRepository->buyWorkers($originId, $negAmount);
                 }
-            } else if ($type === "soldiers"){
-                if ($startOriginType === "base"){
-                    $baseRepository->buySoldiers($id, $negAmount);
-                } else if ($startOriginType === "mine"){
-                    $mineRepository->buySoldiers($id, $negAmount);
+            } else if ($type === "soldier"){
+                if ($originBuilding === "base"){
+                    $baseRepository->buySoldiers($originId, $negAmount);
+                } else if ($originBuilding === "mine"){
+                    $mineRepository->buySoldiers($originId, $negAmount);
                 }
             }
             
@@ -226,7 +227,7 @@ class TaskController extends DefaultController
             if ($isBuilding) {
                 return $duration;
             } else {
-                header('Location: ?p=home&focus='.$originStart);
+                header('Location: ?p=home&focus='.$startOrigin);
             }
         } else {
             echo 'pas asser d\'unitées';
