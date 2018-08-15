@@ -11,7 +11,7 @@ class TaskController extends DefaultController
 {
 
     private $workerTimeFactor = 1;
-    private $defaultTimeFactor = 100;
+    private $defaultTimeFactor = 1;
 
     public function buy()
     {

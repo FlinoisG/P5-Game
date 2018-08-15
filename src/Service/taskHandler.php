@@ -24,13 +24,12 @@ class TaskHandler
         $auth = new Auth;
         $baseRepository = new BaseRepository;
         $mineRepository = new MineRepository;
+        var_dump(time());
         foreach ($tasks as $task) {
+            var_dump($task["endTime"]);
             if ($task["endTime"] < time()) {
                 if ($task["action"] == "buy") {
                     if ($task["subject"] == "worker" || $task["subject"] == "soldier") {
-                        //$arr = explode(",", $task[""]);
-                        //$startOriginType = $arr[0];
-                        //$auth->buyUnit($task["subject"], $task["startOrigin"]);
                         $targetType = explode(",", $task["startOrigin"])[0];
                         $targetId = explode(",", $task["startOrigin"])[1];
                         $baseRepository->buyUnits($task["subject"], $targetId, 1, $targetType);
@@ -43,28 +42,12 @@ class TaskHandler
                 } elseif ($task["action"] == "move") {
                     if ($task["targetOrigin"] != "") {
                         $arr = explode(',', $task["subject"]);
+                        var_dump($arr);
                         $targetType = $arr[0];
                         $targetAmount = $arr[1];
-                        //$auth->buyUnit($targetType, $task["targetOrigin"], $targetAmount);
                         $targetBuilding = explode(",", $task["targetOrigin"])[0];
                         $targetId = explode(",", $task["targetOrigin"])[1];
                         $baseRepository->buyUnits($targetType, $targetId, $targetAmount, $targetBuilding);
-                        //$baseRepository->buyWorkers($targetType, $targetId, $targetAmount, $targetBuilding);
-                        /*
-                        if ($targetType === "worker"){
-                            if ($targetBuilding === "base"){
-                                $baseRepository->buyWorkers($targetId, $targetAmount);
-                            } else if ($targetBuilding === "mine"){
-                                $mineRepository->buyWorkers($targetId, $targetAmount);
-                            }
-                        } else if ($type === "soldier") {
-                            if ($targetBuilding === "base"){
-                                $baseRepository->buySoldiers($targetId, $targetAmount);
-                            } else if ($targetBuilding === "mine"){
-                                $mineRepository->buySoldiers($targetId, $targetAmount);
-                            }
-                        }
-                        */
                     }
                 }
                 $auth->removeTask($task["id"]);

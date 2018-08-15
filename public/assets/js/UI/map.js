@@ -109,6 +109,24 @@ Map.mainMap = {
             iconAnchor:   [16, 17],
             popupAnchor:  [0, -20]
         });
+        this.soldierNeutralIcon = L.icon({
+            iconUrl: 'assets/img/soldier_neutral.png',
+            iconSize:     [32, 33],
+            iconAnchor:   [16, 17],
+            popupAnchor:  [0, -20]
+        });
+        this.soldierOwnerIcon = L.icon({
+            iconUrl: 'assets/img/soldier_owner.png',
+            iconSize:     [32, 33],
+            iconAnchor:   [16, 17],
+            popupAnchor:  [0, -20]
+        });
+        this.soldierEnemyIcon = L.icon({
+            iconUrl: 'assets/img/soldier_enemy.png',
+            iconSize:     [32, 33],
+            iconAnchor:   [16, 17],
+            popupAnchor:  [0, -20]
+        });
     },
    
     setOreMap: function(){
@@ -330,7 +348,6 @@ Map.mainMap = {
                     }
                     var posStart = [gridToCoordinates(0, object.posStart[1], "y"), gridToCoordinates(object.posStart[0], 0, "x")];
                     var posEnd = [gridToCoordinates(0, object.posEnd[1], "y"), gridToCoordinates(object.posEnd[0], 0, "x")];
-                    
                     var moveDuration = object.time - object.start;
                     var moveNow = (Math.floor(Date.now() / 1000)) - object.start;
                     var percent = 100*moveNow/moveDuration;
@@ -351,6 +368,58 @@ Map.mainMap = {
                             workerEntity.onClick(e);
                         });
                         unitMovementUpdator(workerMarker, posStart, posEnd, object.start, object.time);
+                    }                    
+                    if (relation == "owned"){
+                        if (window.location.search.includes('focus')){
+                            if (typeof(target) != 'undefined'){
+                                var target = (window.location.search.substr(14));
+                                var origin = target.split(",");
+                                var originType = origin[0];
+                                var str = origin[1].split("&");
+                                var originId = str[0];
+                                if (originType == 'mine' && originId == object.id){
+                                    Map.mainMap.map.setView(mineEntity.marker._latlng, 9)
+                                    mineEntity.onClick();
+                                }
+                            }
+                        }                    
+                    }
+                } else if (object.type == "soldier") {
+                    if (object.owner == "player"){
+                        relation = "owner";
+                        icon = this.soldierOwnerIcon;
+                        var color = "#0000FF";
+                    } else if (object.owner == "enemy"){
+                        relation = "enemy";
+                        icon = this.soldierEnemyIcon;
+                        var color = "#FF0000";
+                    } else {
+                        relation = "neutral";
+                        icon = this.soldierNeutralIcon;
+                        var color = "#FFFFFF";
+                    }
+                    var posStart = [gridToCoordinates(0, object.posStart[1], "y"), gridToCoordinates(object.posStart[0], 0, "x")];
+                    var posEnd = [gridToCoordinates(0, object.posEnd[1], "y"), gridToCoordinates(object.posEnd[0], 0, "x")];
+                    var moveDuration = object.time - object.start;
+                    var moveNow = (Math.floor(Date.now() / 1000)) - object.start;
+                    var percent = 100*moveNow/moveDuration;
+                    var soldierPos = getPosFromDist(posStart, posEnd, percent);
+                    if (moveNow < moveDuration) {
+                        var soldierPath = L.polygon([
+                            posStart,
+                            posEnd
+                        ], {
+                            dashArray: "5, 5",
+                            color: color,
+                        }).addTo(this.map);
+                        soldierMarker = L.marker(soldierPos, {
+                            icon: icon,
+                        }).addTo(this.map);
+                        const soldierEntity = new WorkerEntity(object.ownerName, relation, object.start, object.time);
+                        soldierMarker.addEventListener('click', function(e) {
+                            soldierEntity.onClick(e);
+                        });
+                        unitMovementUpdator(soldierMarker, posStart, posEnd, object.start, object.time);
                     }                    
                     if (relation == "owned"){
                         if (window.location.search.includes('focus')){
