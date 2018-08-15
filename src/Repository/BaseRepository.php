@@ -6,7 +6,7 @@ use PDO;
 use App\Model\Repository;
 use App\Entity\BaseEntity;
 
-class BaseRepository extends ObjectRepository
+class BaseRepository extends BuildingRepository
 {
 
     protected $type = "base";

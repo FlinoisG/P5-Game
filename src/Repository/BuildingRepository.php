@@ -6,7 +6,7 @@ use PDO;
 use App\Model\Repository;
 use App\Entity\BaseEntity;
 
-class ObjectRepository extends Repository
+class BuildingRepository extends Repository
 {
 
     public function buyUnits($unitType, $id, $amount = 1, $buildingType = null)

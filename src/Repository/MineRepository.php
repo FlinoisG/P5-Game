@@ -6,7 +6,7 @@ use PDO;
 use App\Model\Repository;
 use App\Entity\MineEntity;
 
-class MineRepository extends ObjectRepository
+class MineRepository extends BuildingRepository
 {
 
     private $type = "mine";

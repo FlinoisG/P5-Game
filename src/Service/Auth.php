@@ -404,7 +404,6 @@ class Auth
             '.$task['endTime'].', 
             \''.$task['author'].'\'
         )';
-        //var_dump($query);
         $sqlQuery->sqlQuery($query);
     }
 
@@ -448,10 +447,6 @@ class Auth
             }
             $entityArray[$entity['subject']][$size] = [$entity['startOrigin'], $entity['endTime']];
         }
-        //print "<pre>";
-        //print_r($entityArray);
-        //print "</pre>";
-        //var_dump($entitiesInConstruct);
         return $entityArray;
     }
 
