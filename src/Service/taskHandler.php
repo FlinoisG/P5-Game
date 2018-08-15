@@ -25,14 +25,16 @@ class TaskHandler
         $baseRepository = new BaseRepository;
         $mineRepository = new MineRepository;
         foreach ($tasks as $task) {
-            var_dump($task);
             if ($task["endTime"] < time()) {
                 if ($task["action"] == "buy") {
                     if ($task["subject"] == "worker" || $task["subject"] == "soldier") {
                         //$arr = explode(",", $task[""]);
                         //$startOriginType = $arr[0];
                         //$auth->buyUnit($task["subject"], $task["startOrigin"]);
-                    } else {
+                        $targetType = explode(",", $task["startOrigin"])[0];
+                        $targetId = explode(",", $task["startOrigin"])[1];
+                        $baseRepository->buyUnits($task["subject"], $targetId, 1, $targetType);
+                    } else if($task["subject"] == "workerSpace" || $task["subject"] == "soldierSpace") {
                         $shortTarget = str_replace("Space", "", $task["subject"]);
                         $auth->buySpace($shortTarget, $task["startOrigin"]);
                     }
@@ -46,6 +48,9 @@ class TaskHandler
                         //$auth->buyUnit($targetType, $task["targetOrigin"], $targetAmount);
                         $targetBuilding = explode(",", $task["targetOrigin"])[0];
                         $targetId = explode(",", $task["targetOrigin"])[1];
+                        $baseRepository->buyUnits($targetType, $targetId, $targetAmount, $targetBuilding);
+                        //$baseRepository->buyWorkers($targetType, $targetId, $targetAmount, $targetBuilding);
+                        /*
                         if ($targetType === "worker"){
                             if ($targetBuilding === "base"){
                                 $baseRepository->buyWorkers($targetId, $targetAmount);
@@ -59,6 +64,7 @@ class TaskHandler
                                 $mineRepository->buySoldiers($targetId, $targetAmount);
                             }
                         }
+                        */
                     }
                 }
                 $auth->removeTask($task["id"]);

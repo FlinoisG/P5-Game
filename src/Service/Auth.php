@@ -339,7 +339,7 @@ class Auth
 
     public function getMetalNodes ($pos, $radius=50000)
     {
-        $oreMap = json_decode(file_get_contents(__DIR__.'/../../deposit/Maps/OreMap.json'), true);
+        $oreMap = json_decode(file_get_contents(__DIR__.'/../../deposit/Maps/oreMap.json'), true);
         $metalNodes = [];
         foreach ($oreMap["oreMap"] as $ore) {
             $dist = $this->latlngToMeters([$pos["x"],$pos["y"]], [$ore["x"], $ore["y"]]);
@@ -509,6 +509,10 @@ class Auth
         $arr = explode(",", $origin);
         $originType = $arr[0];
         $originId = $arr[1];
+        if (!ctype_digit($originId)) {
+            return false;
+            die();
+        }
         $query = "SELECT player FROM game_".$originType."s WHERE id='".$originId."'";
         $pos = $sqlQuery->sqlQuery($query);
         return $pos[0]['player'];

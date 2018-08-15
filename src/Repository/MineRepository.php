@@ -9,6 +9,16 @@ use App\Entity\MineEntity;
 class MineRepository extends ObjectRepository
 {
 
+    private $type = "mine";
+
+    /**
+     * Get the value of type
+     */ 
+    public function getType()
+    {
+        return $this->type;
+    }
+
     public function getMines()
     {
         $DBConnection = $this->getDBConnection();
@@ -22,6 +32,7 @@ class MineRepository extends ObjectRepository
         return $mines;
     }
 
+    /*
     public function getUnits($unit, $id)
     {
         $DBConnection = $this->getDBConnection();
@@ -38,6 +49,7 @@ class MineRepository extends ObjectRepository
         $unitNumber = $query->fetch()[0];
         return $unitNumber;
     }
+    */
 
     public function getById($id)
     {
@@ -93,5 +105,7 @@ class MineRepository extends ObjectRepository
         $query->bindParam(':id', $id, PDO::PARAM_INT);
         $query->execute();
     } 
+    
+
     
 }

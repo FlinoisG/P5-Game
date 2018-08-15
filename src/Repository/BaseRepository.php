@@ -9,6 +9,16 @@ use App\Entity\BaseEntity;
 class BaseRepository extends ObjectRepository
 {
 
+    protected $type = "base";
+
+    /**
+     * Get the value of type
+     */ 
+    public function getType()
+    {
+        return $this->type;
+    }
+
     public function getBases()
     {
         $DBConnection = $this->getDBConnection();
@@ -22,6 +32,7 @@ class BaseRepository extends ObjectRepository
         return $bases;
     }
 
+    /*
     public function getUnits($unit, $id)
     {
         $DBConnection = $this->getDBConnection();
@@ -38,6 +49,7 @@ class BaseRepository extends ObjectRepository
         $unitNumber = $query->fetch()[0];
         return $unitNumber;
     }
+    */
 
     public function getById($id)
     {

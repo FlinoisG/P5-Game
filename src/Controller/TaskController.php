@@ -19,6 +19,7 @@ class TaskController extends DefaultController
         if (!isset($_SESSION)) { 
             session_start(); 
         }
+        
         $startOrigin = $_GET['origin'];
         $arr = explode(",", $startOrigin);
         $startOriginType = $arr[0];
@@ -50,7 +51,6 @@ class TaskController extends DefaultController
             } else if ($startOriginType === "mine"){
                 $units = $mineRepository->getUnits($type, $startOriginId);
             }
-            //$units = $auth->getUnit($type, $startOrigin);
             $slots = (int)$inConstruct + (int)$units;
             $space = $auth->getSpace($type, $startOrigin);
             if ($slots > $space) {
@@ -59,14 +59,7 @@ class TaskController extends DefaultController
             }
         } else if ($class == 'building') {
             $action = "build";
-            //if ($auth->getNewUser($_SESSION['authId']) != 1) {
-            //$auth->buyUnit('worker', $startOrigin, -1);
-            if ($startOriginType === "base"){
-                $baseRepository->buyWorkers($startOriginId, -1);
-            } else if ($startOriginType === "mine"){
-                $mineRepository->buyWorkers($startOriginId, -1);
-            }
-            //}
+            //$baseRepository->buyUnits("worker", $startOriginId, -1, $startOriginType);
         } else if ($class == 'upgrade') {
             $action = "buy";
             $upgradeInConstruct = $auth->getEntityInConst($type, $startOriginId);
@@ -114,7 +107,6 @@ class TaskController extends DefaultController
                 'author'=>$authorId
             ];
             $auth->newTask($task);
-            var_dump($startTime);
             if ($type == 'soldier' || $type == 'soldierSpace'){
                 header('Location: ?p=home&focus='.$startOrigin.'&soldierTab');
             } else {
@@ -122,7 +114,7 @@ class TaskController extends DefaultController
             }
         } else {
             echo $cause;
-            //header('Location: ?p=home&focus='.$origin.'&soldierTab');
+            header('Location: ?p=home&focus='.$origin.'&soldierTab');
         }
     }
 
@@ -131,10 +123,12 @@ class TaskController extends DefaultController
         if (!isset($_SESSION)) { 
             session_start(); 
         }
+        $baseRepository = new BaseRepository;
+        $mineRepository = new MineRepository;
         if ($type == null) $type = $_GET['type'];
         if ($startOrigin == null) $startOrigin = $_GET['startOrigin'];
         if ($target == null) $target = $_GET['target'];
-        if (isset($_GET['amount'])) $amount = $_GET['amount'];
+        if (isset($_GET['amount'])) $amount = (int)$_GET['amount'];
         $auth = new Auth;
         if ($type == 'worker'){
             $timeFactor = $this->workerTimeFactor;
@@ -161,77 +155,68 @@ class TaskController extends DefaultController
             $dist = ($dist * -1);
         }
         $negAmount = ($amount * -1);
-        $baseRepository = new BaseRepository;
-        $mineRepository = new MineRepository;
+        
         $originBuilding = explode(",", $startOrigin)[0];
         $originId = explode(",", $startOrigin)[1];
-        if ($originBuilding === "base"){
-            $originUnits = $baseRepository->getUnits($type, $originId);
-        } else if ($originBuilding === "mine"){
-            $originUnits = $mineRepository->getUnits($type, $originId);
-        }
+        $originUnits = $baseRepository->getUnits($type, $originId, $originBuilding);
         $owner = $auth->getOwnerUsernameWithOrigin($target);
-        $targetBuilding = explode(",", $target)[0];
-        $targetId = explode(",", $target)[1];
-        var_dump($targetBuilding);
-        var_dump($type);
-        if ($type === "worker"){
-            if ($targetBuilding === "base"){
-                $spaceLeft = $baseRepository->getWorkerSpaceLeft($targetId);
-            } else if ($targetBuilding === "mine"){
-                $spaceLeft = $mineRepository->getWorkerSpaceLeft($targetId);
-            }
-        } else if ($type === "soldier") {
-            if ($targetBuilding === "base"){
-                $spaceLeft = $baseRepository->getSoldierSpaceLeft($targetId);
-            } else if ($targetBuilding === "mine"){
-                $spaceLeft = $mineRepository->getSoldierSpaceLeft($targetId);
+        if ($owner !== false){
+            $targetBuilding = explode(",", $target)[0];
+            $targetId = explode(",", $target)[1];
+            $spaceLeft = $baseRepository->getSpaceLeft($type, $targetId, $targetBuilding);
+            if ($owner !== false && $_SESSION["auth"] != $owner){
+                echo 'wrong owner';
+            } else if ($spaceLeft < $amount){
+                echo 'pas asser de place. ' . $spaceLeft . " ";
+            } else if ($originUnits >= $amount){
+                $baseRepository->buyUnits($type, $originId, $negAmount, $originBuilding);
+                $startPos = $auth->getPos($startOrigin);
+                $task = [
+                    'action'=>'move', 
+                    'subject'=>$type.",".$amount, 
+                    'startOrigin'=>$startOrigin, 
+                    'startPos'=>$startPos, 
+                    'targetOrigin'=>$targetOrigin, 
+                    'targetPos'=>$targetPos, 
+                    'startTime'=>time(), 
+                    'endTime'=>$time, 
+                    'author'=>$_SESSION['authId']
+                ];
+                $auth->newTask($task);
+                if ($isBuilding) {
+                    return $duration;
+                } else {
+                    header('Location: ?p=home&focus='.$startOrigin);
+                }
             } else {
-                $spaceLeft = 0;
+                echo 'pas asser d\'unitées';
             }
         } else {
-            $spaceLeft = 0;
-        }
-        if ($_SESSION["auth"] != $owner){
-            echo 'wrong owner';
-        } else if ($spaceLeft < $amount){
-            echo 'pas asser de place. ';
-        } else if ($originUnits >= $amount){
-            if ($type === "worker"){
-                if ($originBuilding === "base"){
-                    $baseRepository->buyWorkers($originId, $negAmount);
-                } else if ($originBuilding === "mine"){
-                    $mineRepository->buyWorkers($originId, $negAmount);
+            if ($originUnits >= $amount){
+                $baseRepository->buyUnits($type, $originId, $negAmount, $originBuilding);
+                $startPos = $auth->getPos($startOrigin);
+                $task = [
+                    'action'=>'move', 
+                    'subject'=>$type.",".$amount, 
+                    'startOrigin'=>$startOrigin, 
+                    'startPos'=>$startPos, 
+                    'targetOrigin'=>'', 
+                    'targetPos'=>$targetPos, 
+                    'startTime'=>time(), 
+                    'endTime'=>$time, 
+                    'author'=>$_SESSION['authId']
+                ];
+                $auth->newTask($task);
+                if ($isBuilding) {
+                    return $duration;
+                } else {
+                    header('Location: ?p=home&focus='.$startOrigin);
                 }
-            } else if ($type === "soldier"){
-                if ($originBuilding === "base"){
-                    $baseRepository->buySoldiers($originId, $negAmount);
-                } else if ($originBuilding === "mine"){
-                    $mineRepository->buySoldiers($originId, $negAmount);
-                }
-            }
-            
-            $startPos = $auth->getPos($startOrigin);
-            $task = [
-                'action'=>'move', 
-                'subject'=>$type.",".$amount, 
-                'startOrigin'=>$startOrigin, 
-                'startPos'=>$startPos, 
-                'targetOrigin'=>$targetOrigin, 
-                'targetPos'=>$targetPos, 
-                'startTime'=>time(), 
-                'endTime'=>$time, 
-                'author'=>$_SESSION['authId']
-            ];
-            $auth->newTask($task);
-            if ($isBuilding) {
-                return $duration;
             } else {
-                header('Location: ?p=home&focus='.$startOrigin);
+                echo 'pas asser d\'unitées';
             }
-        } else {
-            echo 'pas asser d\'unitées';
         }
+        
     }
 
     public function attack($type=null, $startOrigin=null, $target=null, $amount=1, $isBuilding=false)
@@ -286,6 +271,8 @@ class TaskController extends DefaultController
         $mineRepository = new MineRepository;
         $id = explode(",", $target)[1];
         $building = explode(",", $target)[0];
+        $spaceLeft = $baseRepository->getSpaceLeft($type, $targetId, $building);
+        /*
         if ($type === "worker"){
             if ($building === "base"){
                 $spaceLeft = $baseRepository->getWorkerSpaceLeft($id);
@@ -303,6 +290,7 @@ class TaskController extends DefaultController
         } else {
             $spaceLeft = 0;
         }
+        */
         //$spaceLeft = $auth->getSpaceLeftAtOrigin($type, $target);
         if ($_SESSION["auth"] != $owner){
             echo 'wrong owner';

@@ -11,14 +11,14 @@ Map.mainMap = {
 
     mapInit: function(){
         this.map = L.map('mapid', {
-            //minZoom: 7,
+            minZoom: 7,
             maxZoom: 18,
-            //maxBounds: [
+            maxBounds: [
                 //south west
-            //    [32.7, -11.3269],
+                [32.7, -11.3269],
                 //north east
-            //    [61.37567, 32.39868]
-            //    ], 
+                [61.37567, 32.39868]
+                ], 
             maxBoundsViscosity: 1.0
         }).setView([gridToCoordinates(0, 131.48, "y"), gridToCoordinates(224.83, 0, "x")], 2);
         this.map.addEventListener('click', function(ev) {
@@ -168,7 +168,7 @@ Map.mainMap = {
                 y = gridToCoordinates(0, object.y, 'y');
                 if (object.type == "base"){
                     if (object.owner == "player"){
-                        if (object.main == 1){
+                        if (!window.location.search.includes("focus") && object.main == 1){
                             this.map.setView([y, x], 9);
                         }
                         icon = this.baseOwnerIcon;
@@ -200,7 +200,7 @@ Map.mainMap = {
                                 if (originType == "base" && originId == object.id){
                                     console.log(baseEntity.marker._latlng);
                                     baseEntity.onClick();
-                                    Map.mainMap.map.setView(baseEntity.marker._latlng)
+                                    Map.mainMap.map.setView(baseEntity.marker._latlng, 9)
                                     if (window.location.search.includes('soldierTab')){
                                         panelInterface.soldierTab(baseEntity);
                                     }
@@ -236,7 +236,7 @@ Map.mainMap = {
                                 var str = origin[1].split("&");
                                 var originId = str[0];
                                 if (originType == 'mine' && originId == object.id){
-                                    Map.mainMap.map.setView(mineEntity.marker._latlng)
+                                    Map.mainMap.map.setView(mineEntity.marker._latlng, 9)
                                     mineEntity.onClick();
                                 }
                             }
@@ -272,7 +272,7 @@ Map.mainMap = {
                                 var str = origin[1].split("&");
                                 var originId = str[0];
                                 if (originType == 'mine' && originId == object.id){
-                                    Map.mainMap.map.setView(baseEntity.marker._latlng)
+                                    Map.mainMap.map.setView(baseEntity.marker._latlng, 9)
                                     baseEntity.onClick();
                                 }
                             }
@@ -308,7 +308,7 @@ Map.mainMap = {
                                 var str = origin[1].split("&");
                                 var originId = str[0];
                                 if (originType == 'mine' && originId == object.id){
-                                    Map.mainMap.map.setView(mineEntity.marker._latlng)
+                                    Map.mainMap.map.setView(mineEntity.marker._latlng, 9)
                                     mineEntity.onClick();
                                 }
                             }
@@ -361,7 +361,7 @@ Map.mainMap = {
                                 var str = origin[1].split("&");
                                 var originId = str[0];
                                 if (originType == 'mine' && originId == object.id){
-                                    Map.mainMap.map.setView(mineEntity.marker._latlng)
+                                    Map.mainMap.map.setView(mineEntity.marker._latlng, 9)
                                     mineEntity.onClick();
                                 }
                             }
