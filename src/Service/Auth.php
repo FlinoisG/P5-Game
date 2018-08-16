@@ -2,17 +2,19 @@
 
 namespace App\Service;
 
+use App\Model\Service;
 use App\Controller\DefaultController;
 use App\Controller\LoginController;
 use App\Service\sqlQuery;
 use App\Service\GUID;
 use App\Service\PasswordService;
 use App\Service\SecurityService;
+use PDO;
 
 /**
  * Auth class for authentification related functions
  */
-class Auth
+class Auth extends Service
 {
 
     public function hash_equals($str1, $str2)   //SecurityService
@@ -38,16 +40,20 @@ class Auth
      */
     public function login($username, $password)
     {   
-        $sqlQuery = new sqlQuery();
-        $user = $sqlQuery->sqlQuery("SELECT username, password, id, newUser FROM game_users WHERE username='".$username."'");
+        $DBConnection = $this->getDBConnection();
+        $query = $DBConnection->prepare("SELECT username, password, id, newUser FROM game_users WHERE username= :username");
+        $query->bindParam(":username", $username, PDO::PARAM_STR);
+        $query->execute();
+        $user = $query->fetch();
+        //$user = $sqlQuery->sqlQuery("SELECT username, password, id, newUser FROM game_users WHERE username='".$username."'");
         $path = __DIR__ . '/../Service/PasswordService.php';
-        if ($user != [] && $this->hash_equals($user['0']['password'], crypt($password, $user['0']['password']))) {
+        if ($user != [] && $this->hash_equals($user['password'], crypt($password, $user['password']))) {
             if (!isset($_SESSION)) {
                 session_start();
             }
-            $_SESSION['auth'] = $user['0']['username'];
-            $_SESSION['authId'] = $user['0']['id'];
-            $_SESSION['authNewUser'] = $user['0']['newUser'];
+            $_SESSION['auth'] = $user['username'];
+            $_SESSION['authId'] = $user['id'];
+            $_SESSION['authNewUser'] = $user['newUser'];
         } else {
             $DefaultController = new DefaultController();
             die($DefaultController->error(403));
@@ -89,14 +95,23 @@ class Auth
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)){
             $available = false;
         }
-        $sqlQuery = new sqlQuery();
-        $getUser = $sqlQuery->sqlQuery("SELECT username FROM game_users WHERE username='".$username."'");
+        $DBConnection = $this->getDBConnection();
+        $query = $DBConnection->prepare("SELECT username FROM game_users WHERE username = :username");
+        $query->bindParam(":username", $username, PDO::PARAM_STR);
+        $query->execute();
+        $getUser = $query->fetch();
+        //$sqlQuery = new sqlQuery();
+        //$getUser = $sqlQuery->sqlQuery("SELECT username FROM game_users WHERE username='".$username."'");
         if ($getUser) {
             $available = false;
             $content = '<h1>Ce nom d\'utilisateur existe déjà</h1>';
             die(require('../src/View/base.php'));
         }
-        $getEmail = $sqlQuery->sqlQuery("SELECT username FROM game_users WHERE email='".$email."'");
+        $query = $DBConnection->prepare("SELECT username FROM game_users WHERE email = :email");
+        $query->bindParam(":email", $email, PDO::PARAM_STR);
+        $query->execute();
+        $getEmail = $query->fetch();
+        //$getEmail = $sqlQuery->sqlQuery("SELECT username FROM game_users WHERE email ='".$email."'");
         if ($getEmail) {
             $available = false;
             $content = '<h1>Un compte avec cet e-mail existe déjà</h1>';
@@ -121,10 +136,17 @@ class Auth
     public function register($username, $email, $password) {
         require('../src/Service/PasswordService.php');
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-        $sqlQuery = new sqlQuery();
-        $query =   'INSERT INTO game_users (username, email, password)
-                    VALUES (\''.$username.'\', \''.$email.'\', \''.$hashedPassword.'\')';
-        $sqlQuery->sqlQuery($query);
+        $DBConnection = $this->getDBConnection();
+        $query = $DBConnection->prepare("INSERT INTO game_users (username, email, password)
+        VALUES (:username, :email, :hashedPassword)");
+        $query->bindParam(":username", $username, PDO::PARAM_STR);
+        $query->bindParam(":email", $email, PDO::PARAM_STR);
+        $query->bindParam(":hashedPassword", $hashedPassword, PDO::PARAM_STR);
+        $query->execute();
+        //$sqlQuery = new sqlQuery();
+        //$query =   'INSERT INTO game_users (username, email, password)
+        //            VALUES (\''.$username.'\', \''.$email.'\', \''.$hashedPassword.'\')';
+        //$sqlQuery->sqlQuery($query);
         copy('../public/assets/img/blankUser100x100.png', '../deposit/User_Avatar/'.$username.'.png');
     }
 
@@ -487,6 +509,7 @@ class Auth
         return sqrt($c+$d);
     }
 
+    /*
     public function getPos($origin)
     {
         $sqlQuery = new sqlQuery();
@@ -497,6 +520,7 @@ class Auth
         $pos = $sqlQuery->sqlQuery($query);
         return $pos[0]['pos'];
     }
+    */
 
     public function getOwnerUsernameWithOrigin($origin)
     {

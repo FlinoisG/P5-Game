@@ -2,12 +2,14 @@
 
 namespace App\Service;
 
+use App\Model\Service;
 use App\Service\Grid;
 use App\Service\Auth;
 use App\Repository\BaseRepository;
 use App\Repository\MineRepository;
 
-class MapInit {
+class MapInit extends Service
+{
 
     /**
      * get all map object (bases, mines, tasks..) 
@@ -150,8 +152,9 @@ class MapInit {
                         "metalNodes": '.$object["metalNodes"].'
                     },';
             } else if ($object['type'] == 'worker' || $object['type'] == 'soldier') {
+                //var_dump($object);
                 $result .= '{
-                        "type": "'.$object['type'].'",
+                    "type": "'.$object['type'].'",
                     "x": '.$pos[0].', 
                     "y": '.$pos[1].', 
                     "owner": "'.$owner.'", 
@@ -175,7 +178,9 @@ class MapInit {
             }
         }
         $result[strrpos($result, ',')] = ' ';
-        $result = $result . ']</script>';
+        $result = $result . ']; console.log(objectMapObj);</script>';
+        //$result = "<script>var objectMapObj = []</script>";
+        //echo "<script>console.log('".$result."')</script>";
         return $result;
     }
 }

@@ -45,12 +45,12 @@ class LoginController extends DefaultController
                 $title = 'Connection';
                 $link = "<span>Compte créer avec succès !</span>";
                 $customStyle = $this->setCustomStyle('form');
-                require('../src/View/loginView.php');
+                require('../src/View/LoginView.php');
             } else {
                 $title = 'Connection';
                 $link = "<span>Erreur lors de la création de compte</span>";
                 $customStyle = $this->setCustomStyle('form');
-                require('../src/View/loginView.php');
+                require('../src/View/LoginView.php');
             }
         } else {
             $title = 'Créer un compte';

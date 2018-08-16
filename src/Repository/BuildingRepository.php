@@ -113,43 +113,25 @@ class BuildingRepository extends Repository
         return $unitNumber;
     }
 
-    /*
-    public function buyWorkers($id, $amount = 1, $type = null)
+    public function getPos($id, $buildingType = null)
     {
-        if (is_null($type)){
-            $type = $this->getType();
-        }
         $DBConnection = $this->getDBConnection();
-        $baseUnit = $this->getUnits("workers", $id);
-        $baseUnit = $baseUnit + $amount;
-        if ($type === "base"){
-            $query = $DBConnection->prepare("UPDATE game_bases SET workers= :baseUnit WHERE id= :id");
-        } else if ($type === "mine"){
-            $query = $DBConnection->prepare("UPDATE game_mines SET workers= :baseUnit WHERE id= :id");
+        if (is_null($buildingType)){
+            $buildingType = $this->getType();
         }
-        $query->bindParam(':baseUnit', $baseUnit, PDO::PARAM_INT);
+        if ($buildingType === "base") {
+                $query = $DBConnection->prepare("SELECT pos FROM game_bases WHERE id= :id");
+        } else if ($buildingType === "mine") {
+                $query = $DBConnection->prepare("SELECT pos FROM game_mines WHERE id= :id");
+        } else {
+            return false;
+            die();
+        }
         $query->bindParam(':id', $id, PDO::PARAM_INT);
         $query->execute();
-    } 
-
-    public function buySoldiers($id, $amount=1, $type = null)
-    {
-        if (is_null($type)){
-            $type = $this->getType();
-        }
-        $DBConnection = $this->getDBConnection();
-        $baseUnit = $this->getUnits("soldiers", $id);
-        $baseUnit = $baseUnit + $amount;
-        if ($type === "base"){
-            $query = $DBConnection->prepare("UPDATE game_bases SET soldiers= :baseUnit WHERE id= :id");
-        } else if ($type === "mine"){
-            $query = $DBConnection->prepare("UPDATE game_mines SET soldiers= :baseUnit WHERE id= :id");
-        }
-        $query->bindParam(':baseUnit', $baseUnit, PDO::PARAM_INT);
-        $query->bindParam(':id', $id, PDO::PARAM_INT);
-        $query->execute();
-    } 
-    */
+        $pos = $query->fetch();
+        return $pos[0];
+    }
 
 }
     

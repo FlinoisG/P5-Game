@@ -2,7 +2,9 @@
 
 namespace App\Service;
 
-class OreRepo
+use App\Model\Service;
+
+class OreRepo extends Service
 {
 
     private $oreArray = [];

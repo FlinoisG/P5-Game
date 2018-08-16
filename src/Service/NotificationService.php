@@ -2,7 +2,9 @@
 
 namespace App\Service;
 
-class NotificationService
+use App\Model\Service;
+
+class NotificationService extends Service
 {
 
     private $color;

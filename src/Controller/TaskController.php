@@ -94,7 +94,7 @@ class TaskController extends DefaultController
                     $startTime = $this->moveUnit('worker', $startOrigin, $targetPos, 1, true);
                 }
             }
-            $startPos = json_decode($auth->getPos($startOrigin));
+            $startPos = json_decode($baseRepository->getPos($startOriginId, $startOriginType));
             $task = [
                 'action'=>$action, 
                 'subject'=>$type, 
@@ -135,17 +135,21 @@ class TaskController extends DefaultController
         } else {
             $timeFactor = $this->defaultTimeFactor;
         }
-        $startPos = json_decode($auth->getPos($startOrigin));
+        $startOriginType = explode(",", $startOrigin)[0];
+        $startOriginId = explode(",", $startOrigin)[1];
+        $startPos = json_decode($baseRepository->getPos($startOriginId, $startOriginType));
         if (preg_match('/[\[]/', $target)) {
             $targetPos = json_decode($target);
             $dist = $auth->getDistance($startPos, json_decode($target));
             $targetType = 'pos';
         } else {
-            $targetOrigin = $target;
-            $arr = explode(',', $target);
-            $originType = $arr[0];
-            $originId = $arr[1];
-            $targetPos = json_decode($auth->getPos($target));
+            //$targetOrigin = $target;
+            //$arr = explode(',', $target);
+            //$originType = $arr[0];
+            //$originId = $arr[1];
+            $targetType = explode(",", $target)[0];
+            $targetId = explode(",", $target)[1];
+            $targetPos = json_decode($baseRepository->getPos($targetId, $targetType));
             $dist = $auth->getDistance($startPos, $targetPos);
             $targetType = 'origin';
         }
@@ -170,7 +174,7 @@ class TaskController extends DefaultController
                 echo 'pas asser de place. ' . $spaceLeft . " ";
             } else if ($originUnits >= $amount){
                 $baseRepository->buyUnits($type, $originId, $negAmount, $originBuilding);
-                $startPos = $auth->getPos($startOrigin);
+                $startPos = $baseRepository->getPos($startOriginId, $startOriginType);
                 $task = [
                     'action'=>'move', 
                     'subject'=>$type.",".$amount, 
@@ -194,7 +198,7 @@ class TaskController extends DefaultController
         } else {
             if ($originUnits >= $amount){
                 $baseRepository->buyUnits($type, $originId, $negAmount, $originBuilding);
-                $startPos = $auth->getPos($startOrigin);
+                $startPos = $baseRepository->getPos($startOriginId, $startOriginType);
                 $task = [
                     'action'=>'move', 
                     'subject'=>$type.",".$amount, 
@@ -234,7 +238,7 @@ class TaskController extends DefaultController
         } else {
             $timeFactor = $this->defaultTimeFactor;
         }
-        $startPos = json_decode($auth->getPos($startOrigin));
+        $startPos = json_decode($baseRepository->getPos($startOriginId, $startOriginType));
         if (preg_match('/[\[]/', $target)) {
             //var_dump('$target is pos');
             $targetPos = json_decode($target);
@@ -246,7 +250,7 @@ class TaskController extends DefaultController
             $arr = explode(',', $target);
             $originType = $arr[0];
             $originId = $arr[1];
-            $targetPos = json_decode($auth->getPos($target));
+            $targetPos = json_decode($baseRepository->getPos($targetId, $targetType));
             $dist = $auth->getDistance($startPos, $targetPos);
             $targetType = 'origin';
         }
@@ -298,7 +302,7 @@ class TaskController extends DefaultController
             echo 'pas asser de place';
         } else if ($originUnits >= $amount){
             //$auth->buyUnit($type, $startOrigin, $negAmount);
-            $startPos = $auth->getPos($startOrigin);
+            $startPos = $baseRepository->getPos($startOriginid, $startOriginType);
             $task = [
                 'action'=>'move', 
                 'subject'=>$type.",".$amount, 

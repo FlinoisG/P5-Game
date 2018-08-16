@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Model\Service;
 use App\Service\Auth;
 use App\Controller\BaseController;
 use App\Repository\BaseRepository;
@@ -10,7 +11,7 @@ use App\Repository\MineRepository;
 /**
  * this class will be driven by cron.php
  */
-class TaskHandler
+class TaskHandler extends Service
 {
 
     /**

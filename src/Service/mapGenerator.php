@@ -2,10 +2,12 @@
 
 namespace App\Service;
 
+use App\Model\Service;
 use App\Service\Perlin;
 use App\Service\Grid;
 
-class MapGenerator {
+class MapGenerator extends Service
+{
 
     public function resourceTest()
     {

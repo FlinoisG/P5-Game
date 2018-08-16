@@ -2,10 +2,12 @@
 
 namespace App\Service;
 
+use App\Model\Service;
+
 /**
  * Undocumented class
  */
-class Grid
+class Grid extends Service
 {
 
     /**

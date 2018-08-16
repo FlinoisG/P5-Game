@@ -143,7 +143,7 @@ Map.mainMap = {
                 }
                 
             });
-        }
+        } else {console.log('non')}
         //console.log
         if (typeof oreMapObj !== 'undefined') {
             oreMapObj.oreMap.forEach(ore => {

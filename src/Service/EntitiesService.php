@@ -1,6 +1,10 @@
 <?php
+
 namespace App\Service;
-class EntitiesService
+
+use App\Model\Service;
+
+class EntitiesService extends Service
 {
     
     private $entities = [];

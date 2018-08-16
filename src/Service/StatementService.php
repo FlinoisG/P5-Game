@@ -3,8 +3,10 @@
 namespace App\Service;
 
 use PDO;
+use App\Model\Service;
 
-class StatementService {
+class StatementService extends Service
+{
 
     private $host;
     private $dbname;

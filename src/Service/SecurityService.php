@@ -2,7 +2,9 @@
 
 namespace App\Service;
 
-class SecurityService
+use App\Model\Service;
+
+class SecurityService extends Service
 {
 
     /**

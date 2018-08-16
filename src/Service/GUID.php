@@ -2,7 +2,9 @@
 
 namespace App\Service;
 
-class GUID
+use App\Model\Service;
+
+class GUID extends Service
 {
 
     /**
