@@ -19,18 +19,18 @@ class BuildingRepository extends Repository
         $baseUnit = $baseUnit + $amount;
         if ($buildingType === "base"){
             if ($unitType === "worker"){
-                $query = $DBConnection->prepare("UPDATE game_bases SET workers= :baseUnit WHERE id= :id");
+                $statement = "UPDATE game_bases SET workers= :baseUnit WHERE id= :id";
             } else if ($unitType === "soldier"){
-                $query = $DBConnection->prepare("UPDATE game_bases SET soldiers= :baseUnit WHERE id= :id");
+                $statement = "UPDATE game_bases SET soldiers= :baseUnit WHERE id= :id";
             } else {
                 return false;
                 die();
             }
         } else if ($buildingType === "mine"){
             if ($unitType === "worker"){
-                $query = $DBConnection->prepare("UPDATE game_mines SET workers= :baseUnit WHERE id= :id");
+                $statement = "UPDATE game_mines SET workers= :baseUnit WHERE id= :id";
             } else if ($unitType === "soldier"){
-                $query = $DBConnection->prepare("UPDATE game_mines SET soldiers= :baseUnit WHERE id= :id");
+                $statement = "UPDATE game_mines SET soldiers= :baseUnit WHERE id= :id";
             } else {
                 return false;
                 die();
@@ -39,6 +39,7 @@ class BuildingRepository extends Repository
             return false;
             die();
         }
+        $query = $DBConnection->prepare($statement);
         $query->bindParam(':baseUnit', $baseUnit, PDO::PARAM_INT);
         $query->bindParam(':id', $id, PDO::PARAM_INT);
         $query->execute();

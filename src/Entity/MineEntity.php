@@ -16,6 +16,11 @@ class MineEntity
 
     public function __construct($args)
     {
+		$this->hydrate($args);
+    }
+
+	private function hydrate ($args)
+	{
 		if (is_array($args)){
             if (isset($args['id'])) {
                 $this->id = $args['id'];
@@ -45,9 +50,7 @@ class MineEntity
                 $this->setSoldiers($args['soldiers']);
 			}
 		}
-    }
-
-    
+	}
 
 	/**
 	 * Get the value of id

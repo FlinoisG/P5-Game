@@ -18,6 +18,11 @@ class BaseEntity
 
     public function __construct($args)
     {
+        $this->hydrate($args);
+    }
+
+    private function hydrate($args)
+    {
         if (is_array($args)){
             if (isset($args['id'])) {
                 $this->id = ($args['id']);

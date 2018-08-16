@@ -209,9 +209,16 @@ class Auth extends Service
      */
     public function checkTokenValidity($username, $tokenClient)//SecurityService
     {
-        $sqlQuery = new sqlQuery();
-        $user = $sqlQuery->sqlQuery("SELECT token FROM game_users WHERE username='".$username."'");
-        $tokenServ = $user['0']['token'];
+        $DBConnection = $this->getDBConnection();
+        $queryUsername = $DBConnection->prepare("SELECT token FROM game_users WHERE username = :username");
+        $queryUsername->bindParam(":username", $username, PDO::PARAM_STR);
+        $queryUsername->execute();
+        $queryToken = $DBConnection->prepare("SELECT * FROM game_users WHERE token= :token");
+        //$queryToker
+        $user = $query->fetch();
+        //$sqlQuery = new sqlQuery();
+        //$user = $sqlQuery->sqlQuery("SELECT token FROM game_users WHERE username='".$username."'");
+        $tokenServ = $user['token'];
         if ($user != [] && $this->hash_equals($tokenServ, crypt($tokenClient, $tokenServ))) {
             $user = $sqlQuery->sqlQuery("SELECT * FROM game_users WHERE token='".$token."'");
         } else {
@@ -243,6 +250,7 @@ class Auth extends Service
         }
         return $usernames;
     }
+
 
     public function getMapObjects()
     {

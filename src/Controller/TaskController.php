@@ -42,7 +42,7 @@ class TaskController extends DefaultController
             $inConstruct = 0;
             $tasks = $auth->getTasks();
             foreach ($tasks as $task) {
-                if ($task['origin'] == 'base,'.$startOriginId && $task['action'] == 'buy' && $task['target'] == $type){
+                if ($task['startOrigin'] == 'base,'.$startOriginId && $task['action'] == 'buy' && explode(",", $task['subject'])[0] == $type){
                     $inConstruct++;
                 }
             }
