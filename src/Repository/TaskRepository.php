@@ -30,15 +30,15 @@ class TaskRepository extends Repository
             endTime, 
             author
         ) VALUES ( 
-            \':action\', 
-            \':subject\', 
-            \':startOrigin\', 
-            \':startPos\', 
-            \':targetOrigin\', 
-            \':targetPos\', 
+            :action, 
+            :subject, 
+            :startOrigin, 
+            :startPos, 
+            :targetOrigin, 
+            :targetPos, 
             :startTime, 
             :endTime, 
-            \':author\'
+            :author
         )');
         $query->bindParam(":action", $task['action'], PDO::PARAM_STR);
         $query->bindParam(":subject", $task['subject'], PDO::PARAM_STR);
@@ -58,6 +58,21 @@ class TaskRepository extends Repository
         $query = $DBConnection->prepare('DELETE FROM game_tasks WHERE id = :taskId');
         $query->bindParam(":taskId", $taskId, PDO::PARAM_INT);
         $query->execute();
+    }
+
+    public function getTasks($action=null)
+    {
+        if ($action == null){
+            $sqlQuery = new sqlQuery();
+            $tasks = $sqlQuery->sqlQuery("SELECT * FROM game_tasks");
+        } else {
+            $DBConnection = $this->getDBConnection();
+            $query = $DBConnection->prepare("SELECT * FROM game_tasks WHERE action = :action");
+            $query->bindParam(":action", $action, PDO::PARAM_STR);
+            $query->execute();
+            $tasks = $query->fetchAll();
+        }
+        return $tasks;
     }
 
 }

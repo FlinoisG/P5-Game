@@ -8,6 +8,7 @@ use App\Service\Auth;
 use App\Repository\BaseRepository;
 use App\Repository\MineRepository;
 use App\Repository\UserRepository;
+use App\Repository\TaskRepository;
 
 class MapService extends Service
 {
@@ -26,14 +27,15 @@ class MapService extends Service
         $baseRepository = new BaseRepository;
         $mineRepository = new MineRepository;
         $userRepository = new UserRepository;
+        $taskRepository = new TaskRepository;
 
         $bases = $baseRepository->getBases();
         $mines = $mineRepository->getMines();
 
         $objects = array_merge($bases, $mines);
 
-        $buildingTasks = $auth->getTasks('build');
-        $moveTasks = $auth->getTasks('move');
+        $buildingTasks = $taskRepository->getTasks('build');
+        $moveTasks = $taskRepository->getTasks('move');
         $usernames = $userRepository->getAllUsername();
         foreach ($buildingTasks as $task) {
             array_push($objects, [

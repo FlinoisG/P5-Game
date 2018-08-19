@@ -18,20 +18,6 @@ use PDO;
 class Auth extends Service
 {
 
-    public function hash_equals($str1, $str2)   //SecurityService
-    {
-        if (strlen($str1) != strlen($str2)) {
-            return false;
-        } else {
-            $res = $str1 ^ $str2;
-            $ret = 0;
-            for ($i = strlen($res) - 1; $i >= 0; $i--) {
-                $ret |= ord($res[$i]);
-            }
-            return !$ret;
-        }
-    }
-
     /**
      * Create session if username and password matches in the database
      *
@@ -42,11 +28,12 @@ class Auth extends Service
     public function login($providedUsername, $providedPassword)
     {   
         $userRepository = new UserRepository;
+        $securityService = new SecurityService;
         $DBPassword = $userRepository->getPasswordWithUsername($providedUsername);
         $DBId = $userRepository->getIdWithUsername($providedUsername);
         $DBNewUser = $userRepository->getNewUserWithUsername($providedUsername);
         $path = __DIR__ . '/../Service/PasswordService.php';
-        if ($this->hash_equals($DBPassword, crypt($providedPassword, $DBPassword))) {
+        if ($securityService->hash_equals($DBPassword, crypt($providedPassword, $DBPassword))) {
             if (!isset($_SESSION)) {
                 session_start();
             }
@@ -206,18 +193,6 @@ class Auth extends Service
         $d = $R * $c;
         return $d * 1000; // meters
     }
-    
-
-    public function getTasks($action=null)
-    {
-        $sqlQuery = new sqlQuery();
-        if ($action == null){
-            $tasks = $sqlQuery->sqlQuery("SELECT * FROM game_tasks");
-        } else {
-            $tasks = $sqlQuery->sqlQuery("SELECT * FROM game_tasks WHERE action='".$action."'");
-        }
-        return $tasks;
-    }
 
     public function getEntityInConst($subject, $baseId)
     {
@@ -281,19 +256,6 @@ class Auth extends Service
         return sqrt($c+$d);
     }
 
-    public function getOwnerUsernameWithOrigin($origin)
-    {
-        $sqlQuery = new sqlQuery();
-        $arr = explode(",", $origin);
-        $originType = $arr[0];
-        $originId = $arr[1];
-        if (!ctype_digit($originId)) {
-            return false;
-            die();
-        }
-        $query = "SELECT player FROM game_".$originType."s WHERE id='".$originId."'";
-        $pos = $sqlQuery->sqlQuery($query);
-        return $pos[0]['player'];
-    }
+    
 
 }

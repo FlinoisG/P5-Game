@@ -49,7 +49,7 @@ class TaskController extends DefaultController
         if ($class == 'unit') {
             $action = "buy";
             $inConstruct = 0;
-            $tasks = $auth->getTasks();
+            $tasks = $taskRepository->getTasks();
             foreach ($tasks as $task) {
                 if ($task['startOrigin'] == 'base,'.$startOriginId && $task['action'] == 'buy' && explode(",", $task['subject'])[0] == $type){
                     $inConstruct++;
@@ -134,7 +134,7 @@ class TaskController extends DefaultController
         }
         $baseRepository = new BaseRepository;
         $mineRepository = new MineRepository;
-        $mineRepository = new TaskRepository;
+        $taskRepository = new TaskRepository;
         if ($type == null) $type = $_GET['type'];
         if ($startOrigin == null) $startOrigin = $_GET['startOrigin'];
         if ($target == null) $target = $_GET['target'];
@@ -173,10 +173,12 @@ class TaskController extends DefaultController
         $originBuilding = explode(",", $startOrigin)[0];
         $originId = explode(",", $startOrigin)[1];
         $originUnits = $baseRepository->getUnits($type, $originId, $originBuilding);
-        $owner = $auth->getOwnerUsernameWithOrigin($target);
+        $targetBuilding = explode(",", $target)[0];
+        $targetId = explode(",", $target)[1];
+        var_dump($targetBuilding);
+        var_dump($targetId);
+        $owner = $baseRepository->getOwnerUsername($targetBuilding, $targetId);
         if ($owner !== false){
-            $targetBuilding = explode(",", $target)[0];
-            $targetId = explode(",", $target)[1];
             $spaceLeft = $baseRepository->getSpaceLeft($type, $targetId, $targetBuilding);
             if ($owner !== false && $_SESSION["auth"] != $owner){
                 echo 'wrong owner';
@@ -206,6 +208,7 @@ class TaskController extends DefaultController
                 echo 'pas asser d\'unitées';
             }
         } else {
+            var_dump("what");
             if ($originUnits >= $amount){
                 $baseRepository->buyUnits($type, $originId, $negAmount, $originBuilding);
                 $startPos = $baseRepository->getPos($startOriginId, $startOriginType);
@@ -272,6 +275,7 @@ class TaskController extends DefaultController
         $negAmount = ($amount * -1);
         $baseRepository = new BaseRepository;
         $mineRepository = new MineRepository;
+        $taskRepository = new TaskRepository;
         $building = explode(",", $startOrigin)[0];
         $id = explode(",", $startOrigin)[1];
         if ($building === "base"){
@@ -280,32 +284,10 @@ class TaskController extends DefaultController
             $originUnits = $mineRepository->getUnits($type, $id);
         }
         //$originUnits = $auth->getUnit($type, $startOrigin);
-        $owner = $auth->getOwnerUsernameWithOrigin($target);
-        $baseRepository = new BaseRepository;
-        $mineRepository = new MineRepository;
         $id = explode(",", $target)[1];
         $building = explode(",", $target)[0];
+        $owner = $baseRepository->getOwnerUsername($building, $id);
         $spaceLeft = $baseRepository->getSpaceLeft($type, $targetId, $building);
-        /*
-        if ($type === "worker"){
-            if ($building === "base"){
-                $spaceLeft = $baseRepository->getWorkerSpaceLeft($id);
-            } else if ($building === "mine"){
-                $spaceLeft = $mineRepository->getWorkerSpaceLeft($id);
-            }
-        } else if ($type === "soldier") {
-            if ($building === "base"){
-                $spaceLeft = $baseRepository->getSoldierSpaceLeft($id);
-            } else if ($building === "mine"){
-                $spaceLeft = $mineRepository->getSoldierSpaceLeft($id);
-            } else {
-                $spaceLeft = 0;
-            }
-        } else {
-            $spaceLeft = 0;
-        }
-        */
-        //$spaceLeft = $auth->getSpaceLeftAtOrigin($type, $target);
         if ($_SESSION["auth"] != $owner){
             echo 'wrong owner';
         } else if ($spaceLeft < $amount){

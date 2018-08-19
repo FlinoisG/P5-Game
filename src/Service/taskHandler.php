@@ -8,6 +8,7 @@ use App\Service\MapService;
 use App\Controller\BaseController;
 use App\Repository\BaseRepository;
 use App\Repository\MineRepository;
+use App\Repository\TaskRepository;
 
 /**
  * this class will be driven by cron.php
@@ -26,9 +27,9 @@ class TaskHandler extends Service
         $auth = new Auth;
         $baseRepository = new BaseRepository;
         $mineRepository = new MineRepository;
+        $taskRepository = new TaskRepository;
         $mapService = new MapService;
         foreach ($tasks as $task) {
-            var_dump($task["endTime"]);
             if ($task["endTime"] < time()) {
                 if ($task["action"] == "buy") {
                     if ($task["subject"] == "worker" || $task["subject"] == "soldier") {
@@ -42,10 +43,9 @@ class TaskHandler extends Service
                 } elseif ($task["action"] == "build") {
                     $mapService->build($task["subject"], $task["targetPos"], $task["author"]);
                 } elseif ($task["action"] == "move") {
-                    var_dump($task);
+                    var_dump($task["targetOrigin"]);
                     if ($task["targetOrigin"] != "") {
                         $arr = explode(',', $task["subject"]);
-                        var_dump($arr);
                         $targetType = $arr[0];
                         $targetAmount = $arr[1];
                         $targetBuilding = explode(",", $task["targetOrigin"])[0];
@@ -53,7 +53,7 @@ class TaskHandler extends Service
                         $baseRepository->buyUnits($targetType, $targetId, $targetAmount, $targetBuilding);
                     }
                 }
-                $auth->removeTask($task["id"]);
+                $taskRepository->removeTask($task["id"]);
             }
         }
     }

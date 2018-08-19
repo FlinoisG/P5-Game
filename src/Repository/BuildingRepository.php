@@ -12,7 +12,6 @@ class BuildingRepository extends Repository
 
     public function buyUnits($unitType, $id, $amount = 1, $buildingType = null)
     {
-        
         if (is_null($buildingType)){
             $buildingType = $this->getType();
         }
@@ -225,15 +224,34 @@ class BuildingRepository extends Repository
             return false;
             die();
         }
-        var_dump($statement);
         $id = (int)$id;
-        var_dump($id);
         $query = $DBConnection->prepare($statement);
         $query->bindParam(":id", $id, PDO::PARAM_INT);
         $query->execute();
         $space = $query->fetch();
-        var_dump($space);
         return $space[0];
+    }
+
+    public function getOwnerUsername($type, $id)
+    {
+        $DBConnection = $this->getDBConnection();
+        if (!ctype_digit($id)) {
+            return false;
+            die();
+        }
+        if ($type === "base"){
+            $statement = "SELECT player FROM game_bases WHERE id = :id";
+        } elseif ($type === "mine"){
+            $statement = "SELECT player FROM game_mines WHERE id = :id";
+        } else {
+            return false;
+            die();
+        }
+        $query = $DBConnection->prepare($statement);
+        $query->bindParam(":id", $id, PDO::PARAM_INT);
+        $query->execute();
+        $pos = $query->fetch();
+        return $pos['player'];
     }
 
 }
