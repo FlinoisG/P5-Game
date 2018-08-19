@@ -7,6 +7,7 @@ use App\Service\Grid;
 use App\Service\Auth;
 use App\Repository\BaseRepository;
 use App\Repository\MineRepository;
+use App\Repository\UserRepository;
 
 class MapInit extends Service
 {
@@ -21,10 +22,10 @@ class MapInit extends Service
     {
         
         $auth = new Auth;
-        //$objectsOld = $auth->getMapObjects();
 
         $baseRepository = new BaseRepository;
         $mineRepository = new MineRepository;
+        $userRepository = new UserRepository;
 
         $bases = $baseRepository->getBases();
         $mines = $mineRepository->getMines();
@@ -33,7 +34,7 @@ class MapInit extends Service
 
         $buildingTasks = $auth->getTasks('build');
         $moveTasks = $auth->getTasks('move');
-        $usernames = $auth->getAllUsername();
+        $usernames = $userRepository->getAllUsername();
         foreach ($buildingTasks as $task) {
             array_push($objects, [
                 "type"=>$task["subject"]."InConst",
@@ -62,7 +63,7 @@ class MapInit extends Service
         }
         
         $result = '<script>var objectMapObj = [';
-        $allUnits = $auth->getAllUnit();
+        $allUnits = $baseRepository->getAllUnit();
         $unitsUpgradesInConst = $auth->getUnitsUpgradesInConst();
         $unitsInConst = $auth->getAllEntityInConst();
         
@@ -152,7 +153,6 @@ class MapInit extends Service
                         "metalNodes": '.$object["metalNodes"].'
                     },';
             } else if ($object['type'] == 'worker' || $object['type'] == 'soldier') {
-                //var_dump($object);
                 $result .= '{
                     "type": "'.$object['type'].'",
                     "x": '.$pos[0].', 
@@ -179,8 +179,6 @@ class MapInit extends Service
         }
         $result[strrpos($result, ',')] = ' ';
         $result = $result . ']; console.log(objectMapObj);</script>';
-        //$result = "<script>var objectMapObj = []</script>";
-        //echo "<script>console.log('".$result."')</script>";
         return $result;
     }
 }

@@ -18,7 +18,7 @@ abstract class Service
      */
     public function __construct()
     {
-        $str = file_get_contents(__DIR__.'/mysqlConfig.json');
+        $str = file_get_contents(__DIR__.'/../Config/mysqlConfig.json');
         $configs = json_decode($str, true);
         $this->host = $configs['host'];
         $this->dbname = $configs['dbname'];

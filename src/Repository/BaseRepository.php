@@ -42,5 +42,18 @@ class BaseRepository extends BuildingRepository
         $obj = new BaseEntity($query->fetch());
         return $obj;
     }
+
+
+    public function newBase($buildingType, $username, $author, $pos, $main)
+    {
+        $DBConnection = $this->getDBConnection();
+        $query = "INSERT INTO game_bases (player, playerId, pos, main) VALUES (':username', ':author', ':pos', ':main')";
+        $query = $DBConnection->prepare($statement);
+        $query->bindParam(":username", $username, PDO::PARAM_STR);
+        $query->bindParam(":author", $author, PDO::PARAM_STR);
+        $query->bindParam(":pos", $pos, PDO::PARAM_STR);
+        $query->bindParam(":main", $main, PDO::PARAM_INT);
+        $query->execute();
+    }
     
 }

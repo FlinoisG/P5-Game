@@ -2,7 +2,6 @@ panelInterface = {
   
     select(toSelect) 
     {
-        console.log(toSelect);
         if (buildOrder.orderMode){
             buildOrder.cancel();
         }

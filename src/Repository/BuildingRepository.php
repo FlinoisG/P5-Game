@@ -5,12 +5,14 @@ namespace App\Repository;
 use PDO;
 use App\Model\Repository;
 use App\Entity\BaseEntity;
+use App\Service\sqlQuery;
 
 class BuildingRepository extends Repository
 {
 
     public function buyUnits($unitType, $id, $amount = 1, $buildingType = null)
     {
+        
         if (is_null($buildingType)){
             $buildingType = $this->getType();
         }
@@ -45,6 +47,7 @@ class BuildingRepository extends Repository
         $query->execute();
     }
 
+
     public function getSpaceLeft($unitType, $id, $buildingType = null)
     {
         $DBConnection = $this->getDBConnection();
@@ -53,18 +56,18 @@ class BuildingRepository extends Repository
         }
         if ($unitType === "worker"){
             if ($buildingType === "base"){
-                $query = $DBConnection->prepare("SELECT workerSpace, workers FROM game_bases WHERE id = :id");
+                $statement = "SELECT workerSpace, workers FROM game_bases WHERE id = :id";
             } elseif ($buildingType === "mine"){
-                $query = $DBConnection->prepare("SELECT workerSpace, workers FROM game_mines WHERE id = :id");
+                $statement = "SELECT workerSpace, workers FROM game_mines WHERE id = :id";
             } else {
                 return false;
                 die();
             }
         } elseif ($unitType === "soldier"){
             if ($buildingType === "base"){
-                $query = $DBConnection->prepare("SELECT soldierSpace, soldiers FROM game_bases WHERE id = :id");
+                $statement = "SELECT soldierSpace, soldiers FROM game_bases WHERE id = :id";
             } elseif ($buildingType === "mine"){
-                $query = $DBConnection->prepare("SELECT soldierSpace, soldiers FROM game_mines WHERE id = :id");
+                $statement = "SELECT soldierSpace, soldiers FROM game_mines WHERE id = :id";
             } else {
                 return false;
                 die();
@@ -73,6 +76,7 @@ class BuildingRepository extends Repository
             return false;
             die();
         }
+        $query = $DBConnection->prepare($statement);
         $query->bindParam(':id', $id, PDO::PARAM_INT);
         $query->execute();
         $result = $query->fetch();
@@ -88,18 +92,18 @@ class BuildingRepository extends Repository
         }
         if ($unitType === "worker") {
             if ($buildingType === "base"){
-                $query = $DBConnection->prepare("SELECT workers FROM game_bases WHERE id= :id");
+                $statement = "SELECT workers FROM game_bases WHERE id= :id";
             } elseif ($buildingType === "mine"){
-                $query = $DBConnection->prepare("SELECT workers FROM game_mines WHERE id= :id");
+                $statement = "SELECT workers FROM game_mines WHERE id= :id";
             } else {
                 return false;
                 die();
             }
         } else if ($unitType === "soldier") {
             if ($buildingType === "base"){
-                $query = $DBConnection->prepare("SELECT soldiers FROM game_bases WHERE id= :id");
+                $statement = "SELECT soldiers FROM game_bases WHERE id= :id";
             } elseif ($buildingType === "mine"){
-                $query = $DBConnection->prepare("SELECT soldiers FROM game_mines WHERE id= :id");
+                $statement = "SELECT soldiers FROM game_mines WHERE id= :id";
             } else {
                 return false;
                 die();
@@ -108,6 +112,7 @@ class BuildingRepository extends Repository
             return false;
             die();
         }
+        $query = $DBConnection->prepare($statement);
         $query->bindParam(':id', $id, PDO::PARAM_INT);
         $query->execute();
         $unitNumber = $query->fetch()[0];
@@ -121,17 +126,114 @@ class BuildingRepository extends Repository
             $buildingType = $this->getType();
         }
         if ($buildingType === "base") {
-                $query = $DBConnection->prepare("SELECT pos FROM game_bases WHERE id= :id");
+            $statement = "SELECT pos FROM game_bases WHERE id= :id";
         } else if ($buildingType === "mine") {
-                $query = $DBConnection->prepare("SELECT pos FROM game_mines WHERE id= :id");
+            $statement = "SELECT pos FROM game_mines WHERE id= :id";
         } else {
             return false;
             die();
         }
+        $query = $DBConnection->prepare($statement);
         $query->bindParam(':id', $id, PDO::PARAM_INT);
         $query->execute();
         $pos = $query->fetch();
         return $pos[0];
+    }
+
+    public function getAllUnit()
+    {
+        $sqlQuery = new sqlQuery();
+        $query = "SELECT id, workers, soldiers FROM game_bases";
+        $baseUnit = $sqlQuery->sqlQuery($query);
+        $query = "SELECT id, workers, soldiers FROM game_mines";
+        $mineUnit = $sqlQuery->sqlQuery($query);
+        if ($baseUnit == [] && $mineUnit == []) {
+            return false;
+        } else {
+            $units["base"] = [];
+            foreach ($baseUnit as $base) {
+                $units["base"][$base["id"]]["workers"] = $base["workers"];
+                $units["base"][$base["id"]]["soldiers"] = $base["soldiers"];
+            }
+            $units["mine"] = [];
+            foreach ($mineUnit as $base) {
+                $units["mine"][$base["id"]]["workers"] = $base["workers"];
+                $units["mine"][$base["id"]]["soldiers"] = $base["soldiers"];
+            }
+            return $units;
+        }
+    }
+
+    public function buySpace($type, $origin, $amount=5)
+    {
+        $arr = explode(",", $origin);
+        $originType = $arr[0];
+        $originId = $arr[1];
+        $space = $this->getSpace($type, $originType, $originId);
+        $space = $space + $amount;
+        $DBConnection = $this->getDBConnection();
+        if ($originType === "base"){
+            if ($type === "worker"){
+                $statement = "UPDATE game_bases SET workerSpace = :space WHERE id = :originId";
+            } elseif ($type === "soldier"){
+                $statement = "UPDATE game_bases SET soldierSpace = :space WHERE id = :originId";
+            } else {
+                return false;
+                die();
+            }
+        } elseif ($originType === "mine"){
+            if ($type === "worker"){
+                $statement = "UPDATE game_mines SET workerSpace = :space WHERE id = :originId";
+            } elseif ($type === "soldier"){
+                $statement = "UPDATE game_mines SET soldierSpace = :space WHERE id = :originId";
+            } else {
+                return false;
+                die();
+            }
+        } else {
+            return false;
+            die();
+        }
+        $query = $DBConnection->prepare($statement);
+        $query->bindparam(":space", $space, PDO::PARAM_INT);
+        $query->bindparam(":originId", $originId, PDO::PARAM_INT);
+        $query->execute();
+    } 
+
+    public function getSpace($type, $buildingType, $id)
+    {
+        $DBConnection = $this->getDBConnection();
+        if ($buildingType === "base"){
+            if ($type === "worker"){
+                $statement = "SELECT workerSpace FROM game_bases WHERE id = :id";
+            } elseif ($type === "soldier"){
+                $statement = "SELECT soldierSpace FROM game_bases WHERE id = :id";
+            } else {
+                return false;
+                die();
+            }
+        } elseif ($buildingType === "mine"){
+            if ($type === "worker"){
+                $statement = "SELECT workerSpace FROM game_mines WHERE id = :id";
+            } elseif ($type === "soldier"){
+                $statement = "SELECT soldierSpace FROM game_mines WHERE id = :id";
+            } else {
+                return false;
+                die();
+            }
+        } else {
+            return false;
+            die();
+        }
+        var_dump($statement);
+        $id = (int)$id;
+        var_dump($id);
+        $query = $DBConnection->prepare($statement);
+        $query->bindParam(":id", $id, PDO::PARAM_INT);
+        $query->execute();
+        $space = $query->fetch();
+        var_dump($space);
+        return $space[0];
     }
 
 }

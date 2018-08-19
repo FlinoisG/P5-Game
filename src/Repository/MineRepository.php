@@ -44,5 +44,15 @@ class MineRepository extends BuildingRepository
     }
     
 
+    public function newMine($buildingType, $username, $author, $pos, $metalNodes)
+    {
+        $DBConnection = $this->getDBConnection();
+        $query = $DBConnection->prepare("INSERT INTO game_mines (player, playerId, pos, main) VALUES (':username', ':author', ':pos', ':main')");
+        $query->bindParam(":username", $username, PDO::PARAM_STR);
+        $query->bindParam(":author", $author, PDO::PARAM_STR);
+        $query->bindParam(":pos", $pos, PDO::PARAM_STR);
+        $query->bindParam(":metalNodes", $metalNodes, PDO::PARAM_INT);
+        $query->execute();
+    }
     
 }

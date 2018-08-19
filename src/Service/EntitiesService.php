@@ -141,7 +141,8 @@ class EntitiesService extends Service
                 "relation"=>"'neutral'",
                 "content"=>"''",
                 "workerSpace"=>"''",
-                "soldierSpace"=>"''"
+                "soldierSpace"=>"''",
+                "marker"=>"null"
             ],  
             "subPanelAction"=>"buildOrder.build('mine', origin, toSelect);"
         ];
@@ -199,6 +200,7 @@ class EntitiesService extends Service
             "attributes"=>[
                 "type"=>"'workerSpace'",
                 "class"=>"'upgrade'",
+                "cost"=>500,
             ],
             "onClick"=>"",    
             "subPanelAction"=>"window.location.replace(\"?p=task.buy&type=workerSpace&origin=\" + origin);"
@@ -209,6 +211,7 @@ class EntitiesService extends Service
             "attributes"=>[
                 "type"=>"'soldierSpace'",
                 "class"=>"'upgrade'",
+                "cost"=>500,
             ],  
             "subPanelAction"=>"window.location.replace(\"?p=task.buy&type=soldierSpace&origin=\" + origin);"
         ];

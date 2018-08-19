@@ -9,6 +9,7 @@ use App\Service\sqlQuery;
 use App\Service\GUID;
 use App\Service\PasswordService;
 use App\Service\SecurityService;
+use App\Repository\UserRepository;
 use PDO;
 
 /**
@@ -34,26 +35,24 @@ class Auth extends Service
     /**
      * Create session if username and password matches in the database
      *
-     * @param string $username
-     * @param string $password
+     * @param string $providedUsername
+     * @param string $providedPassword
      * @return void
      */
-    public function login($username, $password)
+    public function login($providedUsername, $providedPassword)
     {   
-        $DBConnection = $this->getDBConnection();
-        $query = $DBConnection->prepare("SELECT username, password, id, newUser FROM game_users WHERE username= :username");
-        $query->bindParam(":username", $username, PDO::PARAM_STR);
-        $query->execute();
-        $user = $query->fetch();
-        //$user = $sqlQuery->sqlQuery("SELECT username, password, id, newUser FROM game_users WHERE username='".$username."'");
+        $userRepository = new UserRepository;
+        $DBPassword = $userRepository->getPasswordWithUsername($providedUsername);
+        $DBId = $userRepository->getIdWithUsername($providedUsername);
+        $DBNewUser = $userRepository->getNewUserWithUsername($providedUsername);
         $path = __DIR__ . '/../Service/PasswordService.php';
-        if ($user != [] && $this->hash_equals($user['password'], crypt($password, $user['password']))) {
+        if ($this->hash_equals($DBPassword, crypt($providedPassword, $DBPassword))) {
             if (!isset($_SESSION)) {
                 session_start();
             }
-            $_SESSION['auth'] = $user['username'];
-            $_SESSION['authId'] = $user['id'];
-            $_SESSION['authNewUser'] = $user['newUser'];
+            $_SESSION['auth'] = $providedUsername;
+            $_SESSION['authId'] = $DBId;
+            $_SESSION['authNewUser'] = $DBNewUser;
         } else {
             $DefaultController = new DefaultController();
             die($DefaultController->error(403));
@@ -95,23 +94,14 @@ class Auth extends Service
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)){
             $available = false;
         }
-        $DBConnection = $this->getDBConnection();
-        $query = $DBConnection->prepare("SELECT username FROM game_users WHERE username = :username");
-        $query->bindParam(":username", $username, PDO::PARAM_STR);
-        $query->execute();
-        $getUser = $query->fetch();
-        //$sqlQuery = new sqlQuery();
-        //$getUser = $sqlQuery->sqlQuery("SELECT username FROM game_users WHERE username='".$username."'");
+        $userRepository = new UserRepository;
+        $getUser = $userRepository->getIdWithUsername($username);
         if ($getUser) {
             $available = false;
             $content = '<h1>Ce nom d\'utilisateur existe déjà</h1>';
             die(require('../src/View/base.php'));
         }
-        $query = $DBConnection->prepare("SELECT username FROM game_users WHERE email = :email");
-        $query->bindParam(":email", $email, PDO::PARAM_STR);
-        $query->execute();
-        $getEmail = $query->fetch();
-        //$getEmail = $sqlQuery->sqlQuery("SELECT username FROM game_users WHERE email ='".$email."'");
+        $getEmail = $userRepository->checkEmail($email);
         if ($getEmail) {
             $available = false;
             $content = '<h1>Un compte avec cet e-mail existe déjà</h1>';
@@ -136,17 +126,8 @@ class Auth extends Service
     public function register($username, $email, $password) {
         require('../src/Service/PasswordService.php');
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-        $DBConnection = $this->getDBConnection();
-        $query = $DBConnection->prepare("INSERT INTO game_users (username, email, password)
-        VALUES (:username, :email, :hashedPassword)");
-        $query->bindParam(":username", $username, PDO::PARAM_STR);
-        $query->bindParam(":email", $email, PDO::PARAM_STR);
-        $query->bindParam(":hashedPassword", $hashedPassword, PDO::PARAM_STR);
-        $query->execute();
-        //$sqlQuery = new sqlQuery();
-        //$query =   'INSERT INTO game_users (username, email, password)
-        //            VALUES (\''.$username.'\', \''.$email.'\', \''.$hashedPassword.'\')';
-        //$sqlQuery->sqlQuery($query);
+        $userRepository = new UserRepository;
+        $userRepository->registerUser($username, $email, $hashedPassword);
         copy('../public/assets/img/blankUser100x100.png', '../deposit/User_Avatar/'.$username.'.png');
     }
 
@@ -159,14 +140,17 @@ class Auth extends Service
      */
     public function passwordResetLink($email)
     {
-        $sqlQuery = new sqlQuery();
-        $user = $sqlQuery->sqlQuery("SELECT * FROM game_users WHERE email='".$email."'");
+        //$sqlQuery = new sqlQuery();
+        //$user = $sqlQuery->sqlQuery("SELECT * FROM game_users WHERE email='".$email."'");
+        $userRepository = new UserRepository;
+        $user = $userRepository->getEverythingWithEmail($email);
         if ($user != []) {
             $GUIDService = new GUID;
             $resetToken = $GUIDService->getGUID();
             $hashedResetToken = password_hash($resetToken, PASSWORD_BCRYPT);
             $resetExpiration = date("Y-m-d H:i:s", strtotime('+24 hours'));
-            $sqlQuery->sqlQuery('UPDATE game_users SET token = \''.$hashedResetToken.'\', token_exp = \''.$resetExpiration.'\' WHERE email=\''.$email.'\'');
+            $userRepository->updateToken($hashedResetToken, $resetExpiration, $email);
+            //$sqlQuery->sqlQuery('UPDATE game_users SET token = \''.$hashedResetToken.'\', token_exp = \''.$resetExpiration.'\' WHERE email=\''.$email.'\'');
             $to      = $_POST['email'];
             $subject = 'Demande de réinitialisation de mot de passe';
             $message = 'Lien : http://gauthier.tuby.com/P5-Game/public/?p=login.recovery&user=' . $user['0']['username'] . '&token=' . $resetToken;
@@ -188,16 +172,15 @@ class Auth extends Service
      * @param string $password
      * @return void
      */
-    public function resetPassword($user, $password)
+    public function resetPassword($username, $password)
     {
         require('../src/Service/PasswordService.php');
-        $sqlQuery = new sqlQuery();
-        $query = 'UPDATE game_users SET 
-            password    = \''.password_hash($password, PASSWORD_BCRYPT).'\', 
-            token       = \'\', 
-            token_exp   = \'\' 
-            WHERE username=\''.$user.'\'';
-        $sqlQuery->sqlQuery($query);
+        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+        $userRepository = new UserRepository;
+        $userRepository->resetPassword($username, $hashedPassword);
+        //$sqlQuery = new sqlQuery();
+        //$query = 'UPDATE game_users SET password = \''.$hashedPassword.'\', token = \'\', token_exp   = \'\' WHERE username=\''.$user.'\'';
+        //$sqlQuery->sqlQuery($query);
     }
 
     /**
@@ -207,8 +190,10 @@ class Auth extends Service
      * @param string $tokenClient
      * @return $users
      */
+    /*
     public function checkTokenValidity($username, $tokenClient)//SecurityService
     {
+        /*
         $DBConnection = $this->getDBConnection();
         $queryUsername = $DBConnection->prepare("SELECT token FROM game_users WHERE username = :username");
         $queryUsername->bindParam(":username", $username, PDO::PARAM_STR);
@@ -225,23 +210,31 @@ class Auth extends Service
             $user = [];
         }
         return $users;
+        
     }
-
+    */
+/*
     public function getIdByUsername($username){
+        /*
         $sqlQuery = new sqlQuery();
         $query = "SELECT ID FROM game_users WHERE username='".$username."'";
         $result = $sqlQuery->sqlQuery($query);
         return $result[0]['ID'];
+        
     }
-
+    */
+/*
     public function getUsernameById($id){
+        /*
         $sqlQuery = new sqlQuery();
         $query = "SELECT username FROM game_users WHERE id='".$id."'";
         $result = $sqlQuery->sqlQuery($query);
         return $result[0]['username'];
+        
     }
-
+/*
     public function getAllUsername(){
+        
         $sqlQuery = new sqlQuery();
         $query = "SELECT id, username FROM game_users";
         $results = $sqlQuery->sqlQuery($query);
@@ -249,19 +242,20 @@ class Auth extends Service
             $usernames[$result["id"]] = $result["username"];
         }
         return $usernames;
+        
     }
 
-
+/*
     public function getMapObjects()
     {
         var_dump("getMapObjects");
-        /*
+        
         $sqlQuery = new sqlQuery();
         $bases = $sqlQuery->sqlQuery("SELECT * FROM game_bases");
         $mines = $sqlQuery->sqlQuery("SELECT * FROM game_mines");
         $objects = array_merge($bases, $mines);
         return $objects;
-        */
+        
     }
 
     public function getMetal($username)
@@ -279,11 +273,11 @@ class Auth extends Service
         $sqlQuery->sqlQuery("UPDATE game_users SET metal = ".$newAmount." WHERE username='".$username."'");
         return $metal;
     }
-
+/*
     public function getUnit($unit, $targetOrigin)
     {
         var_dump("getUnit");
-        /*
+        
         $sqlQuery = new sqlQuery();
         $arr = explode(',', $targetOrigin);
         $buildingType = $arr[0];
@@ -294,11 +288,13 @@ class Auth extends Service
         } else {
             return $baseUnit[0][$unit."s"];
         }
-        */
+        
     }
-
+    */
+/*
     public function getAllUnit()
-    {
+    { 
+        
         $sqlQuery = new sqlQuery();
         $query = "SELECT id, workers, soldiers FROM game_bases";
         $baseUnit = $sqlQuery->sqlQuery($query);
@@ -320,12 +316,14 @@ class Auth extends Service
             }
             return $units;
         }
+        
     }
-
+    */
+/*
     public function buyUnit($unit, $origin, $amount=1)
     {
         var_dump("buyUnit");
-        /*
+        
         $sqlQuery = new sqlQuery();
         $arr = explode(",", $origin);
         $originType = $arr[0];
@@ -333,11 +331,13 @@ class Auth extends Service
         $baseUnit = $this->getUnit($unit, $origin);
         $baseUnit = $baseUnit + $amount;
         $sqlQuery->sqlQuery("UPDATE game_".$originType."s SET ".$unit."s = ".$baseUnit." WHERE id='".$originId."'");
-        */
+        
     }  
-
+    */
+/*
     public function buySpace($type, $origin, $amount=5)
     {
+        
         $sqlQuery = new sqlQuery();
         $arr = explode(",", $origin);
         $originType = $arr[0];
@@ -345,12 +345,15 @@ class Auth extends Service
         $space = $this->getSpace($type, $origin);
         $space = $space + $amount;
         $sqlQuery->sqlQuery("UPDATE game_".$originType."s SET ".$type."Space = ".$space." WHERE id='".$originId."'");
+        
     } 
+    
 
     public function build($type, $pos, $author, $main=0)
     {
         $sqlQuery = new sqlQuery();
-        $username = $this->getUsernameById($author);
+        $userRepository = new UserRepository;
+        $username = $userRepository->getUsernameById($author);
         if ($type == 'base') {
             $query = 'INSERT INTO game_bases (player, playerId, pos, main) VALUES (\''.$username.'\', \''.$author.'\', \''.$pos.'\', \''.$main.'\')';
         } else if ($type == 'mine') {
@@ -361,12 +364,12 @@ class Auth extends Service
             $posArr = $grid->gridToCoordinates($posArr[0], $posArr[1]);
             $metalNodes = $this->getMetalNodes($posArr);
             $metalNodes = json_encode($metalNodes);
-            var_dump($metalNodes);
+            //var_dump($metalNodes);
             $query = 'INSERT INTO game_mines (player, playerId, pos, metalNodes) VALUES (\''.$username.'\', \''.$author.'\', \''.$pos.'\', \''.$metalNodes.'\')';
         }
         $sqlQuery->sqlQuery($query);
     }
-
+*/
     public function getMetalNodes ($pos, $radius=50000)
     {
         $oreMap = json_decode(file_get_contents(__DIR__.'/../../deposit/Maps/oreMap.json'), true);
@@ -391,9 +394,10 @@ class Auth extends Service
         $d = $R * $c;
         return $d * 1000; // meters
     }
-
+/*
     public function getSpace($type, $origin)
     {
+        
         $sqlQuery = new sqlQuery();
         $arr = explode(",", $origin);
         $originType = $arr[0];
@@ -401,7 +405,9 @@ class Auth extends Service
         $query = "SELECT ".$type."Space FROM game_".$originType."s WHERE id='".$originId."'";
         $space = $sqlQuery->sqlQuery($query);
         return $space[0][$type."Space"];
+        
     }
+    */
     
     public function newTask($task)
     {
@@ -544,11 +550,11 @@ class Auth extends Service
         $pos = $sqlQuery->sqlQuery($query);
         return $pos[0]['player'];
     }
-
+/*
     public function getSpaceLeftAtOrigin($type, $origin)
     {
         var_dump("getSpaceLeftAtOrigin");
-        /*
+        
         $sqlQuery = new sqlQuery();
         $arr = explode(",", $origin);
         $originType = $arr[0];
@@ -557,7 +563,8 @@ class Auth extends Service
         $result = $sqlQuery->sqlQuery($query);
         $spaceLeft = ($result[0][$type."Space"] - $result[0][$type."s"]) + 1;
         return $spaceLeft;
-        */
+        
     }
+    */
 
 }

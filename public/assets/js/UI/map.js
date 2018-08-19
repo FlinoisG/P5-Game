@@ -216,7 +216,7 @@ Map.mainMap = {
                                 var str = origin[1].split("&");
                                 var originId = str[0];
                                 if (originType == "base" && originId == object.id){
-                                    console.log(baseEntity.marker._latlng);
+                                    console.log(baseEntity);
                                     baseEntity.onClick();
                                     Map.mainMap.map.setView(baseEntity.marker._latlng, 9)
                                     if (window.location.search.includes('soldierTab')){
@@ -241,19 +241,22 @@ Map.mainMap = {
                         icon: icon,
                         riseOnHover: true,
                     }).addTo(this.map);
-                    const mineEntity = new MineEntity(object.id, object.ownerName, relation, object.content, object.workerSpace, object.soldierSpace);
+                    const mineEntity = new MineEntity(object.id, object.ownerName, relation, object.content, object.workerSpace, object.soldierSpace, mineMarker);
                     mineMarker.addEventListener('click', function(e) {
                         mineEntity.onClick(e);
                     });
                     if (relation == "owned"){
                         if (window.location.search.includes('focus')){
-                            if (typeof(target) != 'undefined'){
+                            var target = (window.location.search.substr(14));
+                            if (target != ''){
+                            //if (typeof(target) != 'undefined'){
                                 var target = (window.location.search.substr(14));
                                 var origin = target.split(",");
                                 var originType = origin[0];
                                 var str = origin[1].split("&");
                                 var originId = str[0];
                                 if (originType == 'mine' && originId == object.id){
+                                    console.log(mineEntity);
                                     Map.mainMap.map.setView(mineEntity.marker._latlng, 9)
                                     mineEntity.onClick();
                                 }

@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use App\Service\Auth;
 use App\Service\EntitiesService;
+use App\Service\MapService;
 use App\Repository\BaseRepository;
 use App\Repository\MineRepository;
+use App\Repository\UserRepository;
 
 class TaskController extends DefaultController
 {
@@ -18,6 +20,8 @@ class TaskController extends DefaultController
         
         if (!isset($_SESSION)) { 
             session_start(); 
+        } else {
+            //die();
         }
         
         $startOrigin = $_GET['origin'];
@@ -28,11 +32,14 @@ class TaskController extends DefaultController
         $auth = new Auth;
         $baseRepository = new BaseRepository;
         $mineRepository = new MineRepository;
+        $userRepository = new UserRepository;
         $available = true;
         $type = $_GET['type'];
-        $class = str_replace("'", "", $entitiesService->getType($type)["attributes"]['class']);
-        $cost = str_replace("'", "", $entitiesService->getType($type)["attributes"]['cost']);
-        $playerMetal = $auth->getMetal($_SESSION['auth']);
+        $getType = $entitiesService->getType($type)["attributes"];
+        var_dump($getType);
+        $class = str_replace("'", "", $getType['class']);
+        $cost = str_replace("'", "", $getType['cost']);
+        $playerMetal = $userRepository->getMetal($_SESSION['auth']);
         if ($auth->getNewUser($_SESSION['authId']) != 1 && $playerMetal < $cost) {
             $available = false;
             $cause = "not enough metal";
@@ -52,7 +59,7 @@ class TaskController extends DefaultController
                 $units = $mineRepository->getUnits($type, $startOriginId);
             }
             $slots = (int)$inConstruct + (int)$units;
-            $space = $auth->getSpace($type, $startOrigin);
+            $space = $baseRepository->getSpace($type, $startOriginType, $startOriginId);
             if ($slots > $space) {
                 $available = false;
                 $cause = "space";
@@ -68,7 +75,7 @@ class TaskController extends DefaultController
                 $cause = "already upgrading";
             }
             $shortType = str_replace("Space","",$type);
-            $space = $auth->getSpace($shortType, $startOrigin);
+            $space = $baseRepository->getSpace($shortType, $startOriginType, $startOriginId);
             if ($space >= 99) {
                 $available = false;
                 $cause = "can't upgrade anymore";
@@ -83,9 +90,9 @@ class TaskController extends DefaultController
                 $targetPos = null;
             }
             //if ($auth->getNewUser($_SESSION['authId']) != 1) {
-            $auth->addMetal($_SESSION['auth'], ($cost * -1));
+            $userRepository->addMetal($_SESSION['auth'], ($cost * -1));
             //}
-            $authorId = $auth->getIdByUsername($_SESSION['auth']);
+            $authorId = $userRepository->getIdByUsername($_SESSION['auth']);
             $startTime = 0;
             if ($class == 'building') {
                 if (isset($targetOrigin)) {
@@ -180,7 +187,7 @@ class TaskController extends DefaultController
                     'subject'=>$type.",".$amount, 
                     'startOrigin'=>$startOrigin, 
                     'startPos'=>$startPos, 
-                    'targetOrigin'=>$targetOrigin, 
+                    'targetOrigin'=>$target, 
                     'targetPos'=>$targetPos, 
                     'startTime'=>time(), 
                     'endTime'=>$time, 
@@ -302,7 +309,7 @@ class TaskController extends DefaultController
             echo 'pas asser de place';
         } else if ($originUnits >= $amount){
             //$auth->buyUnit($type, $startOrigin, $negAmount);
-            $startPos = $baseRepository->getPos($startOriginid, $startOriginType);
+            $startPos = $baseRepository->getPos($startOriginId, $startOriginType);
             $task = [
                 'action'=>'move', 
                 'subject'=>$type.",".$amount, 
@@ -328,15 +335,16 @@ class TaskController extends DefaultController
     public function newUserBase()
     {
         $auth = new Auth;
+        $entitiesService = new EntitiesService;
+        $mapService = new MapSerive;
         if (!isset($_SESSION)) { 
             session_start(); 
         }
         if ($auth->getNewUser($_SESSION['authId']) != 1) {
             die($this->error('403'));
         }
-        $entitiesService = new EntitiesService;
         $pos = $_GET["pos"];
-        $auth->build('base', $pos, $_SESSION['authId'], 1);
+        $mapService->build('base', $pos, $_SESSION['authId'], 1);
         $auth->changeNewUser($_SESSION['authId']);
         header('Location: ?p=home');
     }

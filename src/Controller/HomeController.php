@@ -7,11 +7,12 @@ use App\Service\EntitiesService;
 use App\Service\AvatarHandler;
 use App\Service\MapGenerator;
 use App\Service\Grid;
-use App\Service\MapInit;
+use App\Service\MapService;
 use App\Service\Auth;
 use App\Service\OreRepo;
 use App\Repository\BaseRepository;
 use App\Repository\MineRepository;
+use App\Repository\UserRepository;
 
 class HomeController extends DefaultController
 {
@@ -23,8 +24,9 @@ class HomeController extends DefaultController
             session_start(); 
         } 
 
-        $customStyle = $this->setCustomStyle('panel');
         $entitiesService = new EntitiesService;
+        $userRepository = new UserRepository;
+        $customStyle = $this->setCustomStyle('panel');
         $scriptHead = $entitiesService->entitiesScripts();  
         $scriptHead .=   
             "<link rel=\"stylesheet\" href=\"https://unpkg.com/leaflet@1.3.1/dist/leaflet.css\"
@@ -45,8 +47,8 @@ class HomeController extends DefaultController
         $oreMap = file_get_contents('../deposit/Maps/oreMap.json');
         $scriptBody = '<script>var oreMapObj = '.$oreMap.'</script>';
         $scriptBody .= $this->setScript('grid');
-        $mapInit = new MapInit;
-        $scriptBody .= $mapInit->mapInit();
+        $mapService = new MapService;
+        $scriptBody .= $mapService->mapInit();
         $scriptBody .= $this->setScript('UI/panelInterface');
         if ($_SESSION) {
             if ($auth->getNewUser($_SESSION['authId']) == 1) {
@@ -66,7 +68,7 @@ class HomeController extends DefaultController
         }
         
         if ($_SESSION) {
-            $metal = $auth->getMetal($_SESSION['auth']);
+            $metal = $userRepository->getMetal($_SESSION['auth']);
             $scriptHead .= "<script> var userMetal = ".$metal."; </script>";
             if ($auth->getNewUser($_SESSION['authId']) == 1){
                 $scriptBody .= $this->setScript('newUserPanel'); 
@@ -138,7 +140,7 @@ class HomeController extends DefaultController
     public function testArea(){
         $baseRepo = new BaseRepository;
         $mineRepo = new MineRepository;
-        var_dump($baseRepo->getPos(1));
+        $baseRepo->buySpace("worker", "mine,10");
         require('../src/View/base.php');
     }
 
