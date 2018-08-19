@@ -8,6 +8,7 @@ use App\Service\MapService;
 use App\Repository\BaseRepository;
 use App\Repository\MineRepository;
 use App\Repository\UserRepository;
+use App\Repository\TaskRepository;
 
 class TaskController extends DefaultController
 {
@@ -28,11 +29,12 @@ class TaskController extends DefaultController
         $arr = explode(",", $startOrigin);
         $startOriginType = $arr[0];
         $startOriginId = $arr[1];
-        $entitiesService = new EntitiesService;
         $auth = new Auth;
+        $entitiesService = new EntitiesService;
         $baseRepository = new BaseRepository;
         $mineRepository = new MineRepository;
         $userRepository = new UserRepository;
+        $taskRepository = new TaskRepository;
         $available = true;
         $type = $_GET['type'];
         $getType = $entitiesService->getType($type)["attributes"];
@@ -113,7 +115,7 @@ class TaskController extends DefaultController
                 'endTime'=>$startTime + $time, 
                 'author'=>$authorId
             ];
-            $auth->newTask($task);
+            $taskRepository->newTask($task);
             if ($type == 'soldier' || $type == 'soldierSpace'){
                 header('Location: ?p=home&focus='.$startOrigin.'&soldierTab');
             } else {
@@ -132,6 +134,7 @@ class TaskController extends DefaultController
         }
         $baseRepository = new BaseRepository;
         $mineRepository = new MineRepository;
+        $mineRepository = new TaskRepository;
         if ($type == null) $type = $_GET['type'];
         if ($startOrigin == null) $startOrigin = $_GET['startOrigin'];
         if ($target == null) $target = $_GET['target'];
@@ -193,7 +196,7 @@ class TaskController extends DefaultController
                     'endTime'=>$time, 
                     'author'=>$_SESSION['authId']
                 ];
-                $auth->newTask($task);
+                $taskRepository->newTask($task);
                 if ($isBuilding) {
                     return $duration;
                 } else {
@@ -217,7 +220,7 @@ class TaskController extends DefaultController
                     'endTime'=>$time, 
                     'author'=>$_SESSION['authId']
                 ];
-                $auth->newTask($task);
+                $taskRepository->newTask($task);
                 if ($isBuilding) {
                     return $duration;
                 } else {
