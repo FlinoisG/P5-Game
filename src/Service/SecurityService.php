@@ -75,11 +75,11 @@ class SecurityService extends Service
     {
         $userRepository = new UserRepository;
         $user = $userRepository->getTokenWithUsername($username);
-        $sqlQuery = new sqlQuery();
+        $sqlQueryService = new sqlQueryService();
         //$user = $sqlQuery->sqlQuery("SELECT token FROM game_users WHERE username='".$username."'");
         $tokenServ = $user['0']['token'];
         if ($user != [] && $this->hash_equals($tokenServ, crypt($tokenClient, $tokenServ))) {
-            $user = $sqlQuery->sqlQuery("SELECT * FROM game_users WHERE token='".$token."'");
+            $user = $sqlQueryService->sqlQueryService("SELECT * FROM game_users WHERE token='".$token."'");
         } else {
             $user = [];
         }

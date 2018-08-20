@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use PDO;
 use App\Model\Repository;
-use App\Service\sqlQuery;
+use App\Service\sqlQueryService;
 
 class UserRepository extends Repository
 {
@@ -125,9 +125,9 @@ class UserRepository extends Repository
     }
 
     public function getAllUsername(){
-        $sqlQuery = new sqlQuery();
+        $sqlQueryService = new sqlQueryService();
         $query = "SELECT id, username FROM game_users";
-        $results = $sqlQuery->sqlQuery($query);
+        $results = $sqlQueryService->sqlQueryService($query);
         foreach ($results as $result) {
             $usernames[$result["id"]] = $result["username"];
         }
@@ -155,6 +155,25 @@ class UserRepository extends Repository
         $query->execute();
         $response = $query->fetch();
         return $response[0];
+    }
+
+    public function getNewUser($userId)
+    {
+        $DBConnection = $this->getDBConnection();
+        $query = $DBConnection->prepare("SELECT newUser FROM game_users WHERE id = :userId");
+        $query->bindParam(":userId", $userId, PDO::PARAM_STR);
+        $query->execute();
+        $newUser = $query->fetch();
+        return $newUser['newUser'];
+    }
+
+    public function changeNewUser($userId, $value=0)
+    {
+        $DBConnection = $this->getDBConnection();
+        $query = $DBConnection->prepare("UPDATE game_users SET newUser = :value WHERE id = :userId");
+        $query->bindParam(":value", $value, PDO::PARAM_STR);
+        $query->bindParam(":userId", $userId, PDO::PARAM_STR);
+        $query->execute();
     }
 
 }

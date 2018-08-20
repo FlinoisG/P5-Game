@@ -4,7 +4,7 @@ namespace App\Service;
 
 use App\Model\Service;
 
-class GUID extends Service
+class GUIDService extends Service
 {
 
     /**

@@ -4,7 +4,7 @@ namespace App\Service;
 
 use App\Model\Service;
 
-class AvatarHandler
+class AvatarService
 {
 
     public function avatarUpload($file) 

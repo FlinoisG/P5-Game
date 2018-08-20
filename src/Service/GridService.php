@@ -7,7 +7,7 @@ use App\Model\Service;
 /**
  * Undocumented class
  */
-class Grid extends Service
+class GridService extends Service
 {
 
     /**
@@ -58,6 +58,37 @@ class Grid extends Service
         } else {
             return ["x"=>$x, "y"=>$y];
         }
+    }
+
+    public function getMetalNodes($pos, $radius=50000)
+    {
+        $oreMap = json_decode(file_get_contents(__DIR__.'/../../deposit/Maps/oreMap.json'), true);
+        $metalNodes = [];
+        foreach ($oreMap["oreMap"] as $ore) {
+            $dist = $this->latlngToMeters([$pos["x"],$pos["y"]], [$ore["x"], $ore["y"]]);
+            if ($dist < $radius){
+                array_push($metalNodes, [$ore["x"],$ore["y"]]);
+            }
+        }
+        return $metalNodes;
+    }
+
+    public function latlngToMeters($a, $b)
+    {
+        $R = 6378.137;
+        $dLat = $b[1] * pi() / 180 - $a[1] * pi() / 180;
+        $dLon = $b[0] * pi() / 180 - $a[0] * pi() / 180;
+        $a = sin($dLat/2) * sin($dLat/2) + cos($a[1] * pi() / 180) * cos($b[1] * pi() / 180) * sin($dLon/2) * sin($dLon/2);
+        $c = 2 * atan2(sqrt($a), sqrt(1-$a));
+        $d = $R * $c;
+        return $d * 1000; // meters
+    }
+
+    public function getDistance($a, $b)
+    {
+        $c = pow(($a[0]-$b[0]), 2);
+        $d = pow(($a[1]-$b[1]), 2);
+        return sqrt($c+$d);
     }
 
 }

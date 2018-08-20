@@ -8,7 +8,7 @@ use PDO;
 /**
  * used for comunication with the database
  */
-class sqlQuery
+class sqlQueryService
 {
     private $host;
     private $dbname;
@@ -34,7 +34,7 @@ class sqlQuery
      * @param string $query
      * @return mixed
      */
-    public function sqlQuery($query)
+    public function sqlQueryService($query)
     {
         
         try {

@@ -4,12 +4,12 @@ namespace App\Controller;
 
 use App\Controller\TaskController;
 use App\Service\EntitiesService;
-use App\Service\AvatarHandler;
-use App\Service\MapGenerator;
-use App\Service\Grid;
+use App\Service\AvatarService;
+use App\Service\MapGeneratorService;
+use App\Service\GridService;
 use App\Service\MapService;
-use App\Service\Auth;
-use App\Service\OreRepo;
+use App\Service\AuthenticationService;
+use App\Service\OreService;
 use App\Repository\BaseRepository;
 use App\Repository\MineRepository;
 use App\Repository\UserRepository;
@@ -43,7 +43,7 @@ class HomeController extends DefaultController
         $scriptHead .= $this->setScript('buildOrder');
         $scriptHead .= $this->setScript('moveOrder');
         $scriptHead .= $this->setScript('attackOrder');
-        $auth = new Auth;
+        $authenticationService = new AuthenticationService;
         $oreMap = file_get_contents('../deposit/Maps/oreMap.json');
         $scriptBody = '<script>var oreMapObj = '.$oreMap.'</script>';
         $scriptBody .= $this->setScript('grid');
@@ -51,7 +51,7 @@ class HomeController extends DefaultController
         $scriptBody .= $mapService->mapInit();
         $scriptBody .= $this->setScript('UI/panelInterface');
         if ($_SESSION) {
-            if ($auth->getNewUser($_SESSION['authId']) == 1) {
+            if ($userRepository->getNewUser($_SESSION['authId']) == 1) {
                 $mapScript = $this->setScript('UI/newUserMap');
             } else {
                 $mapScript = $this->setScript('UI/map');
@@ -70,7 +70,7 @@ class HomeController extends DefaultController
         if ($_SESSION) {
             $metal = $userRepository->getMetal($_SESSION['auth']);
             $scriptHead .= "<script> var userMetal = ".$metal."; </script>";
-            if ($auth->getNewUser($_SESSION['authId']) == 1){
+            if ($userRepository->getNewUser($_SESSION['authId']) == 1){
                 $scriptBody .= $this->setScript('newUserPanel'); 
                 
             }
@@ -101,8 +101,8 @@ class HomeController extends DefaultController
         if (!isset($_SESSION)) { 
             session_start(); 
         }
-        $avatarHandler = new AvatarHandler;
-        $avatarHandler->avatarUpload($_FILES);
+        $avatarService = new AvatarService;
+        $avatarService->avatarUpload($_FILES);
         header('Location: ?p=home');
     }
 
@@ -112,9 +112,9 @@ class HomeController extends DefaultController
             session_start(); 
         }
         $content = "";
-        $mapGenerator = new MapGenerator;
-        $grid = new Grid;
-        var_dump($mapGenerator->getOreMap());
+        $mapGeneratorService = new MapGeneratorService;
+        $gridService = new GridService;
+        var_dump($mapGeneratorService->getOreMap());
         require('../src/View/base.php');
     }
 
@@ -145,7 +145,7 @@ class HomeController extends DefaultController
     }
 
     public function testArea1(){
-        $oreRepo = new OreRepo;
+        $oreService = new OreService;
         require('../src/View/base.php');
     }
 

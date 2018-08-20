@@ -10,7 +10,7 @@ use App\Model\Service;
 // Originally from http://therandomuniverse.blogspot.com/2007/01/perlin-noise-your-new-best-friend.html
 // but the site appears to be down, so here is a mirror of it
 
-class Perlin extends Service
+class PerlinService extends Service
 {
 	
 	var $p, $permutation, $seed;

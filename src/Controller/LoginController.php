@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Service\Auth;
-use App\Service\sqlQuery;
+use App\Service\AuthenticationService;
+use App\Service\sqlQueryService;
 
 class LoginController extends DefaultController
 {
@@ -12,17 +12,16 @@ class LoginController extends DefaultController
 
     public function login()
     {
+        $authenticationService = new AuthenticationService();
         if (!isset($_SESSION)) { 
             session_start(); 
         } 
         if (isset($_GET['login'])) {
-            $Auth = new Auth();
-            $Auth->login($this->sanitize('username'), $this->sanitize('password'));
+            $authenticationService->login($this->sanitize('username'), $this->sanitize('password'));
             header('Location: ?p=home');
         }
         if (isset($_GET['recovery'])) {
-            $Auth = new Auth();
-            $token = $Auth->passwordResetLink(htmlspecialchars($_POST['email']));
+            $token = $authenticationService->passwordResetLink(htmlspecialchars($_POST['email']));
             $link = "<p>Un email contenant un lien vous permettant de réinitialiser votre mot de passe vous à été envoyé.<p>
                     <p>Le lien ne restera actif que 24 heurs.</p>";
         } else {
@@ -40,8 +39,8 @@ class LoginController extends DefaultController
         } 
         $scriptBody = $this->setScript("RegisterScript");
         if (isset($_GET['register'])) {
-            $Auth = new Auth();
-            if($Auth->checkRegister($this->sanitize('username'), $this->sanitize('email'), $this->sanitize('password'))){
+            $authenticationService = new AuthenticationService();
+            if($authenticationService->checkRegister($this->sanitize('username'), $this->sanitize('email'), $this->sanitize('password'))){
                 $title = 'Connection';
                 $link = "<span>Compte créer avec succès !</span>";
                 $customStyle = $this->setCustomStyle('form');
@@ -72,8 +71,8 @@ class LoginController extends DefaultController
             $username = $_GET['user'];
             $token = $_GET['token'];
             $token = $this->dataValidation($token);
-            $auth = new Auth;
-            $user = $auth->checkTokenValidity($username, $token);
+            $authenticationService = new AuthenticationService;
+            $user = $authenticationService->checkTokenValidity($username, $token);
             if (time() > strtotime($user['0']['token_exp'])) {
                 $title = "Réinitialisation du mot de passe";
                 $content = "<p>Lien expiré.</p>
@@ -97,8 +96,8 @@ class LoginController extends DefaultController
         if ($_POST == []) {
             die($this->error('500'));
         }
-        $auth = new Auth();
-        $auth->resetPassword($_GET['user'], $_POST['password']);
+        $authenticationService = new AuthenticationService();
+        $authenticationService->resetPassword($_GET['user'], $_POST['password']);
         $title = "Mot de passe réinitialisé";
         $customStyle = $this->setCustomStyle('form');
         $content = "<p>Nouveau mot de passe actualisé.</p>

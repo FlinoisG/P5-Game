@@ -3,15 +3,15 @@
 namespace App\Service;
 
 use App\Model\Service;
-use App\Service\Perlin;
-use App\Service\Grid;
+use App\Service\PerlinService;
+use App\Service\GridService;
 
-class MapGenerator extends Service
+class MapGeneratorService extends Service
 {
 
     public function resourceTest()
     {
-        $perlin = new Perlin();
+        $perlinService = new PerlinService();
 
         $gridsizeX = 438; // long
         $gridsizeY = 290; // lat
@@ -27,7 +27,7 @@ class MapGenerator extends Service
         var ctx = c.getContext("2d");';        
         for($y=0; $y<$gridsizeY; $y+=1) {
             for($x=0; $x<$gridsizeX; $x+=1) {
-                $num = $perlin->noise($x,$y,0,$nodeFreq);
+                $num = $perlinService->noise($x,$y,0,$nodeFreq);
                 
                 $raw = ($num/2)+.5;
                 if ($raw < 0) $raw = 0;
@@ -59,7 +59,7 @@ class MapGenerator extends Service
      */
     public function getOreMap()
     {
-        $perlin = new Perlin();
+        $perlinService = new Perlin();
 
         $gridsizeX = 438; // long
         $gridsizeY = 290; // lat
@@ -72,7 +72,7 @@ class MapGenerator extends Service
         $nodeSize = $nodeSize + 1;
         $content = "{\"oreMap\":[
     ";
-        $grid = new Grid;
+        $gridService = new GridService;
         for($y=0; $y<$gridsizeY; $y+=1) {
             for($x=0; $x<$gridsizeX; $x+=1) {
                 if ($y % 2 != 0) {
@@ -87,7 +87,7 @@ class MapGenerator extends Service
                 }
 
                 if (!isset($waterMap[$fakeY][$fakeX])) {
-                    $num = $perlin->noise($x,$y,0,$nodeFreq);                
+                    $num = $perlinService->noise($x,$y,0,$nodeFreq);                
                     $raw = ($num/2)+.5;
                     if ($raw < 0) $raw = 0;                
                     $num = dechex( $raw*255 );                
@@ -97,7 +97,7 @@ class MapGenerator extends Service
                         $min = $nodeSize;
                         $max = 1;
                         $normalized = ($raw-$min) / ($max-$min);
-                        $content = $content . '{"x": '.$grid->gridToCoordinates($x, 0, 'x').', "y": '.$grid->gridToCoordinates(0, $y, 'y').', "value": '.$normalized.'},
+                        $content = $content . '{"x": '.$gridService->gridToCoordinates($x, 0, 'x').', "y": '.$gridService->gridToCoordinates(0, $y, 'y').', "value": '.$normalized.'},
     ';                   
                     } 
                 }              

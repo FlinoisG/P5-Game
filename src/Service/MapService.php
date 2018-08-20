@@ -3,8 +3,8 @@
 namespace App\Service;
 
 use App\Model\Service;
-use App\Service\Grid;
-use App\Service\Auth;
+use App\Service\GridService;
+use App\Service\AuthenticationService;
 use App\Repository\BaseRepository;
 use App\Repository\MineRepository;
 use App\Repository\UserRepository;
@@ -22,7 +22,7 @@ class MapService extends Service
     public function mapInit($objs = null) //À compléter
     {
         
-        $auth = new Auth;
+        $authenticationService = new AuthenticationService;
 
         $baseRepository = new BaseRepository;
         $mineRepository = new MineRepository;
@@ -66,9 +66,8 @@ class MapService extends Service
         
         $result = '<script>var objectMapObj = [';
         $allUnits = $baseRepository->getAllUnit();
-        $unitsUpgradesInConst = $auth->getUnitsUpgradesInConst();
-        $unitsInConst = $auth->getAllEntityInConst();
-        
+        $unitsUpgradesInConst = $taskRepository->getUnitsUpgradesInConst();
+        $unitsInConst = $taskRepository->getAllEntityInConst();
 
         foreach ($objects as $object) {   
             
@@ -186,7 +185,7 @@ class MapService extends Service
 
     public function build($type, $pos, $author, $main=0)
     {
-        $sqlQuery = new sqlQuery();
+        $sqlQueryService = new sqlQueryService();
         $userRepository = new UserRepository;
         $username = $userRepository->getUsernameById($author);
         if ($type == 'base') {
@@ -195,12 +194,12 @@ class MapService extends Service
             //$query = 'INSERT INTO game_bases (player, playerId, pos, main) VALUES (\''.$username.'\', \''.$author.'\', \''.$pos.'\', \''.$main.'\')';
         } else if ($type == 'mine') {
             $mineRepository = new MineRepository;
-            $auth = new Auth;
-            $grid = new Grid;
+            $authenticationService = new AuthenticationService;
+            $gridService = new GridService;
             $posArr = str_replace(array( '[', ']' ), '', $pos);
             $posArr = explode(',', $posArr);
-            $posArr = $grid->gridToCoordinates($posArr[0], $posArr[1]);
-            $metalNodes = $this->getMetalNodes($posArr);
+            $posArr = $gridService->gridToCoordinates($posArr[0], $posArr[1]);
+            $metalNodes = $gridService->getMetalNodes($posArr);
             $metalNodes = json_encode($metalNodes);
             $mineRepository->newMine($type, $username, $author, $pos, $metalNodes);
             //$query = 'INSERT INTO game_mines (player, playerId, pos, metalNodes) VALUES (\''.$username.'\', \''.$author.'\', \''.$pos.'\', \''.$metalNodes.'\')';

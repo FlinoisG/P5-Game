@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use App\Model\Service;
-use App\Service\Auth;
+use App\Service\AuthenticationService;
 use App\Service\MapService;
 use App\Controller\BaseController;
 use App\Repository\BaseRepository;
@@ -13,7 +13,7 @@ use App\Repository\TaskRepository;
 /**
  * this class will be driven by cron.php
  */
-class TaskHandler extends Service
+class TaskService extends Service
 {
 
     /**
@@ -24,7 +24,7 @@ class TaskHandler extends Service
      */
     public function handleTasks($tasks)
     {
-        $auth = new Auth;
+        $authenticationService = new AuthenticationService;
         $baseRepository = new BaseRepository;
         $mineRepository = new MineRepository;
         $taskRepository = new TaskRepository;

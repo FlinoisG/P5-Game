@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use PDO;
 use App\Model\Repository;
-use App\Service\sqlQuery;
+use App\Service\sqlQueryService;
 
 class TaskRepository extends Repository
 {
@@ -63,8 +63,8 @@ class TaskRepository extends Repository
     public function getTasks($action=null)
     {
         if ($action == null){
-            $sqlQuery = new sqlQuery();
-            $tasks = $sqlQuery->sqlQuery("SELECT * FROM game_tasks");
+            $sqlQueryService = new sqlQueryService();
+            $tasks = $sqlQueryService->sqlQueryService("SELECT * FROM game_tasks");
         } else {
             $DBConnection = $this->getDBConnection();
             $query = $DBConnection->prepare("SELECT * FROM game_tasks WHERE action = :action");
@@ -73,6 +73,52 @@ class TaskRepository extends Repository
             $tasks = $query->fetchAll();
         }
         return $tasks;
+    }
+
+    public function getEntityInConst($subject, $baseId)
+    {
+        $baseOrigin = "base," . $baseId;
+        $DBConnection = $this->getDBConnection();
+        $query = $DBConnection->prepare("SELECT endTime FROM game_tasks WHERE startOrigin = :baseOrigin AND subject = :subject");
+        $query->bindParam(":baseOrigin", $baseOrigin, PDO::PARAM_STR);
+        $query->bindParam(":subject", $subject, PDO::PARAM_STR);
+        $query->execute();
+        $subjectInConstruct = $query->fetch();
+        return $subjectInConstruct;
+    }
+
+    public function getAllEntityInConst()
+    {
+        $sqlQueryService = new sqlQueryService();
+        $query = "SELECT subject, startOrigin, endTime FROM game_tasks WHERE subject='worker' OR subject='soldier'";
+        $entitiesInConstruct = $sqlQueryService->sqlQueryService($query);
+        $entityArray = [];
+        foreach ($entitiesInConstruct as $entity) {
+            if (isset($entityArray[$entity['subject']])){
+                $size = sizeof($entityArray[$entity['subject']]);
+            } else {
+                $size = 0;
+            }
+            $entityArray[$entity['subject']][$size] = [$entity['startOrigin'], $entity['endTime']];
+        }
+        return $entityArray;
+    }
+
+    public function getUnitsUpgradesInConst()
+    {
+        $sqlQueryService = new sqlQueryService();
+        $query = "SELECT startOrigin, subject, endTime FROM game_tasks WHERE subject='soldierSpace' OR subject='workerSpace'";
+        $upgradesInConstruction = $sqlQueryService->sqlQueryService($query);
+        $entityArray = [];
+        foreach ($upgradesInConstruction as $entity) {
+            if (isset($entityArray[$entity['subject']])){
+                $size = sizeof($entityArray[$entity['subject']]);
+            } else {
+                $size = 0;
+            }
+            $entityArray[$entity['subject']][$size] = ["startOrigin"=>$entity['startOrigin'], "subject"=>$entity['subject'], "endTime"=>$entity['endTime']];
+        }
+        return $entityArray;
     }
 
 }

@@ -2,7 +2,8 @@
 
 namespace App\Controller;
 
-use App\Service\Auth;
+use App\Service\AuthenticationService;
+use App\Service\GridService;
 use App\Service\EntitiesService;
 use App\Service\MapService;
 use App\Repository\BaseRepository;
@@ -29,7 +30,7 @@ class TaskController extends DefaultController
         $arr = explode(",", $startOrigin);
         $startOriginType = $arr[0];
         $startOriginId = $arr[1];
-        $auth = new Auth;
+        $authenticationService = new AutAuthenticationServiceh;
         $entitiesService = new EntitiesService;
         $baseRepository = new BaseRepository;
         $mineRepository = new MineRepository;
@@ -42,7 +43,7 @@ class TaskController extends DefaultController
         $class = str_replace("'", "", $getType['class']);
         $cost = str_replace("'", "", $getType['cost']);
         $playerMetal = $userRepository->getMetal($_SESSION['auth']);
-        if ($auth->getNewUser($_SESSION['authId']) != 1 && $playerMetal < $cost) {
+        if ($userRepository->getNewUser($_SESSION['authId']) != 1 && $playerMetal < $cost) {
             $available = false;
             $cause = "not enough metal";
         }
@@ -71,7 +72,7 @@ class TaskController extends DefaultController
             //$baseRepository->buyUnits("worker", $startOriginId, -1, $startOriginType);
         } else if ($class == 'upgrade') {
             $action = "buy";
-            $upgradeInConstruct = $auth->getEntityInConst($type, $startOriginId);
+            $upgradeInConstruct = $taskRepository->getEntityInConst($type, $startOriginId);
             if ($upgradeInConstruct){
                 $available = false;
                 $cause = "already upgrading";
@@ -91,9 +92,7 @@ class TaskController extends DefaultController
             } else {
                 $targetPos = null;
             }
-            //if ($auth->getNewUser($_SESSION['authId']) != 1) {
             $userRepository->addMetal($_SESSION['auth'], ($cost * -1));
-            //}
             $authorId = $userRepository->getIdByUsername($_SESSION['auth']);
             $startTime = 0;
             if ($class == 'building') {
@@ -135,11 +134,12 @@ class TaskController extends DefaultController
         $baseRepository = new BaseRepository;
         $mineRepository = new MineRepository;
         $taskRepository = new TaskRepository;
+        $gridService = new GridService;
         if ($type == null) $type = $_GET['type'];
         if ($startOrigin == null) $startOrigin = $_GET['startOrigin'];
         if ($target == null) $target = $_GET['target'];
         if (isset($_GET['amount'])) $amount = (int)$_GET['amount'];
-        $auth = new Auth;
+        $authenticationService = new AuthenticationService;
         if ($type == 'worker'){
             $timeFactor = $this->workerTimeFactor;
         } else {
@@ -150,7 +150,7 @@ class TaskController extends DefaultController
         $startPos = json_decode($baseRepository->getPos($startOriginId, $startOriginType));
         if (preg_match('/[\[]/', $target)) {
             $targetPos = json_decode($target);
-            $dist = $auth->getDistance($startPos, json_decode($target));
+            $dist = $gridService->getDistance($startPos, json_decode($target));
             $targetType = 'pos';
         } else {
             //$targetOrigin = $target;
@@ -160,7 +160,7 @@ class TaskController extends DefaultController
             $targetType = explode(",", $target)[0];
             $targetId = explode(",", $target)[1];
             $targetPos = json_decode($baseRepository->getPos($targetId, $targetType));
-            $dist = $auth->getDistance($startPos, $targetPos);
+            $dist = $gridService->getDistance($startPos, $targetPos);
             $targetType = 'origin';
         }
         $duration = (int)$dist * $timeFactor;
@@ -245,7 +245,8 @@ class TaskController extends DefaultController
         if ($startOrigin == null) $startOrigin = $_GET['startOrigin'];
         if ($target == null) $target = $_GET['target'];
         if (isset($_GET['amount'])) $amount = $_GET['amount'];
-        $auth = new Auth;
+        $authenticationService = new AuthenticationService;
+        $gridService = new GridService;
         if ($type == 'worker'){
             $timeFactor = $this->workerTimeFactor;
         } else {
@@ -255,7 +256,7 @@ class TaskController extends DefaultController
         if (preg_match('/[\[]/', $target)) {
             //var_dump('$target is pos');
             $targetPos = json_decode($target);
-            $dist = $auth->getDistance($startPos, json_decode($target));
+            $dist = $gridService->getDistance($startPos, json_decode($target));
             $targetType = 'pos';
         } else {
             //var_dump('$target is origin');
@@ -264,7 +265,7 @@ class TaskController extends DefaultController
             $originType = $arr[0];
             $originId = $arr[1];
             $targetPos = json_decode($baseRepository->getPos($targetId, $targetType));
-            $dist = $auth->getDistance($startPos, $targetPos);
+            $dist = $gridService->getDistance($startPos, $targetPos);
             $targetType = 'origin';
         }
         $duration = (int)$dist * $timeFactor;
@@ -283,7 +284,6 @@ class TaskController extends DefaultController
         } else if ($building === "mine"){
             $originUnits = $mineRepository->getUnits($type, $id);
         }
-        //$originUnits = $auth->getUnit($type, $startOrigin);
         $id = explode(",", $target)[1];
         $building = explode(",", $target)[0];
         $owner = $baseRepository->getOwnerUsername($building, $id);
@@ -293,7 +293,6 @@ class TaskController extends DefaultController
         } else if ($spaceLeft < $amount){
             echo 'pas asser de place';
         } else if ($originUnits >= $amount){
-            //$auth->buyUnit($type, $startOrigin, $negAmount);
             $startPos = $baseRepository->getPos($startOriginId, $startOriginType);
             $task = [
                 'action'=>'move', 
@@ -306,7 +305,6 @@ class TaskController extends DefaultController
                 'endTime'=>$time, 
                 'author'=>$_SESSION['authId']
             ];
-            //$auth->newTask($task);
             if ($isBuilding) {
                 return $duration;
             } else {
@@ -319,18 +317,18 @@ class TaskController extends DefaultController
 
     public function newUserBase()
     {
-        $auth = new Auth;
+        $authenticationService = new AuthenticationService;
         $entitiesService = new EntitiesService;
         $mapService = new MapSerive;
         if (!isset($_SESSION)) { 
             session_start(); 
         }
-        if ($auth->getNewUser($_SESSION['authId']) != 1) {
+        if ($authenticationService->getNewUser($_SESSION['authId']) != 1) {
             die($this->error('403'));
         }
         $pos = $_GET["pos"];
         $mapService->build('base', $pos, $_SESSION['authId'], 1);
-        $auth->changeNewUser($_SESSION['authId']);
+        $authenticationService->changeNewUser($_SESSION['authId']);
         header('Location: ?p=home');
     }
 

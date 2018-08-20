@@ -5,7 +5,7 @@ namespace App\Repository;
 use PDO;
 use App\Model\Repository;
 use App\Entity\BaseEntity;
-use App\Service\sqlQuery;
+use App\Service\sqlQueryService;
 
 class BuildingRepository extends Repository
 {
@@ -141,11 +141,11 @@ class BuildingRepository extends Repository
 
     public function getAllUnit()
     {
-        $sqlQuery = new sqlQuery();
+        $sqlQueryService = new sqlQueryService();
         $query = "SELECT id, workers, soldiers FROM game_bases";
-        $baseUnit = $sqlQuery->sqlQuery($query);
+        $baseUnit = $sqlQueryService->sqlQueryService($query);
         $query = "SELECT id, workers, soldiers FROM game_mines";
-        $mineUnit = $sqlQuery->sqlQuery($query);
+        $mineUnit = $sqlQueryService->sqlQueryService($query);
         if ($baseUnit == [] && $mineUnit == []) {
             return false;
         } else {

@@ -1,14 +1,12 @@
 <?php
 
 require_once "vendor/autoload.php";
-require_once "src/Service/taskHandler.php";
+require_once "src/Service/taskService.php";
 
-//use App\Service\Auth;
-use App\Service\TaskHandler;
+use App\Service\TaskService;
 use App\Repository\TaskRepository;
 
-//$auth = new Auth;
 $taskRepository = new TaskRepository;
-$taskHandler = new TaskHandler;
+$taskService = new TaskService;
 $tasks = $taskRepository->getTasks();
-$taskHandler->handleTasks($tasks);
+$taskService->handleTasks($tasks);
