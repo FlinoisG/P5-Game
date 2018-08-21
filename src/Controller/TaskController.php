@@ -10,6 +10,7 @@ use App\Repository\BaseRepository;
 use App\Repository\MineRepository;
 use App\Repository\UserRepository;
 use App\Repository\TaskRepository;
+use App\Entity\TaskEntity;
 
 class TaskController extends DefaultController
 {
@@ -30,7 +31,7 @@ class TaskController extends DefaultController
         $arr = explode(",", $startOrigin);
         $startOriginType = $arr[0];
         $startOriginId = $arr[1];
-        $authenticationService = new AutAuthenticationServiceh;
+        $authenticationService = new AuthenticationService;
         $entitiesService = new EntitiesService;
         $baseRepository = new BaseRepository;
         $mineRepository = new MineRepository;
@@ -42,7 +43,7 @@ class TaskController extends DefaultController
         var_dump($getType);
         $class = str_replace("'", "", $getType['class']);
         $cost = str_replace("'", "", $getType['cost']);
-        $playerMetal = $userRepository->getMetal($_SESSION['auth']);
+        $playerMetal = $userRepository->getMetal($_SESSION['authId']);
         if ($userRepository->getNewUser($_SESSION['authId']) != 1 && $playerMetal < $cost) {
             $available = false;
             $cause = "not enough metal";
@@ -69,10 +70,10 @@ class TaskController extends DefaultController
             }
         } else if ($class == 'building') {
             $action = "build";
-            //$baseRepository->buyUnits("worker", $startOriginId, -1, $startOriginType);
+            //$baseRepository->addUnits("worker", $startOriginId, -1, $startOriginType);
         } else if ($class == 'upgrade') {
             $action = "buy";
-            $upgradeInConstruct = $taskRepository->getEntityInConst($type, $startOriginId);
+            $upgradeInConstruct = $taskRepository->getEntityInConst($type, $startOriginType, $startOriginId);
             if ($upgradeInConstruct){
                 $available = false;
                 $cause = "already upgrading";
@@ -92,8 +93,8 @@ class TaskController extends DefaultController
             } else {
                 $targetPos = null;
             }
-            $userRepository->addMetal($_SESSION['auth'], ($cost * -1));
-            $authorId = $userRepository->getIdByUsername($_SESSION['auth']);
+            $userRepository->addMetal($_SESSION['authId'], ($cost * -1));
+            $authorId = $userRepository->getIdWithUsername($_SESSION['auth']);
             $startTime = 0;
             if ($class == 'building') {
                 if (isset($targetOrigin)) {
@@ -103,7 +104,7 @@ class TaskController extends DefaultController
                 }
             }
             $startPos = json_decode($baseRepository->getPos($startOriginId, $startOriginType));
-            $task = [
+            $taskProprieties = [
                 'action'=>$action, 
                 'subject'=>$type, 
                 'startOrigin'=>$startOrigin, 
@@ -114,6 +115,7 @@ class TaskController extends DefaultController
                 'endTime'=>$startTime + $time, 
                 'author'=>$authorId
             ];
+            $task = new TaskEntity($taskProprieties);
             $taskRepository->newTask($task);
             if ($type == 'soldier' || $type == 'soldierSpace'){
                 header('Location: ?p=home&focus='.$startOrigin.'&soldierTab');
@@ -175,8 +177,6 @@ class TaskController extends DefaultController
         $originUnits = $baseRepository->getUnits($type, $originId, $originBuilding);
         $targetBuilding = explode(",", $target)[0];
         $targetId = explode(",", $target)[1];
-        var_dump($targetBuilding);
-        var_dump($targetId);
         $owner = $baseRepository->getOwnerUsername($targetBuilding, $targetId);
         if ($owner !== false){
             $spaceLeft = $baseRepository->getSpaceLeft($type, $targetId, $targetBuilding);
@@ -185,19 +185,20 @@ class TaskController extends DefaultController
             } else if ($spaceLeft < $amount){
                 echo 'pas asser de place. ' . $spaceLeft . " ";
             } else if ($originUnits >= $amount){
-                $baseRepository->buyUnits($type, $originId, $negAmount, $originBuilding);
+                $baseRepository->addUnits($type, $originId, $negAmount, $originBuilding);
                 $startPos = $baseRepository->getPos($startOriginId, $startOriginType);
-                $task = [
+                $taskParameters = [
                     'action'=>'move', 
                     'subject'=>$type.",".$amount, 
                     'startOrigin'=>$startOrigin, 
-                    'startPos'=>$startPos, 
+                    'startPos'=>$startPos,
                     'targetOrigin'=>$target, 
                     'targetPos'=>$targetPos, 
                     'startTime'=>time(), 
                     'endTime'=>$time, 
                     'author'=>$_SESSION['authId']
                 ];
+                $task = new TaskEntity($taskParameters);
                 $taskRepository->newTask($task);
                 if ($isBuilding) {
                     return $duration;
@@ -210,9 +211,9 @@ class TaskController extends DefaultController
         } else {
             var_dump("what");
             if ($originUnits >= $amount){
-                $baseRepository->buyUnits($type, $originId, $negAmount, $originBuilding);
+                $baseRepository->addUnits($type, $originId, $negAmount, $originBuilding);
                 $startPos = $baseRepository->getPos($startOriginId, $startOriginType);
-                $task = [
+                $taskParameters = [
                     'action'=>'move', 
                     'subject'=>$type.",".$amount, 
                     'startOrigin'=>$startOrigin, 
@@ -223,6 +224,7 @@ class TaskController extends DefaultController
                     'endTime'=>$time, 
                     'author'=>$_SESSION['authId']
                 ];
+                $task = new TaskEntity($taskParameters);
                 $taskRepository->newTask($task);
                 if ($isBuilding) {
                     return $duration;
@@ -254,12 +256,10 @@ class TaskController extends DefaultController
         }
         $startPos = json_decode($baseRepository->getPos($startOriginId, $startOriginType));
         if (preg_match('/[\[]/', $target)) {
-            //var_dump('$target is pos');
             $targetPos = json_decode($target);
             $dist = $gridService->getDistance($startPos, json_decode($target));
             $targetType = 'pos';
         } else {
-            //var_dump('$target is origin');
             $targetOrigin = $target;
             $arr = explode(',', $target);
             $originType = $arr[0];
@@ -319,6 +319,7 @@ class TaskController extends DefaultController
     {
         $authenticationService = new AuthenticationService;
         $entitiesService = new EntitiesService;
+        $baseRepository = new BaseRepository;
         $mapService = new MapSerive;
         if (!isset($_SESSION)) { 
             session_start(); 
@@ -327,7 +328,8 @@ class TaskController extends DefaultController
             die($this->error('403'));
         }
         $pos = $_GET["pos"];
-        $mapService->build('base', $pos, $_SESSION['authId'], 1);
+        $baseRepository->newBase($_SESSION['authId'], $pos, 1);
+        //$mapService->build('base', $pos, $_SESSION['authId'], 1);
         $authenticationService->changeNewUser($_SESSION['authId']);
         header('Location: ?p=home');
     }

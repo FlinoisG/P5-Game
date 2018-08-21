@@ -9,16 +9,15 @@ use App\Service\sqlQueryService;
 class TaskRepository extends Repository
 {
 
+    /**
+     * Insert new task in database
+     *
+     * @param object TaskEntity
+     * @return void
+     */
     public function newTask($task)
     {
         $DBConnection = $this->getDBConnection();
-        if ($task['startTime'] == null) $task['startTime'] = time();
-        if (gettype($task['startPos']) == 'array'){
-            $task['startPos'] = "[".$task['startPos'][0].",".$task['startPos'][1]."]";
-        }
-        if (gettype($task['targetPos']) == 'array'){
-            $task['targetPos'] = "[".$task['targetPos'][0].",".$task['targetPos'][1]."]";
-        }
         $query = $DBConnection->prepare('INSERT INTO game_tasks (
             action, 
             subject, 
@@ -40,18 +39,45 @@ class TaskRepository extends Repository
             :endTime, 
             :author
         )');
-        $query->bindParam(":action", $task['action'], PDO::PARAM_STR);
-        $query->bindParam(":subject", $task['subject'], PDO::PARAM_STR);
-        $query->bindParam(":startOrigin", $task['startOrigin'], PDO::PARAM_STR);
-        $query->bindParam(":startPos", $task['startPos'], PDO::PARAM_STR);
-        $query->bindParam(":targetOrigin", $task['targetOrigin'], PDO::PARAM_STR);
-        $query->bindParam(":targetPos", $task['targetPos'], PDO::PARAM_STR);
-        $query->bindParam(":startTime", $task['startTime'], PDO::PARAM_INT);
-        $query->bindParam(":endTime", $task['endTime'], PDO::PARAM_INT);
-        $query->bindParam(":author", $task['author'], PDO::PARAM_STR);
+        if ($task->getStartTime() == null){
+            $startTime = time();
+        } else {
+            $startTime = $task->getStartTime();
+        }
+        if (gettype($task->getStartPos()) == 'array'){
+            $startPos = "[".$task->getStartPos()[0].",".$task->getStartPos()[1]."]";
+        } else {
+            $startPos = $task->getStartPos();
+        }
+        if (gettype($task->getTargetPos()) == 'array'){
+            $targetPos = "[".$task->getTargetPos()[0].",".$task->getTargetPos()[1]."]";
+        } else {
+            $targetPos = $task->getTargetPos();
+        }
+        $action = $task->getAction();
+        $subject = $task->getSubject();
+        $startOrigin = $task->getStartOrigin();
+        $targetOrigin = $task->getTargetOrigin();
+        $endTime = $task->getEndTime();
+        $author = $task->getAuthor();
+        $query->bindParam(":action", $action, PDO::PARAM_STR);
+        $query->bindParam(":subject", $subject, PDO::PARAM_STR);
+        $query->bindParam(":startOrigin", $startOrigin, PDO::PARAM_STR);
+        $query->bindParam(":startPos", $startPos, PDO::PARAM_STR);
+        $query->bindParam(":targetOrigin", $targetOrigin, PDO::PARAM_STR);
+        $query->bindParam(":targetPos", $targetPos, PDO::PARAM_STR);
+        $query->bindParam(":startTime", $startTime, PDO::PARAM_INT);
+        $query->bindParam(":endTime", $endTime, PDO::PARAM_INT);
+        $query->bindParam(":author", $author, PDO::PARAM_STR);
         $query->execute();
     }
 
+    /**
+     * Remove a task from database with its id
+     *
+     * @param mixed $taskId Id of the task to remove
+     * @return void
+     */
     public function removeTask($taskId)
     {
         $DBConnection = $this->getDBConnection();
@@ -60,6 +86,12 @@ class TaskRepository extends Repository
         $query->execute();
     }
 
+    /**
+     * Get all tasks from database. can specified a filtre for actions.
+     *
+     * @param string $action Filter 
+     * @return void
+     */
     public function getTasks($action=null)
     {
         if ($action == null){
@@ -75,9 +107,17 @@ class TaskRepository extends Repository
         return $tasks;
     }
 
-    public function getEntityInConst($subject, $baseId)
+    /**
+     * check entities in construction inside a specified building
+     *
+     * @param string $subject
+     * @param string $baseType
+     * @param mixed $baseId
+     * @return string
+     */
+    public function getEntityInConst($subject, $baseType, $baseId)
     {
-        $baseOrigin = "base," . $baseId;
+        $baseOrigin = $baseType . "," . $baseId;
         $DBConnection = $this->getDBConnection();
         $query = $DBConnection->prepare("SELECT endTime FROM game_tasks WHERE startOrigin = :baseOrigin AND subject = :subject");
         $query->bindParam(":baseOrigin", $baseOrigin, PDO::PARAM_STR);
@@ -87,7 +127,13 @@ class TaskRepository extends Repository
         return $subjectInConstruct;
     }
 
-    public function getAllEntityInConst()
+    /**
+     * Returns subject, startOrigin and endTime from 
+     * unit construction task in the database
+     *
+     * @return array
+     */
+    public function getAllUnitInConst()
     {
         $sqlQueryService = new sqlQueryService();
         $query = "SELECT subject, startOrigin, endTime FROM game_tasks WHERE subject='worker' OR subject='soldier'";
@@ -104,6 +150,12 @@ class TaskRepository extends Repository
         return $entityArray;
     }
 
+    /**
+     * Returns subject, startOrigin and endTime from 
+     * space upgrade construction task in the database
+     *
+     * @return array
+     */
     public function getUnitsUpgradesInConst()
     {
         $sqlQueryService = new sqlQueryService();

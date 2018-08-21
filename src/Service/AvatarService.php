@@ -7,6 +7,12 @@ use App\Model\Service;
 class AvatarService
 {
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $file
+     * @return void
+     */
     public function avatarUpload($file) 
     {
         $target_dir = "../deposit/User_Avatar/";
@@ -52,6 +58,16 @@ class AvatarService
         }
     }
 
+    /**
+     * Resize a file
+     *
+     * @param [type] $file
+     * @param int $ext extention of the file
+     * @param int $w Desired width
+     * @param int $h Desired height
+     * @param boolean $crop If the image should be croped or not
+     * @return void
+     */
     function resize_image($file, $ext, $w, $h, $crop=TRUE) 
     {
         list($width, $height) = getimagesize($file);

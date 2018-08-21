@@ -8,7 +8,7 @@ class GUIDService extends Service
 {
 
     /**
-     * Generate a GUID
+     * Generate a globally unique identifier
      *
      * @return string GUID
      */

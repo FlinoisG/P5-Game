@@ -86,6 +86,12 @@ class SecurityService extends Service
         return $users;
     }
 
+    /**
+     * Check if the given username is a suitable username
+     *
+     * @param string $username given username
+     * @return bool returns true if username is correct
+     */
     public function validateUsername($username)
     {
         if (!preg_match('/^[a-zA-Z0-9]{2,26}$/', $username)){
@@ -95,10 +101,18 @@ class SecurityService extends Service
         }
     }
 
+    /**
+     * Check if the given email is a suitable email
+     *
+     * @param string $email given email
+     * @return bool returns true if email is correct
+     */
     public function validateEmail($email)
     {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)){
-            $available = false;
+            return false;
+        } else {
+            return true;
         }
     }
 

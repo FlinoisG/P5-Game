@@ -9,6 +9,14 @@ class EntitiesService extends Service
     
     private $entities = [];
 
+    /**
+     * Get the value of $type
+     */ 
+    public function getType($type)
+    {
+        return $this->entities[$type];
+    }
+
     public function __construct (){
         $sessionAuth = "";
         if (isset($_SESSION['auth'])){
@@ -249,17 +257,14 @@ class EntitiesService extends Service
                 "value"=>0
             ],
         ];
-        
 
     }
-    /**
-     * Get the value of $type
-     */ 
-    public function getType($type)
-    {
-        return $this->entities[$type];
-    }
     
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function entitiesScripts(){
         $entitiesScript = "<script>";
         foreach ($this->entities as $entity) {

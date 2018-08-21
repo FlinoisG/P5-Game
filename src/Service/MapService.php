@@ -65,9 +65,9 @@ class MapService extends Service
         }
         
         $result = '<script>var objectMapObj = [';
-        $allUnits = $baseRepository->getAllUnit();
+        $allUnits = $baseRepository->getAllUnits();
         $unitsUpgradesInConst = $taskRepository->getUnitsUpgradesInConst();
-        $unitsInConst = $taskRepository->getAllEntityInConst();
+        $unitsInConst = $taskRepository->getAllUnitInConst();
 
         foreach ($objects as $object) {   
             
@@ -124,6 +124,9 @@ class MapService extends Service
                 $owner = "neutral";
             }            
             $pos = json_decode($object["pos"]);
+            if ($pos === null){
+                var_dump($object);   
+            }
             if ($object['type'] == 'base') {
                 $result .= '{
                         "type": "base",
@@ -183,15 +186,23 @@ class MapService extends Service
         return $result;
     }
 
-    public function build($type, $pos, $author, $main=0)
+    /**
+     * build a new building
+     *
+     * @param string $type base or mine
+     * @param string $pos
+     * @param mixed $id 
+     * @param integer $main 1 for main base, 0 for regular base
+     * @return void
+     */
+    public function build($type, $pos, $id, $main=0)
     {
         $sqlQueryService = new sqlQueryService();
         $userRepository = new UserRepository;
-        $username = $userRepository->getUsernameById($author);
+        $username = $userRepository->getUsernameById($id);
         if ($type == 'base') {
             $baseRepository = new BaseRepository;
-            $baseRepository->newBase($type, $username, $author, $pos, $main);
-            //$query = 'INSERT INTO game_bases (player, playerId, pos, main) VALUES (\''.$username.'\', \''.$author.'\', \''.$pos.'\', \''.$main.'\')';
+            $baseRepository->newBase($id, $pos, $main);
         } else if ($type == 'mine') {
             $mineRepository = new MineRepository;
             $authenticationService = new AuthenticationService;
@@ -201,13 +212,10 @@ class MapService extends Service
             $posArr = $gridService->gridToCoordinates($posArr[0], $posArr[1]);
             $metalNodes = $gridService->getMetalNodes($posArr);
             $metalNodes = json_encode($metalNodes);
-            $mineRepository->newMine($type, $username, $author, $pos, $metalNodes);
-            //$query = 'INSERT INTO game_mines (player, playerId, pos, metalNodes) VALUES (\''.$username.'\', \''.$author.'\', \''.$pos.'\', \''.$metalNodes.'\')';
+            $mineRepository->newMine($type, $username, $id, $pos, $metalNodes);
         } else {
             return false;
-            //die();
         }
-        //$sqlQuery->sqlQuery($query);
     }
 
 }

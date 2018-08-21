@@ -5,7 +5,7 @@ namespace App\Service;
 use App\Model\Service;
 
 /**
- * Undocumented class
+ * Function relative to the map and the managment of entities on it
  */
 class GridService extends Service
 {
@@ -60,6 +60,13 @@ class GridService extends Service
         }
     }
 
+    /**
+     * Get every metal node in the specified position and radius from oreMap.json
+     *
+     * @param array $pos Coordinate (ex: [0.05, -1.05])
+     * @param integer $radius
+     * @return void
+     */
     public function getMetalNodes($pos, $radius=50000)
     {
         $oreMap = json_decode(file_get_contents(__DIR__.'/../../deposit/Maps/oreMap.json'), true);
@@ -73,6 +80,13 @@ class GridService extends Service
         return $metalNodes;
     }
 
+    /**
+     * Translate latitude/longitude coordinate to meters
+     *
+     * @param array $a Coordinate (ex: [0.05, -1.05])
+     * @param array $b Coordinate (ex: [0.05, -1.05])
+     * @return int $meters Result in meters
+     */
     public function latlngToMeters($a, $b)
     {
         $R = 6378.137;
@@ -81,9 +95,17 @@ class GridService extends Service
         $a = sin($dLat/2) * sin($dLat/2) + cos($a[1] * pi() / 180) * cos($b[1] * pi() / 180) * sin($dLon/2) * sin($dLon/2);
         $c = 2 * atan2(sqrt($a), sqrt(1-$a));
         $d = $R * $c;
-        return $d * 1000; // meters
+        $meters = $d * 1000;
+        return $meters;
     }
 
+    /**
+     * Translate latitude/longitude coordinate to meters
+     *
+     * @param array $a Coordinate (ex: [0.05, -1.05])
+     * @param array $b Coordinate (ex: [0.05, -1.05])
+     * @return void
+     */
     public function getDistance($a, $b)
     {
         $c = pow(($a[0]-$b[0]), 2);

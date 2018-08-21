@@ -68,11 +68,10 @@ class HomeController extends DefaultController
         }
         
         if ($_SESSION) {
-            $metal = $userRepository->getMetal($_SESSION['auth']);
+            $metal = $userRepository->getMetal($_SESSION['authId']);
             $scriptHead .= "<script> var userMetal = ".$metal."; </script>";
             if ($userRepository->getNewUser($_SESSION['authId']) == 1){
-                $scriptBody .= $this->setScript('newUserPanel'); 
-                
+                $scriptBody .= $this->setScript('newUserPanel');
             }
                 require('../src/View/HomeView.php');
                     
@@ -140,7 +139,7 @@ class HomeController extends DefaultController
     public function testArea(){
         $baseRepo = new BaseRepository;
         $mineRepo = new MineRepository;
-        $baseRepo->buySpace("worker", "mine,10");
+        $baseRepo->addSpace("worker", "mine", "10");
         require('../src/View/base.php');
     }
 

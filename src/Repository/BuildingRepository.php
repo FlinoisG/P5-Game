@@ -9,8 +9,16 @@ use App\Service\sqlQueryService;
 
 class BuildingRepository extends Repository
 {
-
-    public function buyUnits($unitType, $id, $amount = 1, $buildingType = null)
+    /**
+     * Adds units in a base/mine from the database
+     *
+     * @param string $unitType Worker or soldier
+     * @param mixed $id Id of the base/mine
+     * @param integer $amount amount of unit to add (can be begative)
+     * @param string $buildingType Type of building (base/mine)
+     * @return void
+     */
+    public function addUnits($unitType, $id, $amount = 1, $buildingType = null)
     {
         if (is_null($buildingType)){
             $buildingType = $this->getType();
@@ -46,7 +54,14 @@ class BuildingRepository extends Repository
         $query->execute();
     }
 
-
+    /**
+     * Get available free space inside a building
+     *
+     * @param string $unitType worker or soldier
+     * @param mixed $id Id of the building
+     * @param string $buildingType Type of building (base/mine)
+     * @return void
+     */
     public function getSpaceLeft($unitType, $id, $buildingType = null)
     {
         $DBConnection = $this->getDBConnection();
@@ -83,6 +98,14 @@ class BuildingRepository extends Repository
         return $spaceLeft;
     }
 
+    /**
+     * Get the number of worker or soldier unit in a building
+     *
+     * @param string $unitType worker or soldier
+     * @param mixed $id Id of the building
+     * @param string $buildingType Type of building (base/mine)
+     * @return void
+     */
     public function getUnits($unitType, $id, $buildingType = null)
     {
         $DBConnection = $this->getDBConnection();
@@ -118,6 +141,13 @@ class BuildingRepository extends Repository
         return $unitNumber;
     }
 
+    /**
+     * Get the position of a building
+     *
+     * @param int $id Id of the building
+     * @param string $buildingType base or mine, type of building
+     * @return void
+     */
     public function getPos($id, $buildingType = null)
     {
         $DBConnection = $this->getDBConnection();
@@ -139,7 +169,12 @@ class BuildingRepository extends Repository
         return $pos[0];
     }
 
-    public function getAllUnit()
+    /**
+     * Get all units form all buildings
+     *
+     * @return array
+     */
+    public function getAllUnits()
     {
         $sqlQueryService = new sqlQueryService();
         $query = "SELECT id, workers, soldiers FROM game_bases";
@@ -163,16 +198,25 @@ class BuildingRepository extends Repository
         }
     }
 
-    public function buySpace($type, $origin, $amount=5)
+    /**
+     * Upgrade a building by adding space of a certain type
+     *
+     * @param string $unitType
+     * @param string $buildingType
+     * @param mixed $buildingId
+     * @param integer $amount
+     * @return void
+     */
+    public function addSpace($unitType, $buildingType, $buildingId, $amount=5)
     {
-        $arr = explode(",", $origin);
-        $originType = $arr[0];
-        $originId = $arr[1];
-        $space = $this->getSpace($type, $originType, $originId);
+        //$arr = explode(",", $origin);
+        //$originType = $arr[0];
+        //$originId = $arr[1];
+        $space = $this->getSpace($unitType, $buildingType, $buildingId);
         $space = $space + $amount;
         $DBConnection = $this->getDBConnection();
-        if ($originType === "base"){
-            if ($type === "worker"){
+        if ($buildingType === "base"){
+            if ($unitType === "worker"){
                 $statement = "UPDATE game_bases SET workerSpace = :space WHERE id = :originId";
             } elseif ($type === "soldier"){
                 $statement = "UPDATE game_bases SET soldierSpace = :space WHERE id = :originId";
@@ -180,10 +224,10 @@ class BuildingRepository extends Repository
                 return false;
                 die();
             }
-        } elseif ($originType === "mine"){
-            if ($type === "worker"){
+        } elseif ($buildingType === "mine"){
+            if ($unitType === "worker"){
                 $statement = "UPDATE game_mines SET workerSpace = :space WHERE id = :originId";
-            } elseif ($type === "soldier"){
+            } elseif ($unitType === "soldier"){
                 $statement = "UPDATE game_mines SET soldierSpace = :space WHERE id = :originId";
             } else {
                 return false;
@@ -195,26 +239,34 @@ class BuildingRepository extends Repository
         }
         $query = $DBConnection->prepare($statement);
         $query->bindparam(":space", $space, PDO::PARAM_INT);
-        $query->bindparam(":originId", $originId, PDO::PARAM_INT);
+        $query->bindparam(":originId", $buildingId, PDO::PARAM_INT);
         $query->execute();
     } 
 
-    public function getSpace($type, $buildingType, $id)
+    /**
+     * Get workerSpace or soldierSpace from a building
+     *
+     * @param string $type worker or soldier
+     * @param string $buildingType base or mine
+     * @param mixed $id id of the building
+     * @return int
+     */
+    public function getSpace($unitType, $buildingType, $buildingId)
     {
         $DBConnection = $this->getDBConnection();
         if ($buildingType === "base"){
-            if ($type === "worker"){
+            if ($unitType === "worker"){
                 $statement = "SELECT workerSpace FROM game_bases WHERE id = :id";
-            } elseif ($type === "soldier"){
+            } elseif ($unitType === "soldier"){
                 $statement = "SELECT soldierSpace FROM game_bases WHERE id = :id";
             } else {
                 return false;
                 die();
             }
         } elseif ($buildingType === "mine"){
-            if ($type === "worker"){
+            if ($unitT === "worker"){
                 $statement = "SELECT workerSpace FROM game_mines WHERE id = :id";
-            } elseif ($type === "soldier"){
+            } elseif ($unitType === "soldier"){
                 $statement = "SELECT soldierSpace FROM game_mines WHERE id = :id";
             } else {
                 return false;
@@ -224,14 +276,21 @@ class BuildingRepository extends Repository
             return false;
             die();
         }
-        $id = (int)$id;
+        //$id = (int)$id;
         $query = $DBConnection->prepare($statement);
-        $query->bindParam(":id", $id, PDO::PARAM_INT);
+        $query->bindParam(":id", $buildingId, PDO::PARAM_INT);
         $query->execute();
         $space = $query->fetch();
         return $space[0];
     }
 
+    /**
+     * Get the user name of a building's owner
+     *
+     * @param string $type base or mine
+     * @param mixed $id id of the building
+     * @return string owner's username
+     */
     public function getOwnerUsername($type, $id)
     {
         $DBConnection = $this->getDBConnection();
