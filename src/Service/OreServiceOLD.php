@@ -7,7 +7,7 @@ use App\Model\Service;
 class OreService extends Service
 {
 
-    private $oreArray = [];
+    protected $oreArray = [];
 
     public function __construct()
     {

@@ -152,6 +152,8 @@ class MapService extends Service
                         "owner": "'.$owner.'", 
                         "ownerName": "'.$object["player"].'",
                         "content": '.json_encode($content).',
+                        "workers": '.$object["workers"].',
+                        "soldiers": '.$object["soldiers"].',
                         "workerSpace": '.$object["workerSpace"].',
                         "soldierSpace": '.$object["soldierSpace"].',
                         "metalNodes": '.$object["metalNodes"].'

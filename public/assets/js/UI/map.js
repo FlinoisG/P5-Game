@@ -25,6 +25,7 @@ Map.mainMap = {
             x = coordinatesToGrid(ev.latlng.lng, 0, "x");
             y = coordinatesToGrid(0, ev.latlng.lat, "y");
             //console.log('grid x: ' + (x) + ', y: ' + (y));
+            console.log('grid x: ' + (ev.latlng.lng) + ', y: ' + (ev.latlng.lat));
             //console.log(Map.mainMap.map.getBounds());
         });     
         
@@ -137,43 +138,29 @@ Map.mainMap = {
                     if (object.owner == "player"){
                         object.metalNodes.forEach(node => {
                             mineArray.push(node);
-                            //console.log("node[1] : " + coordinatesToGrid(0, node[1], "y") + ", node[0] : " + coordinatesToGrid(node[0], 0, "x"));
                         });
                     }
                 }
                 
             });
         } else {console.log('non')}
-        //console.log
         if (typeof oreMapObj !== 'undefined') {
             oreMapObj.oreMap.forEach(ore => {
                 var R = Math.round(ore.value * 51)+51;
                 var G = Math.round(ore.value * 41)+61;
                 var B = Math.round(ore.value * 197)+58;
                 mineArray.forEach(node => {
-                    //console.log("ore.y : " + ore.y + ", ore.x : " + ore.x);
-                    //console.log("node[0] : " + coordinatesToGrid(0, node[0], "y") + ", node[1] : " + coordinatesToGrid(node[1], 0, "x"));
-                    
                     if(ore.x == node[0] && ore.y == node[1]){
                         R = Math.round(ore.value * 51)+11;
                         G = Math.round(ore.value * 237)+18;
                         B = Math.round(ore.value * 41)+21;
-                    } //else {
-                    //   R = Math.round(ore.value * 51)+51;
-                    //    G = Math.round(ore.value * 41)+61;
-                    //    B = Math.round(ore.value * 197)+58;
-                    //    m = "non";
-                    //}
+                    }
                 });
-                //var R = Math.round(ore.value * 51)+51;
-                //var G = Math.round(ore.value * 41)+61;
-                //var B = Math.round(ore.value * 197)+58;
                 var oreMarker = L.circle([ore.y, ore.x], {
-                    //color: '#55719e',
                     color: 'rgb('+R+', '+G+', '+B+')',
                     radius: 2000
                 }).addTo(this.map);
-                oreMarker.bindPopup(ore.value);
+                oreMarker.bindPopup('ore.value : ' + ore.value);
             });
         }
     },
@@ -227,6 +214,7 @@ Map.mainMap = {
                         }                    
                     }
                 } else if (object.type == "mine") {
+                    console.log(object);
                     if (object.owner == "player"){
                         icon = this.mineOwnerIcon;
                         relation = "owned";
@@ -249,7 +237,6 @@ Map.mainMap = {
                         if (window.location.search.includes('focus')){
                             var target = (window.location.search.substr(14));
                             if (target != ''){
-                            //if (typeof(target) != 'undefined'){
                                 var target = (window.location.search.substr(14));
                                 var origin = target.split(",");
                                 var originType = origin[0];
@@ -262,6 +249,62 @@ Map.mainMap = {
                                 }
                             }
                         }                    
+                    }
+                    console.log(object);
+                    if (object.metalNodes.length !== 0 && object.workers !== 0){
+                        if (object.owner == "player"){
+                            workerIcon = this.workerOwnerIcon;
+                            relation = "owned";
+                        } else if (object.owner == "enemy"){
+                            workerIcon = this.workerEnemyIcon;
+                            relation = "enemy";
+                        } else {
+                            workerIcon = this.workerNeutralIcon;
+                            relation = "neutral";
+                        }
+                        //console.log(object.metalNodes);
+                        distance = [];
+                        coordinatesMapPosition = gridToCoordinates(object.x, object.y);
+                        minePos = [coordinatesMapPosition.x, coordinatesMapPosition.y];
+                        object.metalNodes.forEach(metalNode => {
+                            currentDistance = gridDistance(metalNode, minePos);
+                            distance.push(currentDistance);
+                        });
+                        //console.log(distance);
+                        const min = Math.min(...distance);
+                        const index = distance.indexOf(min);
+                        
+                        minePos = [coordinatesMapPosition.y, coordinatesMapPosition.x];
+                        nodePos = [object.metalNodes[index][1], object.metalNodes[index][0]];
+                        var route = [nodePos, minePos, minePos, nodePos, nodePos]
+                        //var test = L.polyline([minePos, nodePos], {
+                        //    color: 'red', 
+                        //    opacity: 0.5
+                        //}).addTo(Map.mainMap.map);
+                        var random = Math.floor((Math.random() * 1000) + 1);
+                        var randomValue1 = 3500 + random;
+                        var randomValue2 = 100 + random;
+                        var randomValue3 = 2900 + random;
+
+                        var marker = L.Marker.movingMarker(route, [randomValue1, randomValue2, randomValue1, randomValue3], {
+                            icon: workerIcon,
+                            autostart: true, 
+                            loop: true
+                        }).addTo(this.map);
+                
+                        /*marker2.on('end', function() {
+                            Map.mainMap.map.removeLayer(marker2);
+                        });
+                        var x = setInterval(function() {
+                            console.log("tic");
+                            L.Marker.movingMarker(route,
+                            [1500, 1500], {autostart: true}).addTo(this.map).on('end', function() {
+                                Map.mainMap.map.removeLayer(marker2);
+                            });;
+                    
+                            
+                        }, 3300);*/
+                        //miningAnimation([coordinatesMapPosition.x, coordinatesMapPosition.y], object.metalNodes[index], this.map);
                     }
                 } else if (object.type == "baseInConst") {
                     var now = Math.floor(Date.now() / 1000);
@@ -356,13 +399,19 @@ Map.mainMap = {
                     var percent = 100*moveNow/moveDuration;
                     var workerPos = getPosFromDist(posStart, posEnd, percent);
                     if (moveNow < moveDuration) {
-                        var workerPath = L.polygon([
+
+                        // Add line
+                        var workerPath = L.polyline([
                             posStart,
                             posEnd
                         ], {
                             dashArray: "5, 5",
                             color: color,
+                            opacity: 0.5,
                         }).addTo(this.map);
+
+                        /*
+                        // Add marker
                         workerMarker = L.marker(workerPos, {
                             icon: icon,
                         }).addTo(this.map);
@@ -371,6 +420,25 @@ Map.mainMap = {
                             workerEntity.onClick(e);
                         });
                         unitMovementUpdator(workerMarker, posStart, posEnd, object.start, object.time);
+                        */
+                       
+                        // Add marker
+                        var newPos = getPosFromDist(posStart, posEnd, percent);
+                        var distence = gridDistance(posStart, posEnd);
+                        var speed = 5000; // ????
+                        var travelTime = (distence * speed);
+
+                        var workerMarker = L.Marker.movingMarker([newPos, posEnd], [travelTime], {
+                            icon: icon,
+                            autostart: true
+                        }).addTo(this.map);
+
+                        const workerEntity = new WorkerEntity(object.ownerName, relation, object.start, object.time);
+                        workerMarker.addEventListener('click', function(e) {
+                            workerEntity.onClick(e);
+                        });
+                        //unitMovementUpdator(workerMarker, posStart, posEnd, object.start, object.time);
+                        
                     }                    
                     if (relation == "owned"){
                         if (window.location.search.includes('focus')){
@@ -422,7 +490,7 @@ Map.mainMap = {
                         soldierMarker.addEventListener('click', function(e) {
                             soldierEntity.onClick(e);
                         });
-                        unitMovementUpdator(soldierMarker, posStart, posEnd, object.start, object.time);
+                        //unitMovementUpdator(soldierMarker, posStart, posEnd, object.start, object.time);
                     }                    
                     if (relation == "owned"){
                         if (window.location.search.includes('focus')){

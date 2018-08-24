@@ -264,7 +264,7 @@ class BuildingRepository extends Repository
                 die();
             }
         } elseif ($buildingType === "mine"){
-            if ($unitT === "worker"){
+            if ($unitType === "worker"){
                 $statement = "SELECT workerSpace FROM game_mines WHERE id = :id";
             } elseif ($unitType === "soldier"){
                 $statement = "SELECT soldierSpace FROM game_mines WHERE id = :id";

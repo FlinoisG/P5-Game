@@ -7,12 +7,14 @@ class MineEntity
 	protected $id;
 	protected $type;
 	protected $player;
+	protected $playerId;
 	protected $hp;
 	protected $pos;
 	protected $workerSpace;
 	protected $soldierSpace;
 	protected $workers;
 	protected $soldiers;
+	protected $metalNodes;
 
     public function __construct($args)
     {
@@ -31,6 +33,9 @@ class MineEntity
 			if (isset($args['player'])) {
                 $this->setPlayer($args['player']);
 			}
+			if (isset($args['playerId'])) {
+                $this->setPlayerId($args['playerId']);
+			}
 			if (isset($args['hp'])) {
                 $this->setHp($args['hp']);
 			}
@@ -48,6 +53,9 @@ class MineEntity
 			}
 			if (isset($args['soldiers'])) {
                 $this->setSoldiers($args['soldiers']);
+			}
+			if (isset($args['metalNodes'])) {
+                $this->setMetalNodes($args['metalNodes']);
 			}
 		}
 	}
@@ -96,6 +104,26 @@ class MineEntity
 	public function setPlayer($player)
 	{
 		$this->player = $player;
+
+		return $this;
+	}
+
+	/**
+	 * Get the value of playerId
+	 */ 
+	public function getPlayerId()
+	{
+		return $this->playerId;
+	}
+
+	/**
+	 * Set the value of playerId
+	 *
+	 * @return  self
+	 */ 
+	public function setPlayerId($playerId)
+	{
+		$this->playerId = $playerId;
 
 		return $this;
 	}
@@ -219,5 +247,25 @@ class MineEntity
 
 		return $this;
     }
-    
+
+	/**
+	 * Get the value of metalNodes
+	 */ 
+	public function getMetalNodes()
+	{
+		return $this->metalNodes;
+	}
+
+	/**
+	 * Set the value of metalNodes
+	 *
+	 * @return  self
+	 */ 
+	public function setMetalNodes($metalNodes)
+	{
+		$this->metalNodes = $metalNodes;
+
+		return $this;
+	}
+
 }

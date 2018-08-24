@@ -9,10 +9,11 @@ use App\Service\MapGeneratorService;
 use App\Service\GridService;
 use App\Service\MapService;
 use App\Service\AuthenticationService;
-use App\Service\OreService;
+//use App\Service\OreService;
 use App\Repository\BaseRepository;
 use App\Repository\MineRepository;
 use App\Repository\UserRepository;
+use App\Service\MiningService;
 
 class HomeController extends DefaultController
 {
@@ -37,7 +38,9 @@ class HomeController extends DefaultController
             crossorigin=\"\"></script>";
         $scriptHead .= $this->setScript('panelUnitCountdown'); 
         $scriptHead .= $this->setScript('numberSelector'); 
-        $scriptHead .= $this->setScript('unitMovementUpdator'); 
+        $scriptHead .= $this->setScript('MiningAnimation'); 
+        //$scriptHead .= $this->setScript('unitMovementUpdator'); 
+        $scriptHead .= $this->setScript('Leaflet_Plugins/MovingMarker'); 
         $waterMap = file_get_contents('../deposit/Maps/waterMap.json');
         $scriptHead .= '<script>var waterMapObj = '.$waterMap.'</script>'; 
         $scriptHead .= $this->setScript('buildOrder');
@@ -137,14 +140,8 @@ class HomeController extends DefaultController
     }
 
     public function testArea(){
-        $baseRepo = new BaseRepository;
-        $mineRepo = new MineRepository;
-        $baseRepo->addSpace("worker", "mine", "10");
-        require('../src/View/base.php');
-    }
-
-    public function testArea1(){
-        $oreService = new OreService;
+        $miningService = new MiningService;
+        $miningService->miningCycle();
         require('../src/View/base.php');
     }
 

@@ -28,7 +28,7 @@ class EntitiesService extends Service
             "attributes"=> [
                 "type"=>"'defaultType'",
                 "class"=>"'building'",
-                "cost"=>500,
+                "cost"=>50,
                 "buildTime"=>3,
                 "textContent"=>"'regular'"
                 ],    
@@ -39,7 +39,7 @@ class EntitiesService extends Service
             "className"=>"DefaultBuildingEntity",
             "extendsFrom"=>"DefaultEntity",
             "attributes"=>[
-                "cost"=>500,
+                "cost"=>150,
                 "buildTime"=>3,
             ],
             "onClick"=>"
@@ -62,7 +62,7 @@ class EntitiesService extends Service
             "className"=>"DefaultUnitEntity",
             "extendsFrom"=>"DefaultEntity",
             "attributes"=>[
-                "cost"=>500,
+                "cost"=>50,
                 "buildTime"=>3,
             ],
             "onClick"=>"",    
@@ -72,7 +72,7 @@ class EntitiesService extends Service
             "className"=>"DefaultUpgradeEntity",
             "extendsFrom"=>"DefaultEntity",
             "attributes"=>[
-                "cost"=>500,
+                "cost"=>100,
                 "buildTime"=>3,
                 "imgName"=>"'unit_slot_base'"
             ],
@@ -93,8 +93,7 @@ class EntitiesService extends Service
             "attributes"=>[
                 "type"=>"'base'",
                 "class"=>"'building'",
-                "cost"=>500,
-                "buildTime"=>3600,
+                "buildTime"=>0,
                 "imgName"=>"'unit_slot_base'"
             ],
             "parameters"=>[
@@ -139,8 +138,8 @@ class EntitiesService extends Service
             "attributes"=>[
                 "type"=>"'mine'",
                 "class"=>"'building'",
-                "cost"=>500,
-                "buildTime"=>3,
+                "cost"=>50,
+                "buildTime"=>0,
                 "imgName"=>"'unit_slot_mine'",
             ],
             "parameters"=>[
@@ -175,7 +174,7 @@ class EntitiesService extends Service
             "attributes"=>[
                 "type"=>"'worker'",
                 "class"=>"'unit'",
-                "cost"=>500,
+                //"cost"=>500,
                 "buildTime"=>3,
                 "imgName"=>"'unit_slot_worker_finished'",
             ],
@@ -191,7 +190,7 @@ class EntitiesService extends Service
             "attributes"=>[
                 "type"=>"'soldier'",
                 "class"=>"'unit'",
-                "cost"=>500,
+                //"cost"=>500,
                 "buildTime"=>3,
                 "imgName"=>"'unit_slot_soldier_finished'",
             ],
@@ -208,7 +207,7 @@ class EntitiesService extends Service
             "attributes"=>[
                 "type"=>"'workerSpace'",
                 "class"=>"'upgrade'",
-                "cost"=>500,
+                //"cost"=>500,
             ],
             "onClick"=>"",    
             "subPanelAction"=>"window.location.replace(\"?p=task.buy&type=workerSpace&origin=\" + origin);"
@@ -219,7 +218,7 @@ class EntitiesService extends Service
             "attributes"=>[
                 "type"=>"'soldierSpace'",
                 "class"=>"'upgrade'",
-                "cost"=>500,
+                //"cost"=>500,
             ],  
             "subPanelAction"=>"window.location.replace(\"?p=task.buy&type=soldierSpace&origin=\" + origin);"
         ];

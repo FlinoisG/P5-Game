@@ -44,7 +44,7 @@ class TaskService extends Service
                     if ($task["subject"] === "base"){
                         $baseRepository->newBase($task["author"], $task["targetPos"]);
                     } elseif ($task["subject"] === "mine"){
-                        $baseRepository->newMine($task["author"], $task["targetPos"]);
+                        $mineRepository->newMine($task["author"], $task["targetPos"]);
                     }
                     //$mapService->build($task["subject"], $task["targetPos"], $task["author"]);
                 } elseif ($task["action"] === "move") {

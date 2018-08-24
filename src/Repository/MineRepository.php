@@ -5,6 +5,7 @@ namespace App\Repository;
 use PDO;
 use App\Model\Repository;
 use App\Entity\MineEntity;
+use App\Service\GridService;
 
 class MineRepository extends BuildingRepository
 {
@@ -23,9 +24,10 @@ class MineRepository extends BuildingRepository
      * Gets all mines from the database and return them 
      * in a array of MineEntity objects
      *
+     * @param boolean $object if true, returns an array of object MineEntity
      * @return array MineEntity 
      */
-    public function getMines()
+    public function getMines($object = false)
     {
         $DBConnection = $this->getDBConnection();
         $query = $DBConnection->prepare("SELECT * FROM game_mines");
@@ -35,7 +37,11 @@ class MineRepository extends BuildingRepository
         for ($i=0; $i < sizeof($mines); $i++) { 
             $minesArray[$i] = new MineEntity($mines[$i]);
         }
-        return $mines;
+        if ($object){
+            return $minesArray;
+        } else {
+            return $mines;
+        }
     }
 
     /**
@@ -65,23 +71,62 @@ class MineRepository extends BuildingRepository
      */
     public function newMine($userId, $pos)
     {
-        // Get usernam from user Id
+        $gridService = new GridService;
         $userRepository = new UserRepository;
+        
+        // Get username from user Id
         $username = $userRepository->getUsernameById($userId);
-
+        
         // Get metal nodes around the new mine's position
         $posArr = str_replace(array( '[', ']' ), '', $pos);
         $posArr = explode(',', $posArr);
         $posArr = $gridService->gridToCoordinates($posArr[0], $posArr[1]);
         $metalNodes = $gridService->getMetalNodes($posArr);
         $metalNodes = json_encode($metalNodes);
-
+        
         $DBConnection = $this->getDBConnection();
-        $query = $DBConnection->prepare("INSERT INTO game_mines (player, playerId, pos, main) VALUES (':username', ':author', ':pos', ':main')");
-        $query->bindParam(":username", $username, PDO::PARAM_STR);
-        $query->bindParam(":author", $userId, PDO::PARAM_STR);
+        $query = $DBConnection->prepare("INSERT INTO game_mines (player, playerId, pos, metalNodes) VALUES (:player, :playerId, :pos, :metalNodes)");
+        $query->bindParam(":player", $username, PDO::PARAM_STR);
+        $query->bindParam(":playerId", $userId, PDO::PARAM_INT);
         $query->bindParam(":pos", $pos, PDO::PARAM_STR);
-        $query->bindParam(":metalNodes", $metalNodes, PDO::PARAM_INT);
+        $query->bindParam(":metalNodes", $metalNodes, PDO::PARAM_STR);
+        $query->execute();
+        var_dump("ok");
+    }
+
+    /**
+     * returns the parameter metalNodes from
+     * the specified mine's id
+     *
+     * @param mixed $id
+     * @return void
+     */
+    public function getMetalNodes($id)
+    {
+        $DBConnection = $this->getDBConnection();
+        $query = $DBConnection->prepare("SELECT metalNodes FROM game_mines WHERE id = :id");
+        $query->bindParam(':id', $id, PDO::PARAM_INT);
+        $query->execute();
+        $responce = new BaseEntity($query->fetch());
+        return $responce;
+    }
+
+    /**
+     * update metalNode of a mine inside game_bases
+     *
+     * @param mixed $id
+     * @param array $metalNodes
+     * @return void
+     */
+    public function setMetalNodes($id, $metalNodes)
+    {
+        $DBConnection = $this->getDBConnection();
+        $query = $DBConnection->prepare("UPDATE game_mines SET metalNodes = :metalNodes WHERE id = :id");
+        var_dump($metalNodes);
+        $metalNodes = json_encode($metalNodes, true);
+        var_dump($metalNodes);
+        $query->bindParam(':metalNodes', $metalNodes, PDO::PARAM_STR);
+        $query->bindParam(':id', $id, PDO::PARAM_INT);
         $query->execute();
     }
     
