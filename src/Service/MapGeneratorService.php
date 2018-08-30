@@ -5,10 +5,12 @@ namespace App\Service;
 use App\Model\Service;
 use App\Service\PerlinService;
 use App\Service\GridService;
+use App\Config\GameConfig;
 
 class MapGeneratorService extends Service
 {
 
+    /*
     public function resourceTest()
     {
         $perlinService = new PerlinService();
@@ -37,7 +39,6 @@ class MapGeneratorService extends Service
                 if (strlen($num) < 2) $num = "0".$num;
 
                 if ($raw > $nodeSize){
-                    //$num = "ff0000";
                     $num = $num.$num.$num;
                     $content = $content . '
                     ctx.beginPath();
@@ -51,6 +52,7 @@ class MapGeneratorService extends Service
         $content = $content . '</script>';
         return $content;
     }
+    */
 
     /**
      * Generate a new ore map into deposit/Maps/oreMap.json
@@ -60,11 +62,12 @@ class MapGeneratorService extends Service
     public function getOreMap()
     {
         $perlinService = new Perlin();
+        $gameConfig = new GameConfig;
 
-        $gridsizeX = 438; // long
-        $gridsizeY = 290; // lat
-        $nodeFreq = 12; // higher value = lower freq but bigger node
-        $nodeSize = 0.2; // 0 = max  1 = min
+        $gridSizeX = $gameConfig->getGridSizeX();
+        $gridSizeY = $gameConfig->getGridSizeY();
+        $nodeFreq = $gameConfig->getNodeFrequence();
+        $nodeSize = $gameConfig->getNodeSize();
 
         $waterMap = json_decode(file_get_contents('../deposit/Maps/waterMap.json'), true);
 
@@ -73,8 +76,8 @@ class MapGeneratorService extends Service
         $content = "{\"oreMap\":[
     ";
         $gridService = new GridService;
-        for($y=0; $y<$gridsizeY; $y+=1) {
-            for($x=0; $x<$gridsizeX; $x+=1) {
+        for($y=0; $y<$gridSizeY; $y+=1) {
+            for($x=0; $x<$gridSizeX; $x+=1) {
                 if ($y % 2 != 0) {
                     $fakeY = $y - 1;
                 } else {

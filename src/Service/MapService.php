@@ -133,6 +133,7 @@ class MapService extends Service
                         "x": '.$pos[0].', 
                         "y": '.$pos[1].', 
                         "id": '.$object["id"].', 
+                        "HP": '.$object["HP"].', 
                         "owner": "'.$owner.'", 
                         "ownerName": "'.$object["player"].'", 
                         "main": '.$object["main"].',

@@ -189,7 +189,16 @@ Map.mainMap = {
                         icon: icon,
                         riseOnHover: true,
                     }).addTo(this.map);
-                    const baseEntity = new BaseEntity(object.id, object.ownerName, relation, object.content, object.workerSpace, object.soldierSpace, baseMarker);
+                    const baseEntity = new BaseEntity(
+                        object.id, 
+                        object.ownerName, 
+                        relation, 
+                        object.HP,
+                        object.content, 
+                        object.workerSpace, 
+                        object.soldierSpace, 
+                        baseMarker
+                    );
                     baseMarker.bindPopup("#"+object.id+" base de "+object.ownerName);
                     baseMarker.addEventListener('click', function(e) {
                         baseEntity.onClick(e);
@@ -214,7 +223,6 @@ Map.mainMap = {
                         }                    
                     }
                 } else if (object.type == "mine") {
-                    console.log(object);
                     if (object.owner == "player"){
                         icon = this.mineOwnerIcon;
                         relation = "owned";
@@ -229,7 +237,16 @@ Map.mainMap = {
                         icon: icon,
                         riseOnHover: true,
                     }).addTo(this.map);
-                    const mineEntity = new MineEntity(object.id, object.ownerName, relation, object.content, object.workerSpace, object.soldierSpace, mineMarker);
+                    const mineEntity = new MineEntity(
+                        object.id, 
+                        object.ownerName, 
+                        relation, 
+                        object.HP, 
+                        object.content, 
+                        object.workerSpace, 
+                        object.soldierSpace, 
+                        mineMarker
+                    );
                     mineMarker.addEventListener('click', function(e) {
                         mineEntity.onClick(e);
                     });
@@ -243,14 +260,12 @@ Map.mainMap = {
                                 var str = origin[1].split("&");
                                 var originId = str[0];
                                 if (originType == 'mine' && originId == object.id){
-                                    console.log(mineEntity);
                                     Map.mainMap.map.setView(mineEntity.marker._latlng, 9)
                                     mineEntity.onClick();
                                 }
                             }
                         }                    
                     }
-                    console.log(object);
                     if (object.metalNodes.length !== 0 && object.workers !== 0){
                         if (object.owner == "player"){
                             workerIcon = this.workerOwnerIcon;
@@ -262,7 +277,6 @@ Map.mainMap = {
                             workerIcon = this.workerNeutralIcon;
                             relation = "neutral";
                         }
-                        //console.log(object.metalNodes);
                         distance = [];
                         coordinatesMapPosition = gridToCoordinates(object.x, object.y);
                         minePos = [coordinatesMapPosition.x, coordinatesMapPosition.y];
@@ -270,17 +284,12 @@ Map.mainMap = {
                             currentDistance = gridDistance(metalNode, minePos);
                             distance.push(currentDistance);
                         });
-                        //console.log(distance);
                         const min = Math.min(...distance);
                         const index = distance.indexOf(min);
                         
                         minePos = [coordinatesMapPosition.y, coordinatesMapPosition.x];
                         nodePos = [object.metalNodes[index][1], object.metalNodes[index][0]];
                         var route = [nodePos, minePos, minePos, nodePos, nodePos]
-                        //var test = L.polyline([minePos, nodePos], {
-                        //    color: 'red', 
-                        //    opacity: 0.5
-                        //}).addTo(Map.mainMap.map);
                         var random = Math.floor((Math.random() * 1000) + 1);
                         var randomValue1 = 3500 + random;
                         var randomValue2 = 100 + random;
@@ -291,20 +300,7 @@ Map.mainMap = {
                             autostart: true, 
                             loop: true
                         }).addTo(this.map);
-                
-                        /*marker2.on('end', function() {
-                            Map.mainMap.map.removeLayer(marker2);
-                        });
-                        var x = setInterval(function() {
-                            console.log("tic");
-                            L.Marker.movingMarker(route,
-                            [1500, 1500], {autostart: true}).addTo(this.map).on('end', function() {
-                                Map.mainMap.map.removeLayer(marker2);
-                            });;
-                    
-                            
-                        }, 3300);*/
-                        //miningAnimation([coordinatesMapPosition.x, coordinatesMapPosition.y], object.metalNodes[index], this.map);
+
                     }
                 } else if (object.type == "baseInConst") {
                     var now = Math.floor(Date.now() / 1000);

@@ -24,7 +24,7 @@ panelInterface = {
             default:
                 this.unSelect();
                 console.log('Selection inconnue');
-                
+                console.log(toSelect);
         }
         
     },
@@ -36,11 +36,35 @@ panelInterface = {
 
 
     selectBuilding(toSelect) 
-    {        
+    {
+        console.log(toSelect);        
         if (toSelect.relation == "owned") {
             this.tab = "workerTab";
+
             var title = document.createElement('h4');
             title.textContent = '#' + toSelect.id + " " + toSelect.type;
+
+            var healthBarDiv = document.createElement('div');
+            healthBarDiv.className = "progress healthBar";
+
+            var health = (toSelect.HP / toSelect.maxHP);
+            var healthBarPercent = health * 100;
+
+            var healthGreen = health * 200;
+            var healthRed = 200 - (health * 200);
+            var healthBarColor = "rgb("+ healthRed +","+ healthGreen + ",0)";
+
+            var healthText = document.createElement('p');
+            healthText.textContent = "HP : " + toSelect.HP + "/" + toSelect.maxHP;
+            healthText.className = "healthText";
+
+            var healthBar = document.createElement('div');
+            healthBar.className = "healthBarProgress progress-bar progress-bar-striped progress-bar-animated";
+            healthBar.setAttribute('role', "progressbar");
+            healthBar.setAttribute('aria-valuenow', healthBarPercent);
+            healthBar.setAttribute('aria-valuemin', 0);
+            healthBar.setAttribute('aria-valuemax', toSelect.maxHP);
+            healthBar.style = "width: " + healthBarPercent + "%; background-color: " + healthBarColor + " !important;";
 
             var slotTabs = document.createElement('div');
             slotTabs.id = "slotTabs"
@@ -55,8 +79,11 @@ panelInterface = {
             soldierTabButton.textContent = "soldiers";
 
             var panelSlots = document.createElement('div');
-            panelSlots.id = "panelSlots"
-            panelSlots.className = "panelSlots"
+            panelSlots.id = "panelSlots";
+            panelSlots.className = "panelSlots";
+
+            healthBarDiv.appendChild(healthBar);
+            healthBarDiv.appendChild(healthText);
 
             slotTabs.appendChild(workerTabButton);
             slotTabs.appendChild(soldierTabButton);
@@ -134,6 +161,7 @@ panelInterface = {
 
             document.getElementById('panelInterface').innerHTML = "";
             document.getElementById('panelInterface').appendChild(title);
+            document.getElementById('panelInterface').appendChild(healthBarDiv);
             document.getElementById('panelInterface').appendChild(slotTabs);
             document.getElementById('panelInterface').appendChild(panelSlots); 
             document.getElementById('panelInterface').appendChild(panelSub);
@@ -184,7 +212,6 @@ panelInterface = {
                 countDown(timer, toSelect.content.workerSpaceInConst);
             }
         } else {
-            //content = "<h4>#" + toSelect.id + " " + toSelect.type + " de " + toSelect.ownerName + "</h4>"
             var title = document.createElement('h4');
             title.textContent = '#' + toSelect.id + " " + toSelect.type + " de " + toSelect.ownerName;
             document.getElementById('panelInterface').innerHTML = "";

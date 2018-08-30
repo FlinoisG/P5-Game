@@ -11,12 +11,13 @@ use App\Repository\MineRepository;
 use App\Repository\UserRepository;
 use App\Repository\TaskRepository;
 use App\Entity\TaskEntity;
+use App\Config\GameConfig;
 
 class TaskController extends DefaultController
 {
 
-    private $workerTimeFactor = 1;
-    private $defaultTimeFactor = 1;
+    //private $workerTimeFactor = 1;
+    //private $defaultTimeFactor = 1;
 
     public function buy()
     {
@@ -40,7 +41,6 @@ class TaskController extends DefaultController
         $available = true;
         $type = $_GET['type'];
         $getType = $entitiesService->getType($type)["attributes"];
-        var_dump($getType);
         $class = str_replace("'", "", $getType['class']);
         $cost = str_replace("'", "", $getType['cost']);
         $playerMetal = $userRepository->getMetal($_SESSION['authId']);
@@ -70,7 +70,6 @@ class TaskController extends DefaultController
             }
         } else if ($class == 'building') {
             $action = "build";
-            //$baseRepository->addUnits("worker", $startOriginId, -1, $startOriginType);
         } else if ($class == 'upgrade') {
             $action = "buy";
             $upgradeInConstruct = $taskRepository->getEntityInConst($type, $startOriginType, $startOriginId);
@@ -137,15 +136,16 @@ class TaskController extends DefaultController
         $mineRepository = new MineRepository;
         $taskRepository = new TaskRepository;
         $gridService = new GridService;
+        $gameConfig = new GameConfig;
         if ($type == null) $type = $_GET['type'];
         if ($startOrigin == null) $startOrigin = $_GET['startOrigin'];
         if ($target == null) $target = $_GET['target'];
         if (isset($_GET['amount'])) $amount = (int)$_GET['amount'];
         $authenticationService = new AuthenticationService;
         if ($type == 'worker'){
-            $timeFactor = $this->workerTimeFactor;
+            $speed = $gameConfig->getWorkerTravelSpeed();
         } else {
-            $timeFactor = $this->defaultTimeFactor;
+            $speed = $gameConfig->getDefaultTravelSpeed();
         }
         $startOriginType = explode(",", $startOrigin)[0];
         $startOriginId = explode(",", $startOrigin)[1];
@@ -155,17 +155,13 @@ class TaskController extends DefaultController
             $dist = $gridService->getDistance($startPos, json_decode($target));
             $targetType = 'pos';
         } else {
-            //$targetOrigin = $target;
-            //$arr = explode(',', $target);
-            //$originType = $arr[0];
-            //$originId = $arr[1];
             $targetType = explode(",", $target)[0];
             $targetId = explode(",", $target)[1];
             $targetPos = json_decode($baseRepository->getPos($targetId, $targetType));
             $dist = $gridService->getDistance($startPos, $targetPos);
             $targetType = 'origin';
         }
-        $duration = (int)$dist * $timeFactor;
+        $duration = (int)$dist * $speed;
         $time = time() + $duration;
         if ($dist < 0){
             $dist = ($dist * -1);
@@ -209,7 +205,6 @@ class TaskController extends DefaultController
                 echo 'pas asser d\'unitées';
             }
         } else {
-            var_dump("what");
             if ($originUnits >= $amount){
                 $baseRepository->addUnits($type, $originId, $negAmount, $originBuilding);
                 $startPos = $baseRepository->getPos($startOriginId, $startOriginType);
@@ -249,10 +244,11 @@ class TaskController extends DefaultController
         if (isset($_GET['amount'])) $amount = $_GET['amount'];
         $authenticationService = new AuthenticationService;
         $gridService = new GridService;
+        $gameConfig = new GameConfig;
         if ($type == 'worker'){
-            $timeFactor = $this->workerTimeFactor;
+            $speed = $gameConfig->getWorkerSpeed();
         } else {
-            $timeFactor = $this->defaultTimeFactor;
+            $speed = $gameConfig->getDefaultSpeed();
         }
         $startPos = json_decode($baseRepository->getPos($startOriginId, $startOriginType));
         if (preg_match('/[\[]/', $target)) {
@@ -268,15 +264,17 @@ class TaskController extends DefaultController
             $dist = $gridService->getDistance($startPos, $targetPos);
             $targetType = 'origin';
         }
-        $duration = (int)$dist * $timeFactor;
+        $duration = (int)$dist * $speed;
         $time = time() + $duration;
         if ($dist < 0){
             $dist = ($dist * -1);
         }
         $negAmount = ($amount * -1);
+        
         $baseRepository = new BaseRepository;
         $mineRepository = new MineRepository;
         $taskRepository = new TaskRepository;
+
         $building = explode(",", $startOrigin)[0];
         $id = explode(",", $startOrigin)[1];
         if ($building === "base"){
@@ -320,17 +318,17 @@ class TaskController extends DefaultController
         $authenticationService = new AuthenticationService;
         $entitiesService = new EntitiesService;
         $baseRepository = new BaseRepository;
-        $mapService = new MapSerive;
+        $userRepository = new UserRepository;
+        $mapService = new MapService;
         if (!isset($_SESSION)) { 
             session_start(); 
         }
-        if ($authenticationService->getNewUser($_SESSION['authId']) != 1) {
+        if ($userRepository->getNewUserWithUsername($_SESSION['auth']) != 1) {
             die($this->error('403'));
         }
         $pos = $_GET["pos"];
         $baseRepository->newBase($_SESSION['authId'], $pos, 1);
-        //$mapService->build('base', $pos, $_SESSION['authId'], 1);
-        $authenticationService->changeNewUser($_SESSION['authId']);
+        $userRepository->changeNewUser($_SESSION['authId'], 0);
         header('Location: ?p=home');
     }
 

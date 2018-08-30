@@ -10,7 +10,20 @@
     max-height: 80vh;
 }
 
+.healthBar{
+    margin: 25px;
+    text-align: center;
+    height: 21px;
+}
 
+.healthText{
+    color: black;
+    font-size: 18px;
+    line-height: 21px;
+    position: absolute;
+    width: 298px;
+    text-align: center;
+}
 
 .unitSlotContainer {
     max-width: 54px;

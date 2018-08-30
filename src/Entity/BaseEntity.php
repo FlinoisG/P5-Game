@@ -15,6 +15,8 @@ class BaseEntity
     protected $soldierSpace;
     protected $workers;
     protected $soldiers;
+    protected $cost;
+    protected $maxHP;
 
     public function __construct($args)
     {

@@ -51,6 +51,7 @@ class HomeController extends DefaultController
         $scriptBody = '<script>var oreMapObj = '.$oreMap.'</script>';
         $scriptBody .= $this->setScript('grid');
         $mapService = new MapService;
+        $scriptHead .= $entitiesService->setJavascriptEntities();
         $scriptBody .= $mapService->mapInit();
         $scriptBody .= $this->setScript('UI/panelInterface');
         if ($_SESSION) {
@@ -113,9 +114,9 @@ class HomeController extends DefaultController
         if (!isset($_SESSION)) { 
             session_start(); 
         }
-        $content = "";
+        //$content = "";
         $mapGeneratorService = new MapGeneratorService;
-        $gridService = new GridService;
+        //$gridService = new GridService;
         var_dump($mapGeneratorService->getOreMap());
         require('../src/View/base.php');
     }

@@ -87,6 +87,7 @@ class EntitiesService extends Service
             "onClick"=>"",    
             "subPanelAction"=>""
         ];
+        /*
         $this->entities['base'] = [
             "className"=>"Base",
             "extendsFrom"=>"DefaultBuildingEntity",
@@ -100,13 +101,16 @@ class EntitiesService extends Service
                 "id"=>0,
                 "ownerName"=>"''",
                 "relation"=>"'neutral'",
+                "HP"=>"''",
                 "content"=>"''",
                 "workerSpace"=>"''",
                 "soldierSpace"=>"''",
-                "marker"=>"null"
+                "marker"=>"null",
+                "maxHP"=>100
             ],
             "subPanelAction"=>"buildOrder.build('base', origin, toSelect);"
         ];
+        *//*
         $this->entities['main'] = [
             "className"=>"Main",
             "extendsFrom"=>"BaseEntity",
@@ -141,6 +145,8 @@ class EntitiesService extends Service
                 "cost"=>50,
                 "buildTime"=>0,
                 "imgName"=>"'unit_slot_mine'",
+                "HP"=>"''",
+                "maxHP"=>100
             ],
             "parameters"=>[
                 "id"=>0,
@@ -153,6 +159,7 @@ class EntitiesService extends Service
             ],  
             "subPanelAction"=>"buildOrder.build('mine', origin, toSelect);"
         ];
+        
         $this->entities['mineInConst'] = [
             "className"=>"MineInConst",
             "extendsFrom"=>"DefaultBuildingEntity",
@@ -168,13 +175,14 @@ class EntitiesService extends Service
             ],   
             "subPanelAction"=>""
         ];
+        */
         $this->entities['worker'] = [
             "className"=>"Worker",
             "extendsFrom"=>"DefaultUnitEntity",
             "attributes"=>[
                 "type"=>"'worker'",
                 "class"=>"'unit'",
-                //"cost"=>500,
+                "cost"=>50,
                 "buildTime"=>3,
                 "imgName"=>"'unit_slot_worker_finished'",
             ],
@@ -207,7 +215,8 @@ class EntitiesService extends Service
             "attributes"=>[
                 "type"=>"'workerSpace'",
                 "class"=>"'upgrade'",
-                //"cost"=>500,
+                "cost"=>50,
+                "buildTime"=>3,
             ],
             "onClick"=>"",    
             "subPanelAction"=>"window.location.replace(\"?p=task.buy&type=workerSpace&origin=\" + origin);"
@@ -218,7 +227,8 @@ class EntitiesService extends Service
             "attributes"=>[
                 "type"=>"'soldierSpace'",
                 "class"=>"'upgrade'",
-                //"cost"=>500,
+                "cost"=>50,
+                "buildTime"=>3,
             ],  
             "subPanelAction"=>"window.location.replace(\"?p=task.buy&type=soldierSpace&origin=\" + origin);"
         ];
@@ -257,6 +267,17 @@ class EntitiesService extends Service
             ],
         ];
 
+    }
+
+    public function setJavascriptEntities(){
+        $scriptTag = "";
+        $files = scandir(__DIR__.'/../../public/assets/js/entities');
+        unset($files[0]);
+        unset($files[1]);
+        foreach($files as $file) {
+            $scriptTag .= '<script src="assets/js/entities/' . $file . '"></script>';
+        }
+        return $scriptTag;
     }
     
     /**

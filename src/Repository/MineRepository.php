@@ -122,9 +122,7 @@ class MineRepository extends BuildingRepository
     {
         $DBConnection = $this->getDBConnection();
         $query = $DBConnection->prepare("UPDATE game_mines SET metalNodes = :metalNodes WHERE id = :id");
-        var_dump($metalNodes);
         $metalNodes = json_encode($metalNodes, true);
-        var_dump($metalNodes);
         $query->bindParam(':metalNodes', $metalNodes, PDO::PARAM_STR);
         $query->bindParam(':id', $id, PDO::PARAM_INT);
         $query->execute();
