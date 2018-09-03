@@ -279,7 +279,7 @@ class TaskController extends DefaultController
             $baseRepository->addUnits("soldier", $originId, $negAmount, $originBuilding);
             $startPos = $baseRepository->getPos($startOriginId, $startOriginType);
             $taskParameters = [
-                'action'=>'attack', 
+                'action'=>'attackMove', 
                 'subject'=>"soldier,".$amount, 
                 'startOrigin'=>$startOrigin, 
                 'startPos'=>$startPos,
@@ -290,9 +290,9 @@ class TaskController extends DefaultController
                 'author'=>$_SESSION['authId']
             ];
             $task = new TaskEntity($taskParameters);
-            var_dump($task);
-            //$taskRepository->newTask($task);
-            //header('Location: ?p=home&focus='.$startOrigin);
+            //var_dump($task);
+            $taskRepository->newTask($task);
+            header('Location: ?p=home&focus='.$startOrigin);
         } else {
             echo 'pas asser d\'unitées';
         }

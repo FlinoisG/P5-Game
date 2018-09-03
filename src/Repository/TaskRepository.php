@@ -173,4 +173,15 @@ class TaskRepository extends Repository
         return $entityArray;
     }
 
+    public function setAttackSoldiers($newSoldierAmount, $taskId)
+    {
+        $DBConnection = $this->getDBConnection();
+        $subject = "soldiers," . $newSoldierAmount;
+        $statement = "UPDATE game_tasks SET subject = :subject WHERE id= :id";
+        $query = $DBConnection->prepare($statement);
+        $query->bindParam(':subject', $subject, PDO::PARAM_INT);
+        $query->bindParam(':id', $taskId, PDO::PARAM_INT);
+        $query->execute();
+    }
+
 }

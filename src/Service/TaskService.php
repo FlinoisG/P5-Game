@@ -37,6 +37,8 @@ class TaskService extends Service
                     $this->buildTask($task);
                 } elseif ($task["action"] === "move") {
                     $this->moveTask($task);
+                } elseif ($task["action"] === "attackMove") {
+                    $this->attackMoveTask($task);
                 } elseif ($task["action"] === "attack") {
                     $this->attackTask($task);
                 }
@@ -44,9 +46,10 @@ class TaskService extends Service
             }
         }
     }
-
+    
     public function buyTask($task)
     {
+        $baseRepository = new BaseRepository;
         $targetType = explode(",", $task["startOrigin"])[0];
         $targetId = explode(",", $task["startOrigin"])[1];
         if ($task["subject"] === "worker" || $task["subject"] == "soldier") {
@@ -79,25 +82,75 @@ class TaskService extends Service
         }
     }
 
-    public function attackTask($task)
+    public function attackMoveTask($task)
     {
         if ($task["targetOrigin"] != "") {
+            $taskRepository = new TaskRepository;
+            $baseRepository = new BaseRepository;
             $arr = explode(',', $task["subject"]);
-            //$targetType = $arr[0];
-            $soldierAmount = $arr[1];
+            $attackSoldierAmount = $arr[1];
 
             $targetBuilding = explode(",", $task["targetOrigin"])[0];
             $targetId = explode(",", $task["targetOrigin"])[1];
             $targetSoldierAmount = $baseRepository->getUnits("soldier", $targetId, $targetBuilding);
+            $targetHP = $baseRepository->getHP($targetId, $targetBuilding);
 
-            if ($targetSoldierAmount > $soldierAmount){
-                $negativeAmount = $soldierAmount * -1;
-                $baseRepository->addUnits("soldier", $targetId, $negativeAmount, $targetBuilding);
+            if ($targetSoldierAmount !== 0){
+                if ($targetSoldierAmount >= $attackSoldierAmount){
+                    $negativeAmount = $attackSoldierAmount * -1;
+                    $baseRepository->addUnits("soldier", $targetId, $negativeAmount, $targetBuilding);
+                } else {
+                    $newAttackSoldierAmount = $attackSoldierAmount - $targetSoldierAmount;
+                    $taskRepository->setAttackSoldiers($newAttackSoldierAmount, $task["id"]);
+                    $time = time() + 3600;
+                    $taskParameters = [
+                        'action'=>'attack', 
+                        'subject'=>"soldier,".$amount, 
+                        'startOrigin'=>$task["startOrigin"], 
+                        'startPos'=>$task["startPos"],
+                        'targetOrigin'=>$task["targetOrigin"], 
+                        'targetPos'=>$task["targetPos"], 
+                        'startTime'=>"", 
+                        'endTime'=>$time, 
+                        'author'=>$task["author"]
+                    ];
+                    $newAttackTask = new TaskEntity($taskParameters);
+                    $taskRepository->newTask($newAttackTask);
+                } 
             } else {
-                $baseRepository->captureBase();
+                $taskParameters = [
+                    'action'=>'attack', 
+                    'subject'=>"soldier,".$amount, 
+                    'startOrigin'=>$task["startOrigin"], 
+                    'startPos'=>$task["startPos"],
+                    'targetOrigin'=>$task["targetOrigin"], 
+                    'targetPos'=>$task["targetPos"], 
+                    'startTime'=>"", 
+                    'endTime'=>"", 
+                    'author'=>$task["author"]
+                ];
+                $newAttackTask = new TaskEntity($taskParameters);
+                $this->attack($newAttackTask);
             }
+        }
+    }
 
-            $baseRepository->addUnits($targetType, $targetId, $targetAmount, $targetBuilding);
+    public function attack($task)
+    {
+        $baseRepository = new BaseRepository;
+
+        $arr = explode(',', $task["subject"]);
+        $attackSoldierAmount = $arr[1];
+        $targetBuilding = explode(",", $task["targetOrigin"])[0];
+        $targetId = explode(",", $task["targetOrigin"])[1];
+        $targetHP = $baseRepository->getHP($targetId, $targetBuilding);
+
+        if ($targetHP > $attackSoldierAmount) {
+            $newTargetHP = $targetHP - $attackSoldierAmount;
+            $baseRepository->setHP($buildingHP, $id, $buildingType);
+            
+        } else {
+
         }
     }
 

@@ -198,6 +198,41 @@ class BuildingRepository extends Repository
         }
     }
 
+    public function getHP($id, $buildingType)
+    {
+        $DBConnection = $this->getDBConnection();
+        if ($buildingType === "base") {
+            $statement = "SELECT HP FROM game_bases WHERE id= :id";
+        } else if ($buildingType === "mine") {
+            $statement = "SELECT HP FROM game_mines WHERE id= :id";
+        } else {
+            return false;
+            die();
+        }
+        $query = $DBConnection->prepare($statement);
+        $query->bindParam(':id', $id, PDO::PARAM_INT);
+        $query->execute();
+        $buildingHP = $query->fetch();
+        return $buildingHP[0];
+    }
+
+    public function setHP($buildingHP, $id, $buildingType)
+    {
+        $DBConnection = $this->getDBConnection();
+        if ($buildingType === "base") {
+            $statement = "UPDATE game_bases SET HP = :buildingHP WHERE id= :id";
+        } else if ($buildingType === "mine") {
+            $statement = "UPDATE game_mines SET HP = :buildingHP WHERE id= :id";
+        } else {
+            return false;
+            die();
+        }
+        $query = $DBConnection->prepare($statement);
+        $query->bindParam(':buildingHP', $buildingHP, PDO::PARAM_INT);
+        $query->bindParam(':id', $id, PDO::PARAM_INT);
+        $query->execute();
+    }
+
     /**
      * Upgrade a building by adding space of a certain type
      *
