@@ -221,7 +221,6 @@ Map.mainMap = {
                                 var str = origin[1].split("&");
                                 var originId = str[0];
                                 if (originType == "base" && originId == object.id){
-                                    console.log(baseEntity);
                                     baseEntity.onClick();
                                     Map.mainMap.map.setView(baseEntity.marker._latlng, 9)
                                     if (window.location.search.includes('soldierTab')){

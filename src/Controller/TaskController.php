@@ -98,7 +98,8 @@ class TaskController extends DefaultController
         }
         
         if ($available){
-            $time = time() + $entitiesService->getType($type)["attributes"]["buildTime"];
+            $buildTime = $unitSettings["buildTime"][$type."BuildTime"];
+            $time = time() + $buildTime;
             if (isset($_GET["pos"])){
                 $targetPos = $_GET["pos"];
             } else {

@@ -1,7 +1,10 @@
 panelInterface = {
+
+    selected: "",
   
     select(toSelect) 
     {
+        this.selected = toSelect;
         //console.log(toSelect);
         if (buildOrder.orderMode){
             buildOrder.cancel();
