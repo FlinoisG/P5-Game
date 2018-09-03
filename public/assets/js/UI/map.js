@@ -10,17 +10,24 @@ const Map = {"tilemap": Tilelayers.Stamen};
 Map.mainMap = {
 
     mapInit: function(){
+        var req = new XMLHttpRequest();
+        req.open("GET", "/public/index.php?p=data.getMapSettings");
+        req.addEventListener("load", function () {
+            var mapSettings = JSON.parse(req.responseText);
+            console.log(mapSettings);
+            Map.mainMap.createMap(mapSettings);
+        });
+        req.send(null);
+    },
+
+    createMap: function(mapSettings){
         this.map = L.map('mapid', {
-            minZoom: 7,
-            maxZoom: 18,
-            maxBounds: [
-                //south west
-                [32.7, -11.3269],
-                //north east
-                [61.37567, 32.39868]
-                ], 
-            maxBoundsViscosity: 1.0
+            minZoom: mapSettings.minZoom,
+            maxZoom: mapSettings.maxZoom,
+            maxBounds: mapSettings.maxBounds, 
+            maxBoundsViscosity: mapSettings.maxBoundsViscosity
         }).setView([gridToCoordinates(0, 131.48, "y"), gridToCoordinates(224.83, 0, "x")], 2);
+
         this.map.addEventListener('click', function(ev) {
             x = coordinatesToGrid(ev.latlng.lng, 0, "x");
             y = coordinatesToGrid(0, ev.latlng.lat, "y");
@@ -143,7 +150,7 @@ Map.mainMap = {
                 }
                 
             });
-        } else {console.log('non')}
+        };
         if (typeof oreMapObj !== 'undefined') {
             oreMapObj.oreMap.forEach(ore => {
                 var R = Math.round(ore.value * 51)+51;
@@ -189,8 +196,10 @@ Map.mainMap = {
                         icon: icon,
                         riseOnHover: true,
                     }).addTo(this.map);
-                    const baseEntity = new BaseEntity(
+                    var baseEntity = "";
+                    baseEntity = new BaseEntity(
                         object.id, 
+                        object.main,
                         object.ownerName, 
                         relation, 
                         object.HP,
@@ -472,6 +481,7 @@ Map.mainMap = {
                     var percent = 100*moveNow/moveDuration;
                     var soldierPos = getPosFromDist(posStart, posEnd, percent);
                     if (moveNow < moveDuration) {
+
                         var soldierPath = L.polygon([
                             posStart,
                             posEnd
@@ -479,14 +489,33 @@ Map.mainMap = {
                             dashArray: "5, 5",
                             color: color,
                         }).addTo(this.map);
+                        /*
                         soldierMarker = L.marker(soldierPos, {
                             icon: icon,
                         }).addTo(this.map);
+
+                        const soldierEntity = new WorkerEntity(object.ownerName, relation, object.start, object.time);
+                        
+                        soldierMarker.addEventListener('click', function(e) {
+                            soldierEntity.onClick(e);
+                        });
+
+                        //unitMovementUpdator(soldierMarker, posStart, posEnd, object.start, object.time);
+                        */
+                        var newPos = getPosFromDist(posStart, posEnd, percent);
+                        var distence = gridDistance(posStart, posEnd);
+                        var speed = 5000; // ????
+                        var travelTime = (distence * speed);
+
+                        var soldierMarker = L.Marker.movingMarker([newPos, posEnd], [travelTime], {
+                            icon: icon,
+                            autostart: true
+                        }).addTo(this.map);
+
                         const soldierEntity = new WorkerEntity(object.ownerName, relation, object.start, object.time);
                         soldierMarker.addEventListener('click', function(e) {
                             soldierEntity.onClick(e);
                         });
-                        //unitMovementUpdator(soldierMarker, posStart, posEnd, object.start, object.time);
                     }                    
                     if (relation == "owned"){
                         if (window.location.search.includes('focus')){

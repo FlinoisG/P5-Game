@@ -22,6 +22,7 @@ class EntitiesService extends Service
         if (isset($_SESSION['auth'])){
             $sessionAuth = $_SESSION['auth'];
         }
+        /*
         $this->entities['DefaultEntity'] = [
             "className"=>"DefaultEntity",
             "extendsFrom"=>"",
@@ -37,7 +38,7 @@ class EntitiesService extends Service
         ];
         $this->entities['defaultBuildingEntity'] = [
             "className"=>"DefaultBuildingEntity",
-            "extendsFrom"=>"DefaultEntity",
+            "extendsFrom"=>"",
             "attributes"=>[
                 "cost"=>150,
                 "buildTime"=>3,
@@ -60,7 +61,7 @@ class EntitiesService extends Service
         ];
         $this->entities['defaultUnitEntity'] = [
             "className"=>"DefaultUnitEntity",
-            "extendsFrom"=>"DefaultEntity",
+            "extendsFrom"=>"",
             "attributes"=>[
                 "cost"=>50,
                 "buildTime"=>3,
@@ -70,7 +71,7 @@ class EntitiesService extends Service
         ];
         $this->entities['defaultUpgradeEntity'] = [
             "className"=>"DefaultUpgradeEntity",
-            "extendsFrom"=>"DefaultEntity",
+            "extendsFrom"=>"",
             "attributes"=>[
                 "cost"=>100,
                 "buildTime"=>3,
@@ -79,14 +80,16 @@ class EntitiesService extends Service
             "onClick"=>"",    
             "subPanelAction"=>""
         ];
+        
         $this->entities['defaultOrderEntity'] = [
             "className"=>"DefaultOrderEntity",
-            "extendsFrom"=>"DefaultEntity",
+            "extendsFrom"=>"",
             "attributes"=>[
             ],
             "onClick"=>"",    
             "subPanelAction"=>""
         ];
+        */
         /*
         $this->entities['base'] = [
             "className"=>"Base",
@@ -175,7 +178,7 @@ class EntitiesService extends Service
             ],   
             "subPanelAction"=>""
         ];
-        */
+        
         $this->entities['worker'] = [
             "className"=>"Worker",
             "extendsFrom"=>"DefaultUnitEntity",
@@ -192,6 +195,7 @@ class EntitiesService extends Service
             ],  
             "subPanelAction"=>"window.location.replace(\"?p=task.buy&type=worker&origin=\" + origin);"
         ];
+        
         $this->entities['soldier'] = [
             "className"=>"Soldier",
             "extendsFrom"=>"DefaultUnitEntity",
@@ -209,6 +213,7 @@ class EntitiesService extends Service
             "onClick"=>"",    
             "subPanelAction"=>"window.location.replace(\"?p=task.buy&type=soldier&origin=\" + origin);"
         ];
+        
         $this->entities['workerSpace'] = [
             "className"=>"WorkerSpace",
             "extendsFrom"=>"DefaultUpgradeEntity",
@@ -232,9 +237,10 @@ class EntitiesService extends Service
             ],  
             "subPanelAction"=>"window.location.replace(\"?p=task.buy&type=soldierSpace&origin=\" + origin);"
         ];
+        
         $this->entities['move'] = [
             "className"=>"Move",
-            "extendsFrom"=>"DefaultOrderEntity",
+            "extendsFrom"=>"",
             "attributes"=>[
                 "type"=>"'move'",
                 "class"=>"'order'",
@@ -245,7 +251,7 @@ class EntitiesService extends Service
         ];
         $this->entities['attack'] = [
             "className"=>"Attack",
-            "extendsFrom"=>"DefaultOrderEntity",
+            "extendsFrom"=>"",
             "attributes"=>[
                 "type"=>"'attack'",
                 "class"=>"'order'",
@@ -256,7 +262,7 @@ class EntitiesService extends Service
         ];
         $this->entities['ore'] = [
             "className"=>"Ore",
-            "extendsFrom"=>"DefaultEntity",
+            "extendsFrom"=>"",
             "attributes"=>[
                 "type"=>"'ore'",
                 "class"=>"'ore'"
@@ -266,14 +272,16 @@ class EntitiesService extends Service
                 "value"=>0
             ],
         ];
-
+        */
     }
 
     public function setJavascriptEntities(){
-        $scriptTag = "";
+        $scriptTag = '<script src="assets/js/entities/DefaultEntity.js"></script>';
         $files = scandir(__DIR__.'/../../public/assets/js/entities');
         unset($files[0]);
         unset($files[1]);
+        $key = array_search("DefaultEntity.js", $files);
+        unset($files[$key]);
         foreach($files as $file) {
             $scriptTag .= '<script src="assets/js/entities/' . $file . '"></script>';
         }

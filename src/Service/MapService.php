@@ -36,6 +36,7 @@ class MapService extends Service
 
         $buildingTasks = $taskRepository->getTasks('build');
         $moveTasks = $taskRepository->getTasks('move');
+        $attackTasks = $taskRepository->getTasks('attack');
         $usernames = $userRepository->getAllUsername();
         foreach ($buildingTasks as $task) {
             array_push($objects, [
@@ -49,6 +50,22 @@ class MapService extends Service
         }
         
         foreach ($moveTasks as $task) {
+            $arr = explode(',', $task['subject']);
+            $subjectType = $arr[0];
+            array_push($objects, [
+                "type"=>$subjectType,
+                "startPos"=>$task["startPos"],
+                "pos"=>$task["targetPos"],
+                "player"=>$usernames[$task["author"]],
+                "playerId"=>$task["author"],
+                "posStart"=>$task["startPos"],
+                "posEnd"=>$task["targetPos"],
+                "start"=>$task["startTime"],
+                "time"=>$task["endTime"]
+            ]);
+        }
+
+        foreach ($attackTasks as $task) {
             $arr = explode(',', $task['subject']);
             $subjectType = $arr[0];
             array_push($objects, [

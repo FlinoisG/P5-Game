@@ -313,5 +313,10 @@ class BuildingRepository extends Repository
         return $pos['player'];
     }
 
+    public function captureBuilding()
+    {
+        
+    }
+
 }
     

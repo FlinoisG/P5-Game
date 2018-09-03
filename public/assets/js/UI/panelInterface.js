@@ -2,6 +2,7 @@ panelInterface = {
   
     select(toSelect) 
     {
+        //console.log(toSelect);
         if (buildOrder.orderMode){
             buildOrder.cancel();
         }
@@ -10,6 +11,9 @@ panelInterface = {
         }
         switch (toSelect.type){
             case "base":
+                this.selectBuilding(toSelect);
+                break;
+            case "main":
                 this.selectBuilding(toSelect);
                 break;
             case "mine":
@@ -37,7 +41,7 @@ panelInterface = {
 
     selectBuilding(toSelect) 
     {
-        console.log(toSelect);        
+        //console.log(toSelect);        
         if (toSelect.relation == "owned") {
             this.tab = "workerTab";
 
@@ -55,7 +59,7 @@ panelInterface = {
             var healthBarColor = "rgb("+ healthRed +","+ healthGreen + ",0)";
 
             var healthText = document.createElement('p');
-            healthText.textContent = "HP : " + toSelect.HP + "/" + toSelect.maxHP;
+            healthText.innerHTML = "HP : " + toSelect.HP + "/<span id=\"maxHP\">" + toSelect.maxHP + "</span>";
             healthText.className = "healthText";
 
             var healthBar = document.createElement('div');
@@ -402,10 +406,10 @@ panelInterface = {
 
     buildSubPanel(options, toSelect)
     {
-        
         var subPanelMain = document.createElement('div');
         subPanelMain.id = "subPanelMain";
         options.forEach(option => {
+
             var panelSubOption = document.createElement('div');
             panelSubOption.id = "panelSub"+option.type;
             panelSubOption.className = "panelSubOption " + "panelSub" + option.type;
@@ -431,7 +435,7 @@ panelInterface = {
             var SubOptionText = document.createElement('div');
             SubOptionText.className = 'panelSubText';
             if (option.textContent == "regular"){
-                SubOptionText.innerHTML = "Acheter "+option.type+"<br>Cout: "+option.cost+"metal, "+option.buildTime+"mn";
+                SubOptionText.innerHTML = "Acheter " + option.type + "<br>Cout: <span id=\"panelText" + option.type + "Cost\">" + option.cost + "</span>metal, <span id=\"panelText" + option.type + "BuildTime\">"+option.buildTime+"</span>mn";
             } else if (option.textContent == "numberSelector"){
                 if (this.tab == "workerTab"){
                     numberSelector(SubOptionText, toSelect.content.workers, option.type);
@@ -445,7 +449,7 @@ panelInterface = {
             if (typeof option.cost !== 'undefined'){
                 if (userMetal < option.cost){
 
-                    SubOptionText.innerHTML = "Acheter "+option.type+"<br>Cout: <span style=\"color:#FF0000;\">"+option.cost+"metal</span>, "+option.buildTime+"mn";
+                    SubOptionText.innerHTML = "Acheter " + option.type + "<br>Cout: <span style=\"color:#FF0000;\"><span id=\"panelText" + option.type + "Cost\">"+option.cost+"</span>metal</span>, <span id=\"panelText" + option.type + "BuildTime\">"+option.buildTime+"</span>mn";
                     var optionDisabled = document.createElement('div');
                     optionDisabled.className = "workerSpaceCooldown subPanelDisabled";
 

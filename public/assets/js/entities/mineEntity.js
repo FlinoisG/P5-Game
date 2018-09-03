@@ -1,4 +1,4 @@
-class MineEntity {
+class MineEntity extends DefaultEntity {
 
     constructor(
         id = 0, 
@@ -10,6 +10,7 @@ class MineEntity {
         soldierSpace='', 
         marker=null, 
     ) {
+        super();
         this.id = id;
         this.type = 'mine';
         this.class = 'building';
@@ -20,7 +21,7 @@ class MineEntity {
         this.content = content;
         this.workerSpace = workerSpace;
         this.soldierSpace = soldierSpace;
-        this.cost = 50;
+        this.cost = 0;
         this.buildTime = 0;
         this.imgName = 'unit_slot_mine';
         this.textContent = 'regular',
@@ -33,11 +34,18 @@ class MineEntity {
 
     onClick(e) {
         if (moveOrder.moveMode == true){
-            var targetOigin = this.type+","+this.id;
+            var targetOrigin = this.type+","+this.id;
             var url = "?p=task.moveUnit&type=" + moveOrder.type
             + "&startOrigin=" + moveOrder.origin
-            + "&target=" + targetOigin
+            + "&target=" + targetOrigin
             + "&amount=" + moveOrder.amount;
+            window.location.replace(url);
+        } else if (attackOrder.attackMode == true){
+            var targetOrigin = this.type+","+this.id;
+            var url = "?p=task.attack&type=" + attackOrder.type
+            + "&startOrigin=" + attackOrder.origin
+            + "&target=" + targetOrigin
+            + "&amount=" + attackOrder.amount;
             window.location.replace(url);
         } else {
             panelInterface.select(this);

@@ -77,5 +77,7 @@ class BaseRepository extends BuildingRepository
         $query->bindParam(":main", $main, PDO::PARAM_INT);
         $query->execute();
     }
+
+    
     
 }

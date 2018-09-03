@@ -1,6 +1,6 @@
 <?php
 //phpinfo();
-$startTime = microtime(true); // Top of page
+//$startTime = microtime(true); // Top of page
 
 require_once "../vendor/autoload.php";
 
@@ -44,5 +44,5 @@ if (class_exists($controller, true)) {
 }
 
 
-$endTime = microTime(true); // Bottom of page
-printf("Page loaded in %f seconds in total", $endTime - $startTime );
+//$endTime = microTime(true); // Bottom of page
+//printf("Page loaded in %f seconds in total", $endTime - $startTime );

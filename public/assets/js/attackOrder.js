@@ -84,15 +84,15 @@ attackOrder = {
         }
     },
 */
-    eventOnClick(e){
-        console.log(attackOrder.validated);
+    //eventOnClick(e){
+        //console.log(attackOrder.validated);
         //if (attackOrder.validated == true){
         //    pos = coordinatesToGrid(e.latlng.lng, e.latlng.lat);
         //    window.location.replace("?p=task.attackUnit&type="+attackOrder.type+"&startOrigin=" + attackOrder.origin + "&$target="+"&$amount="+attackOrder.amount+"&$isBuilding=");
         //    //attackUnit($type=null, $startOrigin=null, $target=null, $amount=1, $isBuilding=false)
         //} else {
         //}
-    },
+    //},
 
     cancel(){
         attackOrder.orderMode = false;

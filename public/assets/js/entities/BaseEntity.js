@@ -1,7 +1,8 @@
-class BaseEntity {
+class BaseEntity extends DefaultEntity {
     
     constructor(
         id, 
+        main,
         ownerName, 
         relation, 
         HP,
@@ -10,18 +11,20 @@ class BaseEntity {
         soldierSpace, 
         marker
     ) {
+        super();
         this.id = id;
         this.type = 'base';
+        this.main = main;
         this.class = 'building';
         this.ownerName = ownerName;
         this.relation = relation;
         this.HP = HP;
-        this.maxHP = 100;
+        this.maxHP = 0;
         this.content = content;
         this.workerSpace = workerSpace;
         this.soldierSpace = soldierSpace;
-        this.cost = 50;
-        this.buildTime = 3;
+        this.cost = 0;
+        this.buildTime = 0;
         this.imgName = 'unit_slot_base';
         this.textContent = 'regular';
         this.marker = marker;
@@ -33,11 +36,18 @@ class BaseEntity {
 
     onClick(e) {
         if (moveOrder.moveMode == true){
-            var targetOigin = this.type+","+this.id;
+            var targetOrigin = this.type+","+this.id;
             var url = "?p=task.moveUnit&type=" + moveOrder.type
             + "&startOrigin=" + moveOrder.origin
-            + "&target=" + targetOigin
+            + "&target=" + targetOrigin
             + "&amount=" + moveOrder.amount;
+            window.location.replace(url);
+        } else if (attackOrder.attackMode == true){
+            var targetOrigin = this.type+","+this.id;
+            var url = "?p=task.attack"
+            + "&startOrigin=" + attackOrder.origin
+            + "&target=" + targetOrigin
+            + "&amount=" + attackOrder.amount;
             window.location.replace(url);
         } else {
             panelInterface.select(this);

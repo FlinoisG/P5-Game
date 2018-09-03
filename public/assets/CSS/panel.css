@@ -11,23 +11,29 @@
 }
 
 .healthBar{
+    position: relative;
     margin: 25px;
     text-align: center;
     height: 21px;
 }
 
 .healthText{
+    position: absolute;
     color: black;
     font-size: 18px;
     line-height: 21px;
-    position: absolute;
     width: 298px;
     text-align: center;
+    text-shadow:
+   -1px -1px 0 white,  
+    1px -1px 0 rgb(255, 255, 255),
+    -1px 1px 0 rgb(255, 255, 255),
+     1px 1px 0 rgb(255, 255, 255);
 }
 
 .unitSlotContainer {
-    max-width: 54px;
-    max-height: 54px;
+    width: 54px;
+    height: 54px;
     margin-bottom: 5px;
 }
 
@@ -79,6 +85,7 @@
 }
 
 .unitSlot{
+    flex-shrink: 0;
     border: 1px solid #292929;
     border-radius: 3px;
     cursor: pointer;

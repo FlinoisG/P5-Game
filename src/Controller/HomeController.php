@@ -9,11 +9,10 @@ use App\Service\MapGeneratorService;
 use App\Service\GridService;
 use App\Service\MapService;
 use App\Service\AuthenticationService;
-//use App\Service\OreService;
+use App\Service\MiningService;
 use App\Repository\BaseRepository;
 use App\Repository\MineRepository;
 use App\Repository\UserRepository;
-use App\Service\MiningService;
 
 class HomeController extends DefaultController
 {
@@ -27,6 +26,7 @@ class HomeController extends DefaultController
 
         $entitiesService = new EntitiesService;
         $userRepository = new UserRepository;
+        $authenticationService = new AuthenticationService;
         $customStyle = $this->setCustomStyle('panel');
         $scriptHead = $entitiesService->entitiesScripts();  
         $scriptHead .=   
@@ -46,7 +46,6 @@ class HomeController extends DefaultController
         $scriptHead .= $this->setScript('buildOrder');
         $scriptHead .= $this->setScript('moveOrder');
         $scriptHead .= $this->setScript('attackOrder');
-        $authenticationService = new AuthenticationService;
         $oreMap = file_get_contents('../deposit/Maps/oreMap.json');
         $scriptBody = '<script>var oreMapObj = '.$oreMap.'</script>';
         $scriptBody .= $this->setScript('grid');
