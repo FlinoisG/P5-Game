@@ -3,11 +3,12 @@
 namespace App\Service;
 
 use App\Model\Service;
+use App\Config\GameConfig;
 
 /**
  * Function relative to the map and the managment of entities on it
  */
-class GridService extends Service
+class MathService extends Service
 {
 
     /**
@@ -108,9 +109,26 @@ class GridService extends Service
      */
     public function getDistance($a, $b)
     {
-        $c = pow(($a[0]-$b[0]), 2);
-        $d = pow(($a[1]-$b[1]), 2);
-        return sqrt($c+$d);
+        $c = pow(( (int)$a[0] - (int)$b[0] ), 2);
+        $d = pow(( (int)$a[1] - (int)$b[1] ), 2);
+        $dist = sqrt($c+$d);
+        if ($dist < 0){
+            $dist = ($dist * -1);
+        }
+        return $dist;
+    }
+
+    public function calculateTravelDuration($startPos, $targetPos, $unitType)
+    {
+        $gameConfig = new GameConfig;
+        if ($unitType == 'worker'){
+            $speed = $gameConfig->getWorkerTravelSpeed();
+        } else {
+            $speed = $gameConfig->getDefaultTravelSpeed();
+        }
+        $dist = $this->getDistance($startPos, $targetPos);
+        $duration = (int)$dist * $speed;
+        return $duration;
     }
 
 }

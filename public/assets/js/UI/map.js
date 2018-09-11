@@ -208,11 +208,34 @@ Map.mainMap = {
                         object.soldierSpace, 
                         baseMarker
                     );
-                    baseMarker.bindPopup("#"+object.id+" base de "+object.ownerName);
                     baseMarker.addEventListener('click', function(e) {
                         baseEntity.onClick(e);
                     });
                     if (relation == "owned"){
+
+                        objectMapObj.forEach(objectElement => {
+                            if (
+                                objectElement.type == "attack" && 
+                                object.type == objectElement.targetType && 
+                                object.id == objectElement.targetId
+                            ){
+                                var now = Math.floor(Date.now() / 1000);
+                                var time = objectElement.time - now;
+                                var popup = L.popup({
+                                    autoPan: false,
+                                    closeButton: false,
+                                    autoClose: false,
+                                    closeOnClick: false,
+                                    riseOnHover: true
+                                }).setContent("Attack : <span id=\"popupTimer" + object.type + object.id + "\">00:00</span><br>Soldiers : " + objectElement.soldiers);;
+                                baseMarker.bindPopup(popup).openPopup();
+                                countDown(document.getElementById("popupTimer" + object.type + object.id), objectElement.time);
+                                popup.addEventListener("add", function(){
+                                    countDown(document.getElementById("popupTimer" + object.type + object.id), objectElement.time);
+                                })
+                            }
+                        });
+                        
                         if (window.location.search.includes('focus')){
                             var target = (window.location.search.substr(14));
                             if (target != ''){
@@ -228,7 +251,8 @@ Map.mainMap = {
                                     }
                                 }
                             }
-                        }                    
+                        }   
+                                        
                     }
                 } else if (object.type == "mine") {
                     if (object.owner == "player"){
@@ -259,6 +283,29 @@ Map.mainMap = {
                         mineEntity.onClick(e);
                     });
                     if (relation == "owned"){
+
+                        objectMapObj.forEach(objectElement => {
+                            if (
+                                objectElement.type == "attack" && 
+                                object.type == objectElement.targetType && 
+                                object.id == objectElement.targetId
+                            ){
+                                var now = Math.floor(Date.now() / 1000);
+                                var time = objectElement.time - now;
+                                var popup = L.popup({
+                                    //autoPan: false,
+                                    closeButton: false,
+                                    autoClose: false,
+                                    closeOnClick: false
+                                }).setContent("Attack : <span id=\"popupTimer" + object.type + object.id + "\">00:00</span><br>Soldiers : " + objectElement.soldiers);
+                                mineMarker.bindPopup(popup).openPopup();
+                                countDown(document.getElementById("popupTimer" + object.type + object.id), objectElement.time);
+                                popup.addEventListener("add", function(){
+                                    countDown(document.getElementById("popupTimer" + object.type + object.id), objectElement.time);
+                                })
+                            }
+                        });
+
                         if (window.location.search.includes('focus')){
                             var target = (window.location.search.substr(14));
                             if (target != ''){
@@ -272,7 +319,8 @@ Map.mainMap = {
                                     mineEntity.onClick();
                                 }
                             }
-                        }                    
+                        }  
+
                     }
                     if (object.metalNodes.length !== 0 && object.workers !== 0){
                         if (object.owner == "player"){
@@ -413,18 +461,6 @@ Map.mainMap = {
                             color: color,
                             opacity: 0.5,
                         }).addTo(this.map);
-
-                        /*
-                        // Add marker
-                        workerMarker = L.marker(workerPos, {
-                            icon: icon,
-                        }).addTo(this.map);
-                        const workerEntity = new WorkerEntity(object.ownerName, relation, object.start, object.time);
-                        workerMarker.addEventListener('click', function(e) {
-                            workerEntity.onClick(e);
-                        });
-                        unitMovementUpdator(workerMarker, posStart, posEnd, object.start, object.time);
-                        */
                        
                         // Add marker
                         var newPos = getPosFromDist(posStart, posEnd, percent);
@@ -478,29 +514,17 @@ Map.mainMap = {
                     var moveDuration = object.time - object.start;
                     var moveNow = (Math.floor(Date.now() / 1000)) - object.start;
                     var percent = 100*moveNow/moveDuration;
-                    var soldierPos = getPosFromDist(posStart, posEnd, percent);
+                    //var soldierPos = getPosFromDist(posStart, posEnd, percent);
                     if (moveNow < moveDuration) {
 
-                        var soldierPath = L.polygon([
+                        var soldierPath = L.polyline([
                             posStart,
                             posEnd
                         ], {
                             dashArray: "5, 5",
                             color: color,
                         }).addTo(this.map);
-                        /*
-                        soldierMarker = L.marker(soldierPos, {
-                            icon: icon,
-                        }).addTo(this.map);
-
-                        const soldierEntity = new WorkerEntity(object.ownerName, relation, object.start, object.time);
                         
-                        soldierMarker.addEventListener('click', function(e) {
-                            soldierEntity.onClick(e);
-                        });
-
-                        //unitMovementUpdator(soldierMarker, posStart, posEnd, object.start, object.time);
-                        */
                         var newPos = getPosFromDist(posStart, posEnd, percent);
                         var distence = gridDistance(posStart, posEnd);
                         var speed = 5000; // ????

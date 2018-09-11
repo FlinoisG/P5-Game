@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use PDO;
 use App\Model\Repository;
+use App\Entity\TaskEntity;
 use App\Service\sqlQueryService;
 
 class TaskRepository extends Repository
@@ -69,6 +70,7 @@ class TaskRepository extends Repository
         $query->bindParam(":startTime", $startTime, PDO::PARAM_INT);
         $query->bindParam(":endTime", $endTime, PDO::PARAM_INT);
         $query->bindParam(":author", $author, PDO::PARAM_STR);
+
         $query->execute();
     }
 
@@ -104,7 +106,37 @@ class TaskRepository extends Repository
             $query->execute();
             $tasks = $query->fetchAll();
         }
-        return $tasks;
+        $taskEntities = [];
+        for ($i=0; $i < sizeof($tasks); $i++) { 
+            $taskParameters = [
+                'id'=>$tasks[$i]["id"], 
+                'action'=>$tasks[$i]["action"], 
+                'subject'=>$tasks[$i]["subject"], 
+                'startOrigin'=>$tasks[$i]["startOrigin"], 
+                'startPos'=>$tasks[$i]["startPos"],
+                'targetOrigin'=>$tasks[$i]["targetOrigin"], 
+                'targetPos'=>$tasks[$i]["targetPos"], 
+                'startTime'=>$tasks[$i]["startTime"], 
+                'endTime'=>$tasks[$i]["endTime"], 
+                'author'=>$tasks[$i]["author"]
+            ];
+            $taskEntities[$i] = new TaskEntity($taskParameters);
+        }
+        /*foreach ($tasks as $task) {
+            $taskParameters = [
+                'action'=>$task["action"], 
+                'subject'=>$task["subject"], 
+                'startOrigin'=>$task["startOrigin"], 
+                'startPos'=>$task["startPos"],
+                'targetOrigin'=>$task["targetOrigin"], 
+                'targetPos'=>$task["targetPos"], 
+                'startTime'=>$task["startTime"], 
+                'endTime'=>$task["endTime"], 
+                'author'=>$task["author"]
+            ];
+            $task = new TaskEntity($taskParameters);
+        }*/
+        return $taskEntities;
     }
 
     /**
@@ -176,10 +208,12 @@ class TaskRepository extends Repository
     public function setAttackSoldiers($newSoldierAmount, $taskId)
     {
         $DBConnection = $this->getDBConnection();
-        $subject = "soldiers," . $newSoldierAmount;
-        $statement = "UPDATE game_tasks SET subject = :subject WHERE id= :id";
+        $subject = "soldier," . $newSoldierAmount;
+        var_dump($subject);
+        var_dump($taskId);
+        $statement = "UPDATE game_tasks SET subject = :sub WHERE id= :id";
         $query = $DBConnection->prepare($statement);
-        $query->bindParam(':subject', $subject, PDO::PARAM_INT);
+        $query->bindParam(':sub', $subject, PDO::PARAM_STR);
         $query->bindParam(':id', $taskId, PDO::PARAM_INT);
         $query->execute();
     }

@@ -5,7 +5,7 @@ namespace App\Service;
 use App\Model\Service;
 use App\Repository\MineRepository;
 use App\Repository\UserRepository;
-use App\Service\GridService;
+use App\Service\MathService;
 
 /**
  * This class should me only used by cron.php
@@ -73,7 +73,7 @@ class MiningService extends Service
     {
         $mineRepository = new MineRepository;
         $userRepository = new UserRepository;
-        $gridService = new GridService;
+        $mathService = new MathService;
         $mines = $mineRepository->getMines(true);
         $mustExport = false;
         foreach ($mines as $mine) {
@@ -82,7 +82,7 @@ class MiningService extends Service
             
             // getting the coordinates of the mine
             $pos = json_decode($mine->getPos());
-            $pos = $gridService->gridToCoordinates($pos[0], $pos[1]);
+            $pos = $mathService->gridToCoordinates($pos[0], $pos[1]);
             $minePos[0] = $pos["x"];
             $minePos[1] = $pos["y"];
             
@@ -98,7 +98,7 @@ class MiningService extends Service
                             $nodePos[0] = $mapNode["x"];
                             $nodePos[1] = $mapNode["y"];
                             $metalNodes[$i]["value"] = $mapNode["value"];
-                            $distance[sizeof($distance)] = $gridService->getDistance($minePos, $nodePos);
+                            $distance[sizeof($distance)] = $mathService->getDistance($minePos, $nodePos);
                         }
                     }
                 }

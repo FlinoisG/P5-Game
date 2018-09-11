@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use App\Model\Service;
-use App\Service\GridService;
+use App\Service\MathService;
 use App\Service\AuthenticationService;
 use App\Repository\BaseRepository;
 use App\Repository\MineRepository;
@@ -36,48 +36,61 @@ class MapService extends Service
 
         $buildingTasks = $taskRepository->getTasks('build');
         $moveTasks = $taskRepository->getTasks('move');
+        $attackMoveTasks = $taskRepository->getTasks('attackMove');
         $attackTasks = $taskRepository->getTasks('attack');
         $usernames = $userRepository->getAllUsername();
+
         foreach ($buildingTasks as $task) {
             array_push($objects, [
-                "type"=>$task["subject"]."InConst",
-                "pos"=>$task["targetPos"],
-                "player"=>$usernames[$task["author"]],
-                "playerId"=>$task["author"],
-                "start"=>$task["startTime"],
-                "time"=>$task["endTime"]
+                "type"=>$task->getSubject()."InConst",
+                "pos"=>$task->getTargetPos(),
+                "player"=>$usernames[$task->getAuthor()],
+                "playerId"=>$task->getAuthor(),
+                "start"=>$task->getStartTime(),
+                "time"=>$task->getEndTime()
             ]);
         }
         
         foreach ($moveTasks as $task) {
-            $arr = explode(',', $task['subject']);
+            $arr = explode(',', $task->getSubject());
             $subjectType = $arr[0];
             array_push($objects, [
                 "type"=>$subjectType,
-                "startPos"=>$task["startPos"],
-                "pos"=>$task["targetPos"],
-                "player"=>$usernames[$task["author"]],
-                "playerId"=>$task["author"],
-                "posStart"=>$task["startPos"],
-                "posEnd"=>$task["targetPos"],
-                "start"=>$task["startTime"],
-                "time"=>$task["endTime"]
+                "startPos"=>$task->getStartPos(),
+                "pos"=>$task->getTargetPos(),
+                "player"=>$usernames[$task->getAuthor()],
+                "playerId"=>$task->getAuthor(),
+                "posStart"=>$task->getStartPos(),
+                "posEnd"=>$task->getTargetPos(),
+                "start"=>$task->getStartTime(),
+                "time"=>$task->getEndTime()
+            ]);
+        }
+
+        foreach ($attackMoveTasks as $task) {
+            array_push($objects, [
+                "type"=>"soldier",
+                "startPos"=>$task->getStartPos(),
+                "pos"=>$task->getTargetPos(),
+                "player"=>$usernames[$task->getAuthor()],
+                "playerId"=>$task->getAuthor(),
+                "posStart"=>$task->getStartPos(),
+                "posEnd"=>$task->getTargetPos(),
+                "start"=>$task->getStartTime(),
+                "time"=>$task->getEndTime()
             ]);
         }
 
         foreach ($attackTasks as $task) {
-            $arr = explode(',', $task['subject']);
-            $subjectType = $arr[0];
             array_push($objects, [
-                "type"=>$subjectType,
-                "startPos"=>$task["startPos"],
-                "pos"=>$task["targetPos"],
-                "player"=>$usernames[$task["author"]],
-                "playerId"=>$task["author"],
-                "posStart"=>$task["startPos"],
-                "posEnd"=>$task["targetPos"],
-                "start"=>$task["startTime"],
-                "time"=>$task["endTime"]
+                "type"=>"attack",
+                "player"=>$usernames[$task->getAuthor()],
+                "soldiers"=>explode(",", $task->getSubject())[1],
+                "playerId"=>$task->getAuthor(),
+                "targetType"=>explode(",", $task->getTargetOrigin())[0],
+                "targetId"=>explode(",", $task->getTargetOrigin())[1],
+                "pos"=>$task->getTargetPos(),
+                "time"=>$task->getEndTime()
             ]);
         }
         
@@ -167,6 +180,7 @@ class MapService extends Service
                         "x": '.$pos[0].', 
                         "y": '.$pos[1].', 
                         "id": '.$object["id"].', 
+                        "HP": '.$object["HP"].', 
                         "owner": "'.$owner.'", 
                         "ownerName": "'.$object["player"].'",
                         "content": '.json_encode($content).',
@@ -189,6 +203,16 @@ class MapService extends Service
                     "posEnd": '.$object["posEnd"].'
                     },';
 
+            } else if ($object['type'] == 'attack'){
+                $result .= '{
+                    "type": "'.$object['type'].'",
+                    "soldiers": "'.$object['soldiers'].'",
+                    "player": "'.$object["player"].'",
+                    "playerId": "'.$object["playerId"].'",
+                    "targetType": "'.$object["targetType"].'",
+                    "targetId": "'.$object["targetId"].'",
+                    "time": "'.$object["time"].'"                    
+                },';
             } else {
                 $result .= '{
                     "type": "'.$object['type'].'",
@@ -219,18 +243,18 @@ class MapService extends Service
     {
         $sqlQueryService = new sqlQueryService();
         $userRepository = new UserRepository;
-        $username = $userRepository->getUsernameById($id);
+        $username = $userRepository->getUsernameWithId($id);
         if ($type == 'base') {
             $baseRepository = new BaseRepository;
             $baseRepository->newBase($id, $pos, $main);
         } else if ($type == 'mine') {
             $mineRepository = new MineRepository;
             $authenticationService = new AuthenticationService;
-            $gridService = new GridService;
+            $mathService = new MathService;
             $posArr = str_replace(array( '[', ']' ), '', $pos);
             $posArr = explode(',', $posArr);
-            $posArr = $gridService->gridToCoordinates($posArr[0], $posArr[1]);
-            $metalNodes = $gridService->getMetalNodes($posArr);
+            $posArr = $mathService->gridToCoordinates($posArr[0], $posArr[1]);
+            $metalNodes = $mathService->getMetalNodes($posArr);
             $metalNodes = json_encode($metalNodes);
             $mineRepository->newMine($type, $username, $id, $pos, $metalNodes);
         } else {

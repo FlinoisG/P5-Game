@@ -32,8 +32,8 @@ body {
     padding-top: 55.6px;
     font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
     color: white;
-    /*background-color: rgb(15, 15, 15);
-    overflow: hidden;*/
+    background-color: rgb(15, 15, 15);
+    /*overflow: hidden;*/
     text-align: center;
 }
 
@@ -128,4 +128,36 @@ div{
     height: 787px;
     position: absolute;
     left: 383px;
+}
+
+.leaflet-popup-content-wrapper{
+    background-color: #262626 !important;
+    border: 2px solid rgb(66, 66, 66);
+    animation-name: alertPopup;
+    animation-duration: 4s;
+    animation-iteration-count: infinite;
+}
+
+.leaflet-popup-content{
+    color: white;
+    background-color: #262626 !important;
+}
+
+.leaflet-popup-tip-container{
+    display: none;
+}
+
+@keyframes alertPopup {
+    0% {
+        border: 2px solid rgb(66, 66, 66);
+        box-shadow: 0 1px 10px rgba(0,0,0,0.4);
+    }
+    50% {
+        border: 2px solid rgb(255, 33, 33);
+        box-shadow: 0 1px 10px rgb(255, 0, 0);
+    }
+    100% {
+        border: 2px solid rgb(66, 66, 66);
+        box-shadow: 0 1px 10px rgba(0,0,0,0.4);
+    }
 }

@@ -9,6 +9,29 @@ use App\Service\sqlQueryService;
 
 class BuildingRepository extends Repository
 {
+
+    public function getPlayerId($buildingId, $buildingType)
+    {
+        $DBConnection = $this->getDBConnection();
+        if (is_null($buildingType)){
+            $buildingType = $this->getType();
+        }
+        if ($buildingType === "base") {
+            $statement = "SELECT playerId FROM game_bases WHERE id= :id";
+        } else if ($buildingType === "mine") {
+            $statement = "SELECT playerId FROM game_mines WHERE id= :id";
+        } else {
+            return false;
+            die();
+        }
+        $query = $DBConnection->prepare($statement);
+        $query->bindParam(':id', $buildingId, PDO::PARAM_INT);
+        $query->execute();
+        $response = $query->fetch();
+        return $response[0];
+    }
+
+
     /**
      * Adds units in a base/mine from the database
      *
@@ -348,9 +371,25 @@ class BuildingRepository extends Repository
         return $pos['player'];
     }
 
-    public function captureBuilding()
+    public function setOwner($baseId, $buildingType, $newUserId)
     {
+        $userRepository = new UserRepository;
+        $newUsername = $userRepository->getUsernameWithId($newUserId);
+        $DBConnection = $this->getDBConnection();
+        if ($buildingType === "base") {
+            $statement = "UPDATE game_bases SET player = :newUsername, playerId = :newUserId WHERE id= :id";
+        } else if ($buildingType === "mine") {
+            $statement = "UPDATE game_mines SET player = :newUsername, playerId = :newUserId WHERE id= :id";
+        } else {
+            return false;
+            die();
+        }
         
+        $query = $DBConnection->prepare($statement);
+        $query->bindParam(':newUsername', $newUsername, PDO::PARAM_STR);
+        $query->bindParam(':newUserId', $newUserId, PDO::PARAM_INT);
+        $query->bindParam(':id', $baseId, PDO::PARAM_INT);
+        $query->execute();
     }
 
 }

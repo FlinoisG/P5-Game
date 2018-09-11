@@ -49,8 +49,17 @@ class BaseRepository extends BuildingRepository
     public function getById($id)
     {
         $DBConnection = $this->getDBConnection();
-        $table = 'game_'.$this->getType().'s';
         $query = $DBConnection->prepare("SELECT * FROM game_bases WHERE id = :id");
+        $query->bindParam(':id', $id, PDO::PARAM_INT);
+        $query->execute();
+        $obj = new BaseEntity($query->fetch());
+        return $obj;
+    }
+
+    public function getMain($id)
+    {
+        $DBConnection = $this->getDBConnection();
+        $query = $DBConnection->prepare("SELECT main FROM game_bases WHERE id = :id");
         $query->bindParam(':id', $id, PDO::PARAM_INT);
         $query->execute();
         $obj = new BaseEntity($query->fetch());
@@ -68,7 +77,7 @@ class BaseRepository extends BuildingRepository
     public function newBase($userId, $pos, $main = 0)
     {
         $userRepository = new UserRepository;
-        $username = $userRepository->getUsernameById($userId);
+        $username = $userRepository->getUsernameWithId($userId);
         $DBConnection = $this->getDBConnection();
         $query = $DBConnection->prepare("INSERT INTO game_bases (player, playerId, pos, main) VALUES (:username, :author, :pos, :main)");
         $query->bindParam(":username", $username, PDO::PARAM_STR);

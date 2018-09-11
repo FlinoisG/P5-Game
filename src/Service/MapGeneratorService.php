@@ -4,7 +4,7 @@ namespace App\Service;
 
 use App\Model\Service;
 use App\Service\PerlinService;
-use App\Service\GridService;
+use App\Service\MathService;
 use App\Config\GameConfig;
 
 class MapGeneratorService extends Service
@@ -75,7 +75,7 @@ class MapGeneratorService extends Service
         $nodeSize = $nodeSize + 1;
         $content = "{\"oreMap\":[
     ";
-        $gridService = new GridService;
+        $mathService = new MathService;
         for($y=0; $y<$gridSizeY; $y+=1) {
             for($x=0; $x<$gridSizeX; $x+=1) {
                 if ($y % 2 != 0) {
@@ -100,7 +100,7 @@ class MapGeneratorService extends Service
                         $min = $nodeSize;
                         $max = 1;
                         $normalized = ($raw-$min) / ($max-$min);
-                        $content = $content . '{"x": '.$gridService->gridToCoordinates($x, 0, 'x').', "y": '.$gridService->gridToCoordinates(0, $y, 'y').', "value": '.$normalized.'},
+                        $content = $content . '{"x": '.$mathService->gridToCoordinates($x, 0, 'x').', "y": '.$mathService->gridToCoordinates(0, $y, 'y').', "value": '.$normalized.'},
     ';                   
                     } 
                 }              

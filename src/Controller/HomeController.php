@@ -6,7 +6,7 @@ use App\Controller\TaskController;
 use App\Service\EntitiesService;
 use App\Service\AvatarService;
 use App\Service\MapGeneratorService;
-use App\Service\GridService;
+use App\Service\MathService;
 use App\Service\MapService;
 use App\Service\AuthenticationService;
 use App\Service\MiningService;
@@ -115,7 +115,7 @@ class HomeController extends DefaultController
         }
         //$content = "";
         $mapGeneratorService = new MapGeneratorService;
-        //$gridService = new GridService;
+        //$mathService = new mathService;
         var_dump($mapGeneratorService->getOreMap());
         require('../src/View/base.php');
     }

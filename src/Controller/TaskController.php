@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Service\AuthenticationService;
-use App\Service\GridService;
+use App\Service\MathService;
 use App\Service\EntitiesService;
 use App\Service\MapService;
 use App\Repository\BaseRepository;
@@ -16,16 +16,13 @@ use App\Config\GameConfig;
 class TaskController extends DefaultController
 {
 
-    //private $workerTimeFactor = 1;
-    //private $defaultTimeFactor = 1;
-
     public function buy()
     {
         
         if (!isset($_SESSION)) { 
             session_start(); 
         } else {
-            //die();
+            die();
         }
         
         $startOrigin = $_GET['origin'];
@@ -42,6 +39,12 @@ class TaskController extends DefaultController
         $available = true;
         $gameConfig = new GameConfig;
 
+        $startPlayerId = $baseRepository->getPlayerId($startOriginId, $startOriginType);
+        if ($startPlayerId != $_SESSION["auth"]){
+            $available = false;
+            $cause = "wrong player";
+        }
+
         $unitSettings = $gameConfig->getUnitSettings();
         $type = $_GET['type'];
         $cost = $unitSettings["cost"][$type."Cost"];
@@ -52,9 +55,6 @@ class TaskController extends DefaultController
         } else {
             $class = "upgrade";
         };
-        //$getType = $entitiesService->getType($type)["attributes"];
-        //$class = str_replace("'", "", $getType['class']);
-        //$cost = str_replace("'", "", $getType['cost']);
         $playerMetal = $userRepository->getMetal($_SESSION['authId']);
         if ($userRepository->getNewUser($_SESSION['authId']) != 1 && $playerMetal < $cost) {
             $available = false;
@@ -65,7 +65,7 @@ class TaskController extends DefaultController
             $inConstruct = 0;
             $tasks = $taskRepository->getTasks();
             foreach ($tasks as $task) {
-                if ($task['startOrigin'] == 'base,'.$startOriginId && $task['action'] == 'buy' && explode(",", $task['subject'])[0] == $type){
+                if ($task->getStartOrigin() == 'base,'.$startOriginId && $task->getAction() == 'buy' && explode(",", $task->getSubject())[0] == $type){
                     $inConstruct++;
                 }
             }
@@ -144,41 +144,42 @@ class TaskController extends DefaultController
     {
         if (!isset($_SESSION)) { 
             session_start(); 
+        } else {
+            die();
         }
         $baseRepository = new BaseRepository;
         $mineRepository = new MineRepository;
         $taskRepository = new TaskRepository;
-        $gridService = new GridService;
+        $mathService = new MathService;
         $gameConfig = new GameConfig;
+
         if ($type == null) $type = $_GET['type'];
         if ($startOrigin == null) $startOrigin = $_GET['startOrigin'];
         if ($target == null) $target = $_GET['target'];
         if (isset($_GET['amount'])) $amount = (int)$_GET['amount'];
         $authenticationService = new AuthenticationService;
-        if ($type == 'worker'){
-            $speed = $gameConfig->getWorkerTravelSpeed();
-        } else {
-            $speed = $gameConfig->getDefaultTravelSpeed();
-        }
         $startOriginType = explode(",", $startOrigin)[0];
         $startOriginId = explode(",", $startOrigin)[1];
         $startPos = json_decode($baseRepository->getPos($startOriginId, $startOriginType));
+
+        $startPlayerId = $baseRepository->getPlayerId($startOriginId, $startOriginType);
+        if ($startPlayerId != $_SESSION["auth"]){
+            $available = false;
+            $cause = "wrong player";
+        }
+        
         if (preg_match('/[\[]/', $target)) {
             $targetPos = json_decode($target);
-            $dist = $gridService->getDistance($startPos, json_decode($target));
             $targetType = 'pos';
         } else {
             $targetType = explode(",", $target)[0];
             $targetId = explode(",", $target)[1];
             $targetPos = json_decode($baseRepository->getPos($targetId, $targetType));
-            $dist = $gridService->getDistance($startPos, $targetPos);
             $targetType = 'origin';
         }
-        $duration = (int)$dist * $speed;
+        $duration = $mathService->calculateTravelDuration($startPos, $targetPos, $type);
         $time = time() + $duration;
-        if ($dist < 0){
-            $dist = ($dist * -1);
-        }
+        
         $negAmount = ($amount * -1);
         
         $originBuilding = explode(",", $startOrigin)[0];
@@ -228,37 +229,33 @@ class TaskController extends DefaultController
     {
         if (!isset($_SESSION)) { 
             session_start(); 
+        } else {
+            die();
         }
         $authenticationService = new AuthenticationService;
         $baseRepository = new BaseRepository;
         $mineRepository = new MineRepository;
         $taskRepository = new TaskRepository;
-        $gridService = new GridService;
+        $mathService = new MathService;
         $gameConfig = new GameConfig;
         if ($startOrigin == null) $startOrigin = $_GET['startOrigin'];
         if ($target == null) $target = $_GET['target'];
         if (isset($_GET['amount'])) $amount = (int)$_GET['amount'];
-        $speed = $gameConfig->getDefaultTravelSpeed();
         $startOriginType = explode(",", $startOrigin)[0];
         $startOriginId = explode(",", $startOrigin)[1];
         $startPos = json_decode($baseRepository->getPos($startOriginId, $startOriginType));
         if (preg_match('/[\[]/', $target)) {
             $targetPos = json_decode($target);
-            $dist = $gridService->getDistance($startPos, json_decode($target));
             $targetType = 'pos';
         } else {
             $targetType = explode(",", $target)[0];
             $targetId = explode(",", $target)[1];
             $targetPos = json_decode($baseRepository->getPos($targetId, $targetType));
-            $dist = $gridService->getDistance($startPos, $targetPos);
             $targetType = 'origin';
         }
-        $duration = (int)$dist * $speed;
+        $duration = $mathService->calculateTravelDuration($startPos, $targetPos, "soldier");
+        
         $time = time() + $duration;
-        if ($dist < 0){
-            $dist = ($dist * -1);
-        }
-        var_dump($amount);
         $negAmount = ($amount * -1);
         
         $originBuilding = explode(",", $startOrigin)[0];
@@ -290,7 +287,6 @@ class TaskController extends DefaultController
                 'author'=>$_SESSION['authId']
             ];
             $task = new TaskEntity($taskParameters);
-            //var_dump($task);
             $taskRepository->newTask($task);
             header('Location: ?p=home&focus='.$startOrigin);
         } else {

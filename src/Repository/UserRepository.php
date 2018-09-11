@@ -60,6 +60,22 @@ class UserRepository extends Repository
     }
 
     /**
+     * Get an username from the database
+     * with the corresponding Id
+     *
+     * @param mixed $id
+     * @return void
+     */
+    public function getUsernameWithId($id){
+        $DBConnection = $this->getDBConnection();
+        $query = $DBConnection->prepare("SELECT username FROM game_users WHERE id = :id");
+        $query->bindParam(":id", $id, PDO::PARAM_INT);
+        $query->execute();
+        $response = $query->fetch();
+        return $response[0];
+    }
+
+    /**
      * Get the newUser parameter corresponding
      * to an id
      *
@@ -152,7 +168,7 @@ class UserRepository extends Repository
      *
      * @param string $hashedResetToken Encrypted 
      * token that will be sent to user in case he
-     * forgot hist password
+     * forgot his password
      * @param string $resetExpiration 
      * @param [type] $email
      * @return void
@@ -194,21 +210,6 @@ class UserRepository extends Repository
         return $response[0];
     }*/
 
-    /**
-     * Get an username from the database
-     * with the corresponding Id
-     *
-     * @param mixed $id
-     * @return void
-     */
-    public function getUsernameById($id){
-        $DBConnection = $this->getDBConnection();
-        $query = $DBConnection->prepare("SELECT username FROM game_users WHERE id = :id");
-        $query->bindParam(":id", $id, PDO::PARAM_INT);
-        $query->execute();
-        $response = $query->fetch();
-        return $response[0];
-    }
 
     /**
      * gets every id and usernames from game_users

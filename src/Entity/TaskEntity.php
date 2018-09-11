@@ -4,7 +4,7 @@ namespace App\Entity;
 
 class TaskEntity
 {
-
+    protected $id;
     protected $action; 
     protected $subject; 
     protected $startOrigin; 
@@ -23,6 +23,9 @@ class TaskEntity
 	private function hydrate ($args)
 	{
 		if (is_array($args)){
+            if (isset($args['id'])) {
+                $this->id = $args['id'];
+			}
 			if (isset($args['action'])) {
                 $this->setAction($args['action']);
 			}
@@ -48,7 +51,15 @@ class TaskEntity
                 $this->setAuthor($args['author']);
 			}
 		}
-	}
+    }
+    
+    /**
+     * Get the value of id
+     */ 
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * Get the value of action

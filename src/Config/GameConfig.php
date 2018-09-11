@@ -25,6 +25,7 @@ class GameConfig
 
     protected $workerTravelSpeed = 1;
     protected $defaultTravelSpeed = 1;
+    protected $attackInterval = 3600;   // in seconds
 
     /////////////////////////////
     //  Map Generation
@@ -113,4 +114,12 @@ class GameConfig
         return $this->defaultTravelSpeed;
     }
 
+
+    /**
+     * Get the value of attackInterval
+     */ 
+    public function getAttackInterval()
+    {
+        return $this->attackInterval;
+    }
 }

@@ -5,7 +5,7 @@ panelInterface = {
     select(toSelect) 
     {
         this.selected = toSelect;
-        //console.log(toSelect);
+        console.log(toSelect);
         if (buildOrder.orderMode){
             buildOrder.cancel();
         }
@@ -424,11 +424,11 @@ panelInterface = {
             SubOptionIcon.addEventListener("click", function () {
                 if (option.type == "move"){
                     var type = panelInterface.tab.replace('Tab','');;
-                    var amount = document.getElementById('numberSelectorNumber').textContent;
+                    var amount = document.getElementById('numberSelectorMoveNumber').textContent;
                     option.subPanelAction(toSelect.type+","+toSelect.id, toSelect, [type, amount]);
                 } else if (option.type == "attack"){
                     var type = panelInterface.tab.replace('Tab','');;
-                    var amount = document.getElementById('numberSelectorNumber').textContent;
+                    var amount = document.getElementById('numberSelectorAttackNumber').textContent;
                     option.subPanelAction(toSelect.type+","+toSelect.id, toSelect, amount);
                 } else {
                     option.subPanelAction(toSelect.type+","+toSelect.id, toSelect);

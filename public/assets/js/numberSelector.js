@@ -2,8 +2,10 @@ function numberSelector(target, maxNumber, type) {
 
     if (type == "move"){
         title = "Déplacer";
+        selectorNumber = "numberSelectorMoveNumber";
     } else if (type == "attack"){
         title = "Attaquer";
+        selectorNumber = "numberSelectorAttackNumber";
     }
 
     var numberSelectorMain = document.createElement('div');
@@ -30,7 +32,7 @@ function numberSelector(target, maxNumber, type) {
             numberSelectorLeft.textContent = "<";
 
             var numberSelectorNumber = document.createElement('div');
-            numberSelectorNumber.id = "numberSelectorNumber";
+            numberSelectorNumber.id = selectorNumber;
             numberSelectorNumber.className = "numberSelectorElem numberSelectorNumber";
             numberSelectorNumber.textContent = "1";
 

@@ -2,6 +2,7 @@ attackOrder = {
 
     attack(origin, toSelect, params)
     {
+        console.log(params);
         //this.type = params[0];
         this.amount = params; 
         this.toSelect = toSelect;
@@ -20,16 +21,10 @@ attackOrder = {
         buildingImg.className = 'buildingImg';
         buildingImg.src = '../public/assets/img/base_neutral.png';
         buildingImg.style.opacity = 0.7;
-
-        //if (type == "mine"){
-        //    this.marker = '';
-        //    Map.mainMap.map.addEventListener("mousemove", this.mine);
-        //}
         
         document.body.appendChild(buildingImg);
 
         document.addEventListener("mousemove", this.checkMousePos);
-        //Map.mainMap.map.addEventListener("mousemove", this.checkPosValidity);
         Map.mainMap.map.addEventListener("click", this.eventOnClick);
         
         var panelSub = document.createElement('div');
@@ -71,28 +66,7 @@ attackOrder = {
                 attackOrder.validated = false;
             }
         }
-    },/*
-
-    checkPosValidity(e){
-        var y = Math.round(coordinatesToGrid(0, e.latlng.lat, "y"));
-        if (y % 2 == 1){
-            y++;  
-        }
-        var x = Math.round(coordinatesToGrid(e.latlng.lng, 0, "x"));
-        if (x % 2 == 1){
-            x++;  
-        }
     },
-*/
-    //eventOnClick(e){
-        //console.log(attackOrder.validated);
-        //if (attackOrder.validated == true){
-        //    pos = coordinatesToGrid(e.latlng.lng, e.latlng.lat);
-        //    window.location.replace("?p=task.attackUnit&type="+attackOrder.type+"&startOrigin=" + attackOrder.origin + "&$target="+"&$amount="+attackOrder.amount+"&$isBuilding=");
-        //    //attackUnit($type=null, $startOrigin=null, $target=null, $amount=1, $isBuilding=false)
-        //} else {
-        //}
-    //},
 
     cancel(){
         attackOrder.orderMode = false;
@@ -104,8 +78,6 @@ attackOrder = {
             }
         }
         document.removeEventListener("mousemove", attackOrder.checkMousePos);
-        //Map.mainMap.map.removeEventListener("mousemove", attackOrder.checkPosValidity);
-        //Map.mainMap.map.removeEventListener("click", attackOrder.eventOnClick);
         buildingImg.parentNode.removeChild(buildingImg);
         document.addEventListener('mouseup', unSelect);
         panelInterface.select(attackOrder.toSelect);

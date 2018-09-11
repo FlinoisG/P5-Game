@@ -5,7 +5,7 @@ namespace App\Repository;
 use PDO;
 use App\Model\Repository;
 use App\Entity\MineEntity;
-use App\Service\GridService;
+use App\Service\MathService;
 
 class MineRepository extends BuildingRepository
 {
@@ -71,17 +71,17 @@ class MineRepository extends BuildingRepository
      */
     public function newMine($userId, $pos)
     {
-        $gridService = new GridService;
+        $mathService = new MathService;
         $userRepository = new UserRepository;
         
         // Get username from user Id
-        $username = $userRepository->getUsernameById($userId);
+        $username = $userRepository->getUsernameWithId($userId);
         
         // Get metal nodes around the new mine's position
         $posArr = str_replace(array( '[', ']' ), '', $pos);
         $posArr = explode(',', $posArr);
-        $posArr = $gridService->gridToCoordinates($posArr[0], $posArr[1]);
-        $metalNodes = $gridService->getMetalNodes($posArr);
+        $posArr = $mathService->gridToCoordinates($posArr[0], $posArr[1]);
+        $metalNodes = $mathService->getMetalNodes($posArr);
         $metalNodes = json_encode($metalNodes);
         
         $DBConnection = $this->getDBConnection();
