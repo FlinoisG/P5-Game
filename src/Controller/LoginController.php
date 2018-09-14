@@ -65,6 +65,7 @@ class LoginController extends DefaultController
         if (!isset($_SESSION)) { 
             session_start(); 
         } 
+        
         $title = 'Mot de Passe Oublié';
         $customStyle = $this->setCustomStyle('form');
         if (isset($_GET['token'])){
@@ -110,6 +111,7 @@ class LoginController extends DefaultController
         if (!isset($_SESSION)) { 
             session_start(); 
         } 
+        
         $title = 'Mot de Passe Oublié';
         $customStyle = $this->setCustomStyle('form');
         $content = "<p>Aucune adresse mail ne correspond.</p>

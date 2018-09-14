@@ -1,0 +1,85 @@
+#mainRanking{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.rankingDiv{
+    border: 2px solid #2c2c2c;
+    background-color: #1a1a1a;
+    border-radius: 5px;
+    margin: 25px;
+    padding-top: 15px;
+    width: 33%;
+    text-align: left;
+}
+
+.rankingDiv h3{
+    margin: 5px; 
+}
+
+#scoreRankingTable, 
+#bestScoreRankingTable, 
+#totalScoreRankingTable{
+    width: 100%;
+}
+
+#scoreRankingTable td, #scoreRankingTable th, 
+#bestScoreRankingTable td, #bestScoreRankingTable th,
+#totalScoreRankingTable td, #totalScoreRankingTable th{
+    border: 1px solid #1a1a1a;
+    padding: 5px;
+}
+
+#scoreRankingTable tr:nth-child(even), 
+#bestScoreRankingTable tr:nth-child(even), 
+#totalScoreRankingTable tr:nth-child(even){
+    background-color: #272727;
+}
+
+#scoreRankingTable tr, 
+#bestScoreRankingTable tr, 
+#totalScoreRankingTable tr{
+    background-color: #202020;
+}
+
+#scoreRankingTable tr:hover, 
+#bestScoreRankingTable tr:hover, 
+#totalScoreRankingTable tr:hover{
+    background-color: #313131;
+}
+
+#scoreRankingTable th, 
+#bestScoreRankingTable th, 
+#totalScoreRankingTable th {
+    padding: 5px;
+    text-align: left;
+}
+
+.positionScoreTab{
+    min-width: 50px;
+}
+
+.avatarScoreTab{
+    min-width: 50px;
+    
+}
+
+.usernameScoreTab{
+    width: 250px;
+}
+
+.positionScoreTab{
+    min-width: 50px;
+}
+
+@media only screen and (max-width: 1450px) {
+
+    #mainRanking{
+        flex-direction: column;
+    }
+    
+    .rankingDiv{
+        width: auto;
+    }
+
+}

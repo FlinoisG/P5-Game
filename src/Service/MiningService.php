@@ -6,6 +6,7 @@ use App\Model\Service;
 use App\Repository\MineRepository;
 use App\Repository\UserRepository;
 use App\Service\MathService;
+use App\Config\GameConfig;
 
 /**
  * This class should me only used by cron.php
@@ -17,7 +18,7 @@ class MiningService extends Service
 
     public function __construct()
     {
-        $oreMap = json_decode(file_get_contents('./../deposit/Maps/oreMap.json'), true);
+        $oreMap = json_decode(file_get_contents(__DIR__.'/../../deposit/Maps/oreMap.json'), true);
         $this->oreArray = $oreMap["oreMap"];             
     }
 
@@ -55,7 +56,7 @@ class MiningService extends Service
         $content[strrpos($content, ',')] = ' ';
         $content = $content . ']}';
 
-        $fp = fopen('../deposit/Maps/oreMap.json', 'w');
+        $fp = fopen(__DIR__.'/../../deposit/Maps/oreMap.json', 'w');
         fwrite($fp, $content);
         fclose($fp);
     }
@@ -74,6 +75,8 @@ class MiningService extends Service
         $mineRepository = new MineRepository;
         $userRepository = new UserRepository;
         $mathService = new MathService;
+        $gameConfig = new GameConfig;
+
         $mines = $mineRepository->getMines(true);
         $mustExport = false;
         foreach ($mines as $mine) {
@@ -102,8 +105,6 @@ class MiningService extends Service
                         }
                     }
                 }
-                var_dump($metalNodes);
-                var_dump($distance);
                 if (sizeof($distance) !== 0){
                     $mustExport = true;
                     $smallestDistance = min($distance);
@@ -121,35 +122,27 @@ class MiningService extends Service
                         }
                     }
                     if ($unset){
-                        var_dump("Unset");
                         unset($this->oreArray[$metalNodes[$index]["index"]]);
                         unset($metalNodes[$index]);
-                        var_dump($metalNodes);
                         $newMetalNodes = [];
-                        //for ($i=0; $i < sizeof($metalNodes); $i++) { 
-                            //$newMetalNode[$i] = [$metalNodes[$i][0], $metalNodes[$i][1]];
-                            //unset($metalNodes[$i]["index"]);
-                            //unset($metalNodes[$i]["value"]);
-                        //}
                         foreach ($metalNodes as $node) {
                             $newMetalNodes[sizeof($newMetalNodes)] = [$node[0], $node[1]];
-                        //    unset($node["index"]);
-                        //    unset($node["value"]);
                         }
-                        var_dump($newMetalNodes);
                         $mineRepository->setMetalNodes($mineId, $newMetalNodes);
                     } else {
                         $nodeValue = $nodeValue - $metalGain;
                         $nodeValue = $nodeValue / 3000;
-                        //var_dump($nodeValue);
                         $this->oreArray[$metalNodes[$index]["index"]]["value"] = $nodeValue;
                     }
                     $userRepository->addMetal($mine->getPlayerId(), $metalGain);
+
+                    $scoreSettings = $gameConfig->getScoreSettings();
+                    $score = ($scoreSettings["metalHarvestScore"] * $metalGain);
+                    $userRepository->addScore($mine->getPlayerId(), $score);
                 }
             }
         }
         if($mustExport){
-            var_dump("export");
             $this->exportOreArray();
         }
     }

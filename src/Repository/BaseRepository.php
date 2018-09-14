@@ -77,10 +77,17 @@ class BaseRepository extends BuildingRepository
     public function newBase($userId, $pos, $main = 0)
     {
         $userRepository = new UserRepository;
+
+        if ($main === 1){
+            $hp = 500;
+        } else {
+            $hp = 100;
+        }
         $username = $userRepository->getUsernameWithId($userId);
         $DBConnection = $this->getDBConnection();
-        $query = $DBConnection->prepare("INSERT INTO game_bases (player, playerId, pos, main) VALUES (:username, :author, :pos, :main)");
+        $query = $DBConnection->prepare("INSERT INTO game_bases (player, HP, playerId, pos, main) VALUES (:username, :hp, :author, :pos, :main)");
         $query->bindParam(":username", $username, PDO::PARAM_STR);
+        $query->bindParam(":hp", $hp, PDO::PARAM_INT);
         $query->bindParam(":author", $userId, PDO::PARAM_STR);
         $query->bindParam(":pos", $pos, PDO::PARAM_STR);
         $query->bindParam(":main", $main, PDO::PARAM_INT);

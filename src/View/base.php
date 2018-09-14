@@ -28,7 +28,7 @@
             <a class="nav-link" href="?p=home">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="?p=home">Classement</a>
+            <a class="nav-link" href="?p=home.ranking">Classement</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="?p=home">Contact</a>

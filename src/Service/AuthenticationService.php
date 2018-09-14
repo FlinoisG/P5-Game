@@ -108,9 +108,10 @@ class AuthenticationService extends Service
      * @return void
      */
     public function register($username, $email, $password) {
-        require('../src/Service/PasswordService.php');
-        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+        //var_dump(__DIR__);
+        //require('../src/Service/PasswordService.php');
         $userRepository = new UserRepository;
+        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
         $userRepository->registerUser($username, $email, $hashedPassword);
         copy('../public/assets/img/blankUser100x100.png', '../deposit/User_Avatar/'.$username.'.png');
     }
@@ -155,7 +156,7 @@ class AuthenticationService extends Service
      */
     public function resetPassword($username, $password)
     {
-        require('../src/Service/PasswordService.php');
+        //require('../src/Service/PasswordService.php');
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
         $userRepository = new UserRepository;
         $userRepository->resetPassword($username, $hashedPassword);

@@ -14,6 +14,7 @@ use App\Controller\TaskController;
 use App\Repository\BaseRepository;
 use App\Repository\MineRepository;
 use App\Repository\TaskRepository;
+use App\Repository\UserRepository;
 
 /**
  * this class will be driven by cron.php
@@ -71,23 +72,41 @@ class TaskService extends Service
     public function buyTask($task)
     {
         $baseRepository = new BaseRepository;
-        $targetType = explode(",", $task->getStartOrigin)[0];
-        $targetId = explode(",", $task->getStartOrigin)[1];
+        $userRepository = new UserRepository;
+        $gameConfig = new GameConfig;
+
+        $scoreSettings = $gameConfig->getScoreSettings();
+
+        $targetType = explode(",", $task->getStartOrigin())[0];
+        $targetId = explode(",", $task->getStartOrigin())[1];
         if ($task->getSubject() === "worker" || $task->getSubject() == "soldier") {
             $baseRepository->addUnits($task->getSubject(), $targetId, 1, $targetType);
         } else if($task->getSubject() === "workerSpace" || $task->getSubject() === "soldierSpace") {
             $shortTarget = str_replace("Space", "", $task->getSubject());
             $baseRepository->addSpace($shortTarget, $targetType, $targetId);
         }
+        $key = $task->getSubject() . "BuildingScore";
+        $score = $scoreSettings[$key];
+        $userRepository->addScore($task->getAuthor(), $score);
     }
 
     public function buildTask($task)
     {
+        $mineRepository = new MineRepository;
+        $baseRepository = new BaseRepository;
+        $userRepository = new UserRepository;
+        $gameConfig = new GameConfig;
+
+        $scoreSettings = $gameConfig->getScoreSettings();
+
         if ($task->getSubject() === "base"){
             $baseRepository->newBase($task->getAuthor(), $task->getTargetPos());
         } elseif ($task->getSubject() === "mine"){
             $mineRepository->newMine($task->getAuthor(), $task->getTargetPos());
         }
+        $key = $task->getSubject() . "BuildingScore";
+        $score = $scoreSettings[$key];
+        $userRepository->addScore($task->getAuthor(), $score);
     }
 
     public function moveTask($task)

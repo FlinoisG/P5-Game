@@ -102,4 +102,13 @@ class DefaultController
         return $sanitizedData;
     }
 
+    public function expiredSession()
+    {
+        if (!isset($_SESSION)) { 
+            session_start(); 
+        }
+        $title = 'Session expirée';
+        require('../src/View/ExpiredSessionView.php');
+    }
+
 }

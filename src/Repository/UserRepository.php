@@ -5,9 +5,85 @@ namespace App\Repository;
 use PDO;
 use App\Model\Repository;
 use App\Service\sqlQueryService;
+use App\Entity\UserEntity;
 
 class UserRepository extends Repository
 {
+
+    /**
+     * gets all users from database and return them as user entities in a array
+     *
+     * @return array Returns an array of User entities
+     */
+    public function getUsers()
+    {
+        $sqlQueryService = new sqlQueryService();
+        $query = "SELECT * FROM game_users";
+        $users = $sqlQueryService->sqlQueryService($query);
+        $userEntities = [];
+        for ($i=0; $i < sizeof($users); $i++) { 
+            $userParameters = [
+                'id'=>$users[$i]["id"], 
+                'username'=>$users[$i]["username"], 
+                'email'=>$users[$i]["email"], 
+                'newUser'=>$users[$i]["newUser"], 
+                'score'=>$users[$i]["score"],
+                'metal'=>$users[$i]["metal"],
+                'bestScore'=>$users[$i]["bestScore"],
+                'totalScore'=>$users[$i]["totalScore"]
+            ];
+            $userEntities[$i] = new UserEntity($userParameters);
+        }
+        return $userEntities;
+    }
+
+    /**
+     * gets all users from database and return them as user entities in a array
+     *
+     * @return array Returns an array of User entities
+     */
+    public function getUsersScore()
+    {
+        $sqlQueryService = new sqlQueryService();
+        $query = "SELECT username, score FROM game_users";
+        $users = $sqlQueryService->sqlQueryService($query);
+        foreach ($users as $user) {
+            $usersArray[$user["username"]] = $user["score"];
+        }
+        return $usersArray;
+    }
+
+    /**
+     * gets all users from database and return them as user entities in a array
+     *
+     * @return array Returns an array of User entities
+     */
+    public function getUsersBestScore()
+    {
+        $sqlQueryService = new sqlQueryService();
+        $query = "SELECT username, bestScore FROM game_users";
+        $users = $sqlQueryService->sqlQueryService($query);
+        foreach ($users as $user) {
+            $usersArray[$user["username"]] = $user["bestScore"];
+        }
+        return $usersArray;
+    }
+
+    /**
+     * gets all users from database and return them as user entities in a array
+     *
+     * @return array Returns an array of User entities
+     */
+    public function getUsersTotalScore()
+    {
+        $sqlQueryService = new sqlQueryService();
+        $query = "SELECT username, totalScore FROM game_users";
+        $users = $sqlQueryService->sqlQueryService($query);
+        foreach ($users as $user) {
+            $usersArray[$user["username"]] = $user["totalScore"];
+        }
+        return $usersArray;
+    }
 
     /**
      * Get an encrypted password from the database
@@ -126,6 +202,36 @@ class UserRepository extends Repository
         return $response;
     }
 
+    public function getScore($userId)
+    {
+        $DBConnection = $this->getDBConnection();
+        $query = $DBConnection->prepare("SELECT score FROM game_users WHERE id = :userId");
+        $query->bindParam(":userId", $userId, PDO::PARAM_INT);
+        $query->execute();
+        $response = $query->fetch();
+        return $response[0];
+    }
+
+    public function getBestScore($userId)
+    {
+        $DBConnection = $this->getDBConnection();
+        $query = $DBConnection->prepare("SELECT bestScore FROM game_users WHERE id = :userId");
+        $query->bindParam(":userId", $userId, PDO::PARAM_INT);
+        $query->execute();
+        $response = $query->fetch();
+        return $response[0];
+    }
+
+    public function getTotalScore($userId)
+    {
+        $DBConnection = $this->getDBConnection();
+        $query = $DBConnection->prepare("SELECT totalScore FROM game_users WHERE id = :userId");
+        $query->bindParam(":userId", $userId, PDO::PARAM_INT);
+        $query->execute();
+        $response = $query->fetch();
+        return $response[0];
+    }
+
     /**
      * Check if an email is registered in the database
      * by returning the corresponding username
@@ -220,6 +326,7 @@ class UserRepository extends Repository
         $sqlQueryService = new sqlQueryService();
         $query = "SELECT id, username FROM game_users";
         $results = $sqlQueryService->sqlQueryService($query);
+        $usernames = [];
         foreach ($results as $result) {
             $usernames[$result["id"]] = $result["username"];
         }
@@ -276,6 +383,22 @@ class UserRepository extends Repository
         $query = $DBConnection->prepare("UPDATE game_users SET newUser = :value WHERE id = :userId");
         $query->bindParam(":value", $value, PDO::PARAM_STR);
         $query->bindParam(":userId", $userId, PDO::PARAM_STR);
+        $query->execute();
+    }
+
+    public function addScore($userId, $score)
+    {
+        $userScore = $this->getScore($userId);
+        $userTotalScore = $this->getTotalScore($userId);
+        
+        $userScore = $userScore + $score;
+        $userTotalScore = $userTotalScore + $score;
+
+        $DBConnection = $this->getDBConnection();
+        $query = $DBConnection->prepare("UPDATE game_users SET score = :userScore, totalScore = :userTotalScore WHERE id = :userId");
+        $query->bindParam(":userScore", $userScore, PDO::PARAM_INT);
+        $query->bindParam(":userTotalScore", $userTotalScore, PDO::PARAM_INT);
+        $query->bindParam(":userId", $userId, PDO::PARAM_INT);
         $query->execute();
     }
 

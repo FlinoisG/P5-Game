@@ -10,6 +10,7 @@ use App\Service\MathService;
 use App\Service\MapService;
 use App\Service\AuthenticationService;
 use App\Service\MiningService;
+use App\Service\RankingService;
 use App\Repository\BaseRepository;
 use App\Repository\MineRepository;
 use App\Repository\UserRepository;
@@ -27,8 +28,7 @@ class HomeController extends DefaultController
         $entitiesService = new EntitiesService;
         $userRepository = new UserRepository;
         $authenticationService = new AuthenticationService;
-        $customStyle = $this->setCustomStyle('panel');
-        //$scriptHead = $entitiesService->entitiesScripts();  
+        $customStyle = $this->setCustomStyle('panel'); 
         $scriptHead =   
             "<link rel=\"stylesheet\" href=\"https://unpkg.com/leaflet@1.3.1/dist/leaflet.css\"
             integrity=\"sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==\"
@@ -39,7 +39,6 @@ class HomeController extends DefaultController
         $scriptHead .= $this->setScript('panelUnitCountdown'); 
         $scriptHead .= $this->setScript('numberSelector'); 
         $scriptHead .= $this->setScript('MiningAnimation'); 
-        //$scriptHead .= $this->setScript('unitMovementUpdator'); 
         $scriptHead .= $this->setScript('Leaflet_Plugins/MovingMarker'); 
         $waterMap = file_get_contents('../deposit/Maps/waterMap.json');
         $scriptHead .= '<script>var waterMapObj = '.$waterMap.'</script>'; 
@@ -91,6 +90,22 @@ class HomeController extends DefaultController
         }
         $title = 'User Settings';
         require('../src/View/UserSettingsView.php');
+    }
+
+    public function ranking() 
+    {
+        if (!isset($_SESSION)) { 
+            session_start(); 
+        }
+        $rankingService = new RankingService;
+        $customStyle = $this->setCustomStyle('ranking');
+
+        $scoreRanking = $rankingService->getRankingByScore();
+        $bestScoreRanking = $rankingService->getRankingByBestScore();
+        $totalScoreRanking = $rankingService->getRankingByTotalScore();
+        
+        $title = 'Ranking';
+        require('../src/View/RankingView.php');
     }
 
     public function phpinfo() 

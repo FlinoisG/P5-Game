@@ -122,20 +122,6 @@ class TaskRepository extends Repository
             ];
             $taskEntities[$i] = new TaskEntity($taskParameters);
         }
-        /*foreach ($tasks as $task) {
-            $taskParameters = [
-                'action'=>$task["action"], 
-                'subject'=>$task["subject"], 
-                'startOrigin'=>$task["startOrigin"], 
-                'startPos'=>$task["startPos"],
-                'targetOrigin'=>$task["targetOrigin"], 
-                'targetPos'=>$task["targetPos"], 
-                'startTime'=>$task["startTime"], 
-                'endTime'=>$task["endTime"], 
-                'author'=>$task["author"]
-            ];
-            $task = new TaskEntity($taskParameters);
-        }*/
         return $taskEntities;
     }
 

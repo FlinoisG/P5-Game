@@ -13,6 +13,8 @@ class UserEntity
 	protected $tokenExp;
 	protected $score;
 	protected $metal;
+	protected $bestScore;
+	protected $totalScore;
 
     public function __construct($args)
     {
@@ -48,6 +50,12 @@ class UserEntity
             }
             if (isset($args["metal"])){
                 $this->metal = $args["metal"];
+			}
+			if (isset($args["bestScore"])){
+                $this->bestScore = $args["bestScore"];
+			}
+			if (isset($args["totalScore"])){
+                $this->totalScore = $args["totalScore"];
             }
         }
     }
@@ -216,6 +224,46 @@ class UserEntity
 	public function setMetal($metal)
 	{
 		$this->metal = $metal;
+
+		return $this;
+	}
+
+	/**
+	 * Get the value of bestScore
+	 */ 
+	public function getBestScore()
+	{
+		return $this->bestScore;
+	}
+
+	/**
+	 * Set the value of bestScore
+	 *
+	 * @return  self
+	 */ 
+	public function setBestScore($bestScore)
+	{
+		$this->bestScore = $bestScore;
+
+		return $this;
+	}
+
+	/**
+	 * Get the value of totalScore
+	 */ 
+	public function getTotalScore()
+	{
+		return $this->totalScore;
+	}
+
+	/**
+	 * Set the value of totalScore
+	 *
+	 * @return  self
+	 */ 
+	public function setTotalScore($totalScore)
+	{
+		$this->totalScore = $totalScore;
 
 		return $this;
 	}

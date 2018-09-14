@@ -94,7 +94,6 @@ Map.mainMap = {
                 var G = Math.round(ore.value * 41)+61;
                 var B = Math.round(ore.value * 197)+58;
                 var oreMarker = L.circle([ore.y, ore.x], {
-                    //color: '#55719e',
                     color: 'rgb('+R+', '+G+', '+B+')',
                     radius: 2000
                 }).addTo(this.map);

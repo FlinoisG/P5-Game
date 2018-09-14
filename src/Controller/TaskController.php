@@ -24,27 +24,28 @@ class TaskController extends DefaultController
         } else {
             die();
         }
-        
         $startOrigin = $_GET['origin'];
         $arr = explode(",", $startOrigin);
         $startOriginType = $arr[0];
         $startOriginId = $arr[1];
-
+        
         $authenticationService = new AuthenticationService;
         $entitiesService = new EntitiesService;
         $baseRepository = new BaseRepository;
         $mineRepository = new MineRepository;
         $userRepository = new UserRepository;
         $taskRepository = new TaskRepository;
-        $available = true;
         $gameConfig = new GameConfig;
-
+        
+        $available = true;
         $startPlayerId = $baseRepository->getPlayerId($startOriginId, $startOriginType);
-        if ($startPlayerId != $_SESSION["auth"]){
+        if ($startPlayerId != $_SESSION["authId"]){
             $available = false;
             $cause = "wrong player";
+            var_dump($startPlayerId);
+            var_dump($_SESSION["authId"]);
         }
-
+        
         $unitSettings = $gameConfig->getUnitSettings();
         $type = $_GET['type'];
         $cost = $unitSettings["cost"][$type."Cost"];
@@ -129,6 +130,7 @@ class TaskController extends DefaultController
             ];
             $task = new TaskEntity($taskProprieties);
             $taskRepository->newTask($task);
+            var_dump($startOrigin);
             if ($type == 'soldier' || $type == 'soldierSpace'){
                 header('Location: ?p=home&focus='.$startOrigin.'&soldierTab');
             } else {
@@ -136,17 +138,12 @@ class TaskController extends DefaultController
             }
         } else {
             echo $cause;
-            header('Location: ?p=home&focus='.$origin.'&soldierTab');
+            //header('Location: ?p=home&focus='.$origin.'&soldierTab');
         }
     }
-
+    
     public function moveUnit($type=null, $startOrigin=null, $target=null, $amount=1, $isBuilding=false)
     {
-        if (!isset($_SESSION)) { 
-            session_start(); 
-        } else {
-            die();
-        }
         $baseRepository = new BaseRepository;
         $mineRepository = new MineRepository;
         $taskRepository = new TaskRepository;
@@ -196,7 +193,7 @@ class TaskController extends DefaultController
         $spaceLeft = $baseRepository->getSpaceLeft($type, $targetId, $targetBuilding);
         if ($owner !== false && $_SESSION["auth"] != $owner){
             echo 'wrong owner';
-        } else if ($spaceLeft < $amount){
+        } else if (!$isBuilding && $spaceLeft < $amount){
             echo 'pas asser de place. ' . $spaceLeft . " ";
         } else if ($originUnits >= $amount){
             $baseRepository->addUnits($type, $originId, $negAmount, $originBuilding);

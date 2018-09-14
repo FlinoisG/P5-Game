@@ -45,12 +45,6 @@ body {
     padding-top: 20px;
 }
 
-div{
-    border: 0px solid #00ff00;
-}
-
-
-
 .form-deny {
     border: 2px solid red;
 }
@@ -95,6 +89,13 @@ div{
 .userAvatar {
     border: 0px solid #525252;
     border-radius: 75px;
+}
+
+.smallAvatar {
+    border: 0px solid #525252;
+    border-radius: 75px;
+    height: 25px;
+    width: 25px;
 }
 
 .leaflet-container {

@@ -438,7 +438,8 @@ panelInterface = {
             var SubOptionText = document.createElement('div');
             SubOptionText.className = 'panelSubText';
             if (option.textContent == "regular"){
-                SubOptionText.innerHTML = "Acheter " + option.type + "<br>Cout: <span id=\"panelText" + option.type + "Cost\">" + option.cost + "</span>metal, <span id=\"panelText" + option.type + "BuildTime\">"+option.buildTime+"</span>mn";
+                buildTime = (option.buildTime / 60);
+                SubOptionText.innerHTML = "Acheter " + option.type + "<br>Cout: <span id=\"panelText" + option.type + "Cost\">" + option.cost + "</span>metal, <span id=\"panelText" + option.type + "BuildTime\">"+buildTime+"</span>mn";
             } else if (option.textContent == "numberSelector"){
                 if (this.tab == "workerTab"){
                     numberSelector(SubOptionText, toSelect.content.workers, option.type);
@@ -451,8 +452,8 @@ panelInterface = {
 
             if (typeof option.cost !== 'undefined'){
                 if (userMetal < option.cost){
-
-                    SubOptionText.innerHTML = "Acheter " + option.type + "<br>Cout: <span style=\"color:#FF0000;\"><span id=\"panelText" + option.type + "Cost\">"+option.cost+"</span>metal</span>, <span id=\"panelText" + option.type + "BuildTime\">"+option.buildTime+"</span>mn";
+                    buildTime = (option.buildTime / 60);
+                    SubOptionText.innerHTML = "Acheter " + option.type + "<br>Cout: <span style=\"color:#FF0000;\"><span id=\"panelText" + option.type + "Cost\">"+option.cost+"</span>metal</span>, <span id=\"panelText" + option.type + "BuildTime\">"+buildTime+"</span>mn";
                     var optionDisabled = document.createElement('div');
                     optionDisabled.className = "workerSpaceCooldown subPanelDisabled";
 

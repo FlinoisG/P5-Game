@@ -81,14 +81,14 @@ buildOrder = {
             buildingImg.style.left=e.pageX+buildOrder.imgOffsetX+"px";
             buildingImg.style.top=e.pageY+buildOrder.imgOffsetY+"px";
             buildingImg.style.opacity = 0.5;
-            if (buildOrder.type == "mine"){
+            //if (buildOrder.type == "mine"){
                 //buildOrder.setMineRadius();
-            }
+            //}
         } else {
             buildingImg.style.opacity = 0;
-            if (buildOrder.type == "mine"){
+            //if (buildOrder.type == "mine"){
                 //buildOrder.mineRangeMarker.style.opacity = 0;
-            }
+            //}
         }
     },
 

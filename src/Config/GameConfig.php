@@ -9,8 +9,8 @@ class GameConfig
     //  Map Settings
     /////////////////////////////
 
-    protected $minZoom = 7;
-    protected $maxZoom = 18;
+    protected $minZoom = 6;
+    protected $maxZoom = 13;
     protected $maxBounds = [
         //south west
         [32.7, -11.3269],
@@ -58,6 +58,26 @@ class GameConfig
     protected $workerSpaceBuildTime = 3;
     protected $soldierSpaceBuildTime = 3;
 
+    /////////////////////////////
+    //  Score
+    /////////////////////////////
+
+    protected $metalHarvestScore = 0.1; // 0.1 = 1pts per imetal gathered
+    protected $baseBuildingScore = 200;
+    protected $mineBuildingScore = 150;
+    protected $workerBuildingScore = 100;
+    protected $soldierBuildingScore = 100;
+    protected $workerSpaceBuildingScore = 100;
+    protected $soldierSpaceBuildingScore = 100;
+    protected $baseDestroyingScore = 200;
+    protected $mineDestroyingScore = 150;
+    protected $soldierKillingScore= 50;
+
+
+
+
+
+
     /**
      * Get the value of workerTravelSpeed
      */ 
@@ -67,7 +87,8 @@ class GameConfig
             "minZoom"=>$this->minZoom, 
             "maxZoom"=>$this->maxZoom, 
             "maxBounds"=>$this->maxBounds, 
-            "maxBoundsViscosity"=>$this->maxBoundsViscosity];
+            "maxBoundsViscosity"=>$this->maxBoundsViscosity
+        ];
     }
 
     public function getUnitSettings(){
@@ -122,4 +143,24 @@ class GameConfig
     {
         return $this->attackInterval;
     }
+
+    /**
+     * Get score related settings
+     */ 
+    public function getScoreSettings()
+    {
+        return [
+            "metalHarvestScore"=>$this->metalHarvestScore,
+            "baseBuildingScore"=>$this->baseBuildingScore,
+            "mineBuildingScore"=>$this->mineBuildingScore,
+            "workerBuildingScore"=>$this->workerBuildingScore,
+            "soldierBuildingScore"=>$this->soldierBuildingScore,
+            "workerSpaceBuildingScore"=>$this->workerSpaceBuildingScore,
+            "soldierSpaceBuildingScore"=>$this->soldierSpaceBuildingScore,
+            "baseDestroyingScore"=>$this->baseDestroyingScore,
+            "mineDestroyingScore"=>$this->mineDestroyingScore,
+            "soldierKillingScore"=>$this->soldierKillingScore
+        ];
+    }
+
 }

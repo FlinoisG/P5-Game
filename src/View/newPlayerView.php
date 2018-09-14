@@ -15,7 +15,7 @@
                 <p id="newUserText2" class="newUserText">
                     Comme c'est votre première base, elle est gratuite 
                     et se construit instantanément.</p>
-                <form action="http://google.com" id="newUserSubPanel" class="newUserSubPanel panelSubOption">
+                <form action="#" id="newUserSubPanel" class="newUserSubPanel panelSubOption">
                     <div id="newUserInner" class="newUserInner optionInner">
                         <input type="image" id="newUserPanelIcon" class="newUserPanelIcon panelSubIcon" src="../public/assets/img/unit_slot_base.png">
                         <span id="newUserPanelText" class="newUserPanelText panelSubText">Acheter base</span>

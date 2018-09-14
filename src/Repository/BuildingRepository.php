@@ -276,7 +276,7 @@ class BuildingRepository extends Repository
         if ($buildingType === "base"){
             if ($unitType === "worker"){
                 $statement = "UPDATE game_bases SET workerSpace = :space WHERE id = :originId";
-            } elseif ($type === "soldier"){
+            } elseif ($unitType === "soldier"){
                 $statement = "UPDATE game_bases SET soldierSpace = :space WHERE id = :originId";
             } else {
                 return false;
