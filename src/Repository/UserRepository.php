@@ -212,6 +212,15 @@ class UserRepository extends Repository
         return $response[0];
     }
 
+    public function setScore($userId, $newScore)
+    {
+        $DBConnection = $this->getDBConnection();
+        $query = $DBConnection->prepare("UPDATE game_users SET score = :newScore WHERE id = :id");
+        $query->bindParam(":newScore", $newScore, PDO::PARAM_INT);
+        $query->bindParam(":id", $userId, PDO::PARAM_INT);
+        $query->execute();
+    }
+
     public function getBestScore($userId)
     {
         $DBConnection = $this->getDBConnection();
@@ -220,6 +229,17 @@ class UserRepository extends Repository
         $query->execute();
         $response = $query->fetch();
         return $response[0];
+    }
+
+    public function setBestScore($userId, $newBestScore)
+    {
+        $DBConnection = $this->getDBConnection();
+        $userId = (int)$userId;
+        $newBestScore = (int)$newBestScore;
+        $query = $DBConnection->prepare("UPDATE game_users SET bestScore = :newBestScore WHERE id = :id");
+        $query->bindParam(":newBestScore", $newBestScore, PDO::PARAM_INT);
+        $query->bindParam(":id", $userId, PDO::PARAM_INT);
+        $query->execute();
     }
 
     public function getTotalScore($userId)
@@ -306,17 +326,6 @@ class UserRepository extends Repository
         $query->execute();
     }
 
-    /*
-    public function getIdByUsername($username){
-        $DBConnection = $this->getDBConnection();
-        $query = $DBConnection->prepare("SELECT ID FROM game_users WHERE username = :username");
-        $query->bindParam(":username", $username, PDO::PARAM_STR);
-        $query->execute();
-        $response = $query->fetch();
-        return $response[0];
-    }*/
-
-
     /**
      * gets every id and usernames from game_users
      *
@@ -347,6 +356,15 @@ class UserRepository extends Repository
         $query->execute();
         $response = $query->fetch();
         return (int)$response[0];
+    }
+
+    public function setMetal($userId, $newMetalAmount)
+    {
+        $DBConnection = $this->getDBConnection();
+        $query = $DBConnection->prepare("UPDATE game_users SET metal = :newMetalAmount WHERE id = :id");
+        $query->bindParam(":newMetalAmount", $newBestScore, PDO::PARAM_INT);
+        $query->bindParam(":id", $userId, PDO::PARAM_INT);
+        $query->execute();
     }
 
     /**

@@ -1,13 +1,68 @@
-#mainRanking{
-    display: flex;
-    justify-content: space-evenly;
-}
-
-.rankingDiv{
+#lastWinner{
+    margin-left: 100px;
+    margin-right: 100px;
+    margin-bottom: 25px; 
     border: 2px solid #2c2c2c;
     background-color: #1a1a1a;
     border-radius: 5px;
-    margin: 25px;
+    padding: 15px;
+}
+
+#podium{
+    display: flex;
+    width: 600px;
+    justify-content: center;
+    margin: auto;
+    align-items: flex-end;
+    padding-top: 25px;
+}
+
+.podiumPlace{
+    background-color: #252525;
+    width: 250px;
+    border-bottom: 5px solid #2c2c2c;
+}
+
+.podiumPlace div{
+    position: relative;
+    top: -47px;
+}
+
+.firstPlace{
+    height: 75px;
+    border-top: 2px solid #ffc917;
+    border-left: 2px solid #ffc917;
+    border-right: 2px solid #ffc917;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
+
+.secondPlace{
+    height: 50px;
+    border-top: 2px solid #a4b1b6;
+    border-left: 2px solid #a4b1b6;
+    border-top-left-radius: 3px;
+}
+
+.thirdPlace{
+    height: 35px;
+    border-top: 2px solid #ce381e; 
+    border-right: 2px solid #ce381e; 
+    border-top-right-radius: 3px;
+}
+
+#mainRanking{
+    display: flex;
+    justify-content: space-between;
+    margin-left: 100px;
+    margin-right: 100px;
+}
+
+.rankingDiv{
+    max-width: 31%;
+    border: 2px solid #2c2c2c;
+    background-color: #1a1a1a;
+    border-radius: 5px;
     padding-top: 15px;
     width: 33%;
     text-align: left;
@@ -60,8 +115,7 @@
 }
 
 .avatarScoreTab{
-    min-width: 50px;
-    
+    min-width: 20px;
 }
 
 .usernameScoreTab{

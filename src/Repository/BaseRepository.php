@@ -94,6 +94,13 @@ class BaseRepository extends BuildingRepository
         $query->execute();
     }
 
+    public function deleteEverything()
+    {
+        $DBConnection = $this->getDBConnection();
+        $query = $DBConnection->prepare("DELETE FROM game_bases");
+        $query->execute();
+    }
+
     
     
 }

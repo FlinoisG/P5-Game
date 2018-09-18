@@ -127,5 +127,12 @@ class MineRepository extends BuildingRepository
         $query->bindParam(':id', $id, PDO::PARAM_INT);
         $query->execute();
     }
+
+    public function deleteEverything()
+    {
+        $DBConnection = $this->getDBConnection();
+        $query = $DBConnection->prepare("DELETE FROM game_mines");
+        $query->execute();
+    }
     
 }

@@ -61,13 +61,16 @@ class MapGeneratorService extends Service
      */
     public function getOreMap()
     {
-        $perlinService = new Perlin();
+        //$perlinService = new Perlin();
+        $perlinService = new PerlinService;
         $gameConfig = new GameConfig;
 
-        $gridSizeX = $gameConfig->getGridSizeX();
-        $gridSizeY = $gameConfig->getGridSizeY();
-        $nodeFreq = $gameConfig->getNodeFrequence();
-        $nodeSize = $gameConfig->getNodeSize();
+        $oreMapSettings = $gameConfig->getOreMapSettings();
+
+        $gridSizeX = $oreMapSettings["gridSizeX"];
+        $gridSizeY = $oreMapSettings["gridSizeY"];
+        $nodeFreq = $oreMapSettings["nodeFreq"];
+        $nodeSize = $oreMapSettings["nodeSize"];
 
         $waterMap = json_decode(file_get_contents('../deposit/Maps/waterMap.json'), true);
 

@@ -195,12 +195,17 @@ class TaskRepository extends Repository
     {
         $DBConnection = $this->getDBConnection();
         $subject = "soldier," . $newSoldierAmount;
-        var_dump($subject);
-        var_dump($taskId);
         $statement = "UPDATE game_tasks SET subject = :sub WHERE id= :id";
         $query = $DBConnection->prepare($statement);
         $query->bindParam(':sub', $subject, PDO::PARAM_STR);
         $query->bindParam(':id', $taskId, PDO::PARAM_INT);
+        $query->execute();
+    }
+
+    public function deleteEverything()
+    {
+        $DBConnection = $this->getDBConnection();
+        $query = $DBConnection->prepare("DELETE FROM game_tasks");
         $query->execute();
     }
 

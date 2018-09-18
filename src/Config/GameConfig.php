@@ -28,11 +28,11 @@ class GameConfig
     protected $attackInterval = 3600;   // in seconds
 
     /////////////////////////////
-    //  Map Generation
+    //  Ore Map Generation Settings
     /////////////////////////////
 
-    protected $gridsizeX = 438; // long
-    protected $gridsizeY = 290; // lat
+    protected $gridSizeX = 438; // long
+    protected $gridSizeY = 290; // lat
     protected $nodeFreq = 12; // higher value = lower freq but bigger node
     protected $nodeSize = 0.2; // 0 = max  1 = min
 
@@ -88,6 +88,16 @@ class GameConfig
             "maxZoom"=>$this->maxZoom, 
             "maxBounds"=>$this->maxBounds, 
             "maxBoundsViscosity"=>$this->maxBoundsViscosity
+        ];
+    }
+
+    public function getOreMapSettings()
+    {
+        return [
+            "gridSizeX"=>$this->gridSizeX, 
+            "gridSizeY"=>$this->gridSizeY, 
+            "nodeFreq"=>$this->nodeFreq, 
+            "nodeSize"=>$this->nodeSize
         ];
     }
 

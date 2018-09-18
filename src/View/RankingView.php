@@ -2,6 +2,14 @@
 <h1><?= $title ?></h1>
 
 <div id="main">
+    <div id="lastWinner">
+        <h3 id="lastWinnerTitle">Les derniers gagnants : </h3>
+        <div id="podium">
+            <div id="secondPlace" class="podiumPlace secondPlace"><?= $secondScore ?><div><?= $secondWinner ?></div></div>
+            <div id="firstPlace" class="podiumPlace firstPlace"><?= $firstScore ?><div><?= $firstWinner ?></div></div>
+            <div id="thirdPlace" class="podiumPlace thirdPlace"><?= $thirdScore ?><div><?= $thirdWinner ?></div></div>
+        </div>
+    </div>
     <div id="mainRanking">
 
         <div id="scoreRankingDiv" class="rankingDiv">
@@ -19,7 +27,7 @@
                     echo "
                     <tr>
                     <td>".$count."</td>
-                    <td><img src=\"../deposit/User_Avatar/".$key.".png\" class=\"smallAvatar\"></td>
+                    <td class=\"centered\"><img src=\"../deposit/User_Avatar/".$key.".png\" class=\"smallAvatar\"></td>
                     <td>".$key."</td>
                     <td>".$value."</td>
                     </tr>";
@@ -44,7 +52,7 @@
                     echo "
                     <tr>
                     <td>".$count."</td>
-                    <td><img src=\"../deposit/User_Avatar/".$key.".png\" class=\"smallAvatar\"></td>
+                    <td class=\"centered\"><img src=\"../deposit/User_Avatar/".$key.".png\" class=\"smallAvatar\"></td>
                     <td>".$key."</td>
                     <td>".$value."</td>
                     </tr>";
@@ -69,7 +77,7 @@
                     echo "
                     <tr>
                         <td>".$count."</td>
-                        <td><img src=\"../deposit/User_Avatar/".$key.".png\" class=\"smallAvatar\"></td>
+                        <td class=\"centered\"><img src=\"../deposit/User_Avatar/".$key.".png\" class=\"smallAvatar\"></td>
                         <td>".$key."</td>
                         <td>".$value."</td>
                     </tr>";

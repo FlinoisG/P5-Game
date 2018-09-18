@@ -89,6 +89,8 @@ body {
 .userAvatar {
     border: 0px solid #525252;
     border-radius: 75px;
+    width: 100px;
+    height: 100px;
 }
 
 .smallAvatar {
@@ -161,4 +163,8 @@ body {
         border: 2px solid rgb(66, 66, 66);
         box-shadow: 0 1px 10px rgba(0,0,0,0.4);
     }
+}
+
+.centered{
+    text-align: center;
 }

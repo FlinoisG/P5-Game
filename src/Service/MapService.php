@@ -225,7 +225,9 @@ class MapService extends Service
                 },';
             }
         }
-        $result[strrpos($result, ',')] = ' ';
+        if ($result !== "<script>var objectMapObj = ["){
+            $result[strrpos($result, ',')] = ' ';
+        }
         $result = $result . ']; console.log(objectMapObj);</script>';
         return $result;
     }
