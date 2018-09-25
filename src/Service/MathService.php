@@ -118,6 +118,14 @@ class MathService extends Service
         return $dist;
     }
 
+    /**
+     * Calculate the duration of a unit travel
+     *
+     * @param array $startPos
+     * @param array $targetPos
+     * @param string $unitType
+     * @return void
+     */
     public function calculateTravelDuration($startPos, $targetPos, $unitType)
     {
         $gameConfig = new GameConfig;

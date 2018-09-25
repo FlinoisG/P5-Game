@@ -7,9 +7,6 @@ use App\Model\Service;
 //This is a port of Ken Perlin's "Improved Noise"
 //     http://mrl.nyu.edu/~perlin/noise/
 
-// Originally from http://therandomuniverse.blogspot.com/2007/01/perlin-noise-your-new-best-friend.html
-// but the site appears to be down, so here is a mirror of it
-
 class PerlinService extends Service
 {
 	

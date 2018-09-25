@@ -10,7 +10,7 @@ use App\Repository\UserRepository;
 class HomeService extends Service
 {
 
-    public function setScript ($script)
+    public function setScript($script)
     {
         $scriptTag = "<script src=\"assets/js/" . $script . ".js\"></script>";
         return $scriptTag;

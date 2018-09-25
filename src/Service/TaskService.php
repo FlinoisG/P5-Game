@@ -3,14 +3,14 @@
 namespace App\Service;
 
 use App\Model\Service;
-use App\Entity\TaskEntity;
+//use App\Entity\TaskEntity;
 use App\Config\GameConfig;
 use App\Service\AuthenticationService;
 use App\Service\MapService;
-use App\Service\MathService;
+//use App\Service\MathService;
 use App\Service\AttackService;
-use App\Controller\BaseController;
-use App\Controller\TaskController;
+//use App\Controller\BaseController;
+//use App\Controller\TaskController;
 use App\Repository\BaseRepository;
 use App\Repository\MineRepository;
 use App\Repository\TaskRepository;
@@ -69,6 +69,12 @@ class TaskService extends Service
         }
     }
     
+    /**
+     * Undocumented function
+     *
+     * @param [type] $task
+     * @return void
+     */
     public function buyTask($task)
     {
         $baseRepository = new BaseRepository;

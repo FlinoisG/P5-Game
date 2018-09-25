@@ -18,13 +18,21 @@ use App\Config\GameConfig;
 class TaskControllerService extends Service
 {
 
+    /**
+     * Check if it is possible for an user to buy a certain 
+     * type of unit and if so, create the apropriate task
+     *
+     * @param string $startOrigin
+     * @param string $type
+     * @param string $targetPos
+     * @return void
+     */
     public function buy($startOrigin, $type, $targetPos = null)
     {
-        
         if (!isset($_SESSION)) { 
             session_start(); 
         }
-        //$startOrigin = $_GET['origin'];
+        
         $arr = explode(",", $startOrigin);
         $startOriginType = $arr[0];
         $startOriginId = $arr[1];
@@ -144,6 +152,17 @@ class TaskControllerService extends Service
         }
     }
 
+    /**
+     * Check if units can be moved and if so, 
+     * create the apropriate task
+     *
+     * @param string $type
+     * @param string $startOrigin
+     * @param string $target
+     * @param integer $amount
+     * @param boolean $isBuilding
+     * @return void
+     */
     public function moveUnit($type, $startOrigin, $target, $amount=1, $isBuilding=false)
     {
         if (!isset($_SESSION)) { 
@@ -292,6 +311,17 @@ class TaskControllerService extends Service
         }
     }
 
+    /**
+     * instantly create a new base, and update 
+     * newUser from 1 to 0 in the database.
+     * 
+     * This should only be used when a user 
+     * create his first base.
+     *
+     * @param string $pos
+     * @param int $authId
+     * @return void
+     */
     public function newUserBase($pos, $authId)
     {
         if (!isset($_SESSION)) { 

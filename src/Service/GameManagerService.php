@@ -9,6 +9,7 @@ use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 use App\Repository\LastScoreRepository;
 use App\Service\RankingService;
+use App\Service\MapGeneratorService;
 
 class GameManagerService extends Service
 {
@@ -20,7 +21,6 @@ class GameManagerService extends Service
      */
     public function createNewGame()
     {
-        var_dump("new game");
         $baseRepository = new BaseRepository;
         $mineRepository = new MineRepository;
         $taskRepository = new TaskRepository;

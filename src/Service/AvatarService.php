@@ -8,9 +8,10 @@ class AvatarService
 {
 
     /**
-     * Undocumented function
+     * Upload an user's new avatar. 
+     * User name = file name
      *
-     * @param [type] $file
+     * @param array $file
      * @return void
      */
     public function avatarUpload($file) 
@@ -61,7 +62,7 @@ class AvatarService
     /**
      * Resize a file
      *
-     * @param [type] $file
+     * @param array $file
      * @param int $ext extention of the file
      * @param int $w Desired width
      * @param int $h Desired height

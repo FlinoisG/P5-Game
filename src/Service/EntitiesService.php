@@ -7,6 +7,11 @@ use App\Model\Service;
 class EntitiesService extends Service
 {
 
+    /**
+     * Create a string containing javascript entities tag
+     *
+     * @return void
+     */
     public function setJavascriptEntities(){
         $scriptTag = '<script src="assets/js/entities/DefaultEntity.js"></script>';
         $files = scandir(__DIR__.'/../../public/assets/js/entities');

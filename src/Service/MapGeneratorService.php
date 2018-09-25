@@ -10,49 +10,6 @@ use App\Config\GameConfig;
 class MapGeneratorService extends Service
 {
 
-    /*
-    public function resourceTest()
-    {
-        $perlinService = new PerlinService();
-
-        $gridsizeX = 438; // long
-        $gridsizeY = 290; // lat
-        $nodeFreq = 17; // higher value = lower freq but bigger node
-        $nodeSize = 0.2; // 0 = max  1 = min
-
-        
-        $nodeSize = $nodeSize * -1;
-        $nodeSize = $nodeSize + 1;
-        $content = '<canvas id="myCanvas" width="'.$gridsizeX.'" height="'.$gridsizeY.'" style="border:1px solid #000000;"></canvas>
-        <script>
-        var c = document.getElementById("myCanvas")
-        var ctx = c.getContext("2d");';        
-        for($y=0; $y<$gridsizeY; $y+=1) {
-            for($x=0; $x<$gridsizeX; $x+=1) {
-                $num = $perlinService->noise($x,$y,0,$nodeFreq);
-                
-                $raw = ($num/2)+.5;
-                if ($raw < 0) $raw = 0;
-                
-                $num = dechex( $raw*255 );
-                
-                if (strlen($num) < 2) $num = "0".$num;
-
-                if ($raw > $nodeSize){
-                    $num = $num.$num.$num;
-                    $content = $content . '
-                    ctx.beginPath();
-                    ctx.rect('.$x.', '.$y.', 1, 1);
-                    ctx.strokeStyle="#'.$num.'";
-                    ctx.stroke();
-                ';
-                }
-            }
-        }
-        $content = $content . '</script>';
-        return $content;
-    }
-    */
 
     /**
      * Generate a new ore map into deposit/Maps/oreMap.json

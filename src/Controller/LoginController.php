@@ -41,7 +41,8 @@ class LoginController extends DefaultController
         if (!isset($_SESSION)) { 
             session_start(); 
         } 
-        $scriptBody = $this->setScript("RegisterScript");
+        $homeService = new HomeService;
+        $scriptBody = $homeService->setScript("RegisterScript");
         if (isset($_GET['register'])) {
             $authenticationService = new AuthenticationService();
             $securityService = new SecurityService;
@@ -65,7 +66,7 @@ class LoginController extends DefaultController
             }
         } else {
             $title = 'Créer un compte';
-            $script = $this->setScript("RegisterScript");
+            $script = $homeService->setScript("RegisterScript");
             $customStyle = $this->setCustomStyle('form');
             require('../src/View/RegisterView.php');
         }
@@ -77,13 +78,18 @@ class LoginController extends DefaultController
         if (!isset($_SESSION)) { 
             session_start(); 
         } 
+
+        $securityService = new SecurityService;
+        $homeService = new HomeService;
         
         $title = 'Mot de Passe Oublié';
         $customStyle = $this->setCustomStyle('form');
         if (isset($_GET['token'])){
             $username = $_GET['user'];
             $token = $_GET['token'];
-            $token = $this->dataValidation($token);
+            //$token = $this->dataValidation($token);
+            $token = $securityService->sanitize($token);
+            
             $authenticationService = new AuthenticationService;
             $user = $authenticationService->checkTokenValidity($username, $token);
             if (time() > strtotime($user['0']['token_exp'])) {
@@ -94,7 +100,7 @@ class LoginController extends DefaultController
             } elseif ($user == []) {
                 die($this->erreur('403'));
             } else {
-                $scriptBody = $this->setScript("PasswordNewScript");
+                $scriptBody = $home->setScript("PasswordNewScript");
                 $title = "Réinitialisation du mot de passe";
                 $user = $user['0']['username'];
                 require('../src/View/PasswordNewView.php');

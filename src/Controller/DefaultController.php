@@ -59,11 +59,11 @@ class DefaultController
         }
     }
 
-    public function setScript ($getScript)
+    /*public function setScript ($getScript)
     {
         $scriptTag = "<script src=\"assets/js/" . $getScript . ".js\"></script>";
         return $scriptTag;
-    }
+    }*/
 
     public function setCustomStyle ($getStyle)
     {
@@ -71,7 +71,7 @@ class DefaultController
         return $styleTag;
     }
 
-    public function dataValidation($data)
+    /*public function dataValidation($data)
     {
         $bannedCommands = [
             "select",
@@ -94,7 +94,7 @@ class DefaultController
         } else {
             return $data;
         }
-    }
+    }*/
 
     public function expiredSession()
     {

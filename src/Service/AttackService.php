@@ -4,7 +4,7 @@ namespace App\Service;
 
 use App\Model\Service;
 use App\Config\GameConfig;
-use App\Service\TaskService;
+//use App\Service\TaskService;
 use App\Entity\TaskEntity;
 use App\Repository\BaseRepository;
 use App\Repository\TaskRepository;
@@ -12,6 +12,13 @@ use App\Repository\TaskRepository;
 class AttackService
 {
 
+    /**
+     * Initiate the attack cycle with a first attack, 
+     * and set the next atack task
+     *
+     * @param object $task
+     * @return void
+     */
     public function attack($task)
     {
         $gameConfig = new GameConfig;
@@ -35,10 +42,6 @@ class AttackService
             } else {
                 $newAttackSoldierAmount = $attackSoldierAmount - $targetSoldierAmount;
                 $baseRepository->addUnits("soldier", $targetId, ($targetSoldierAmount * -1), $targetBuilding);
-                //$newTargetHP = $targetHP - $newAttackSoldierAmount;
-                //$baseRepository->setHP($newTargetHP, $targetId, $targetBuilding);
-                //$attackInterval = $gameConfig->getAttackInterval();
-                //$time = time() + $attackInterval;
                 $taskParameters = [
                     'action'=>'attack', 
                     'subject'=>"soldier,".$newAttackSoldierAmount, 
@@ -51,7 +54,6 @@ class AttackService
                     'author'=>$task->getAuthor()
                 ];
                 $newAttackTask = new TaskEntity($taskParameters);
-                //$taskRepository->newTask($newAttackTask);
                 $this->attackWithoutDefenses($newAttackTask);
             } 
         } else {
@@ -59,6 +61,16 @@ class AttackService
         }
     }
 
+    /**
+     * Second step of the attack cycle.
+     * If soldiers in defense, negate them to the soldiers in attack.
+     * If attacked building HP is below the number of attacking soldiers,
+     * the building is captured.
+     * If not, repeat this step in a new task
+     *
+     * @param [type] $task
+     * @return void
+     */
     public function attackWithoutDefenses($task){
 
         $gameConfig = new GameConfig;
@@ -82,7 +94,6 @@ class AttackService
             $attackInterval = $gameConfig->getAttackInterval();
             
             $time = time() + $attackInterval;
-            //$time = 0;
             $taskParameters = [
                 'action'=>'attack', 
                 'subject'=>"soldier,".$attackSoldierAmount, 
@@ -97,7 +108,7 @@ class AttackService
             $newAttackTask = new TaskEntity($taskParameters);
             $taskRepository->newTask($newAttackTask);
         } else {
-            var_dump($targetBuilding);
+            //var_dump($targetBuilding);
             $soldierSpace = $baseRepository->getSpace("soldier", $targetBuilding, $targetId);
             $soldierSpace = $soldierSpace + 1;
             if ($attackSoldierAmount <= $soldierSpace){
@@ -114,7 +125,7 @@ class AttackService
                     $subject = "soldier,".$startSoldierSpaceLeft;
                     // notification : Des soldats n'ont nul part ou aller après l'attaque faute de place
                 }
-                var_dump($targetBuilding);
+                //var_dump($targetBuilding);
                 $duration = $mathService->calculateTravelDuration($task->getTargetPos(), $task->getStartPos(), "soldier");
                 $travelTimestamp = time() + $duration;
                 $taskParameters = [

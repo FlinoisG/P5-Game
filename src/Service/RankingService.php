@@ -8,6 +8,12 @@ use App\Repository\UserRepository;
 class RankingService extends Service
 {
     
+    /**
+     * Get RankingByScore from the game_users 
+     * table and sort the scores
+     *
+     * @return array
+     */
     public function getRankingByScore()
     {
         $userRepository = new UserRepository;
@@ -16,6 +22,12 @@ class RankingService extends Service
         return $users;
     }
 
+    /**
+     * Get RankingByBestScore from the game_users 
+     * table and sort the scores
+     *
+     * @return array
+     */
     public function getRankingByBestScore()
     {
         $userRepository = new UserRepository;
@@ -24,6 +36,12 @@ class RankingService extends Service
         return $users;
     }
 
+    /**
+     * Get RankingByTotalScore from the game_users 
+     * table and sort the scores
+     *
+     * @return array
+     */
     public function getRankingByTotalScore()
     {
         $userRepository = new UserRepository;
