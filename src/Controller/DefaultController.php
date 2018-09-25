@@ -96,12 +96,6 @@ class DefaultController
         }
     }
 
-    public function sanitize($data)
-    {
-        $sanitizedData = filter_input(INPUT_POST, $data, FILTER_SANITIZE_SPECIAL_CHARS);
-        return $sanitizedData;
-    }
-
     public function expiredSession()
     {
         if (!isset($_SESSION)) { 

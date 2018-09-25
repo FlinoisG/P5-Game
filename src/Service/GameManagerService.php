@@ -20,6 +20,7 @@ class GameManagerService extends Service
      */
     public function createNewGame()
     {
+        var_dump("new game");
         $baseRepository = new BaseRepository;
         $mineRepository = new MineRepository;
         $taskRepository = new TaskRepository;
@@ -55,7 +56,7 @@ class GameManagerService extends Service
             $userRepository->setMetal($userId, 2500);
         }
 
-        //$mapGeneratorService->getOreMap();
+        $mapGeneratorService->getOreMap();
     }
 
 }

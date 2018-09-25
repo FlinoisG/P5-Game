@@ -10,9 +10,9 @@ class DataController extends DefaultController
     public function getUnitSettings()
     {
         $gameConfig = new GameConfig;
-        $mapSettings = json_encode($gameConfig->getUnitSettings());
-        echo $mapSettings;
-        return $mapSettings;
+        $unitSettings = json_encode($gameConfig->getUnitSettings());
+        echo $unitSettings;
+        return $unitSettings;
     }
 
     public function getMapSettings()

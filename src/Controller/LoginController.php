@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Service\AuthenticationService;
 use App\Service\sqlQueryService;
+use App\Service\SecurityService;
 
 class LoginController extends DefaultController
 {
@@ -13,11 +14,14 @@ class LoginController extends DefaultController
     public function login()
     {
         $authenticationService = new AuthenticationService();
+        $securityService = new SecurityService;
         if (!isset($_SESSION)) { 
             session_start(); 
         } 
         if (isset($_GET['login'])) {
-            $authenticationService->login($this->sanitize('username'), $this->sanitize('password'));
+            $username = $_POST["username"];
+            $password = $_POST["password"];
+            $authenticationService->login($securityService->sanitize($username), $securityService->sanitize($password));
             header('Location: ?p=home');
         }
         if (isset($_GET['recovery'])) {
@@ -40,7 +44,15 @@ class LoginController extends DefaultController
         $scriptBody = $this->setScript("RegisterScript");
         if (isset($_GET['register'])) {
             $authenticationService = new AuthenticationService();
-            if($authenticationService->checkRegister($this->sanitize('username'), $this->sanitize('email'), $this->sanitize('password'))){
+            $securityService = new SecurityService;
+            $username = $_POST["username"];
+            $email = $_POST["email"];
+            $password = $_POST["password"];
+            if($authenticationService->checkRegister(
+                $securityService->sanitize($username), 
+                $securityService->sanitize($email), 
+                $securityService->sanitize($password)
+            )){
                 $title = 'Connection';
                 $link = "<span>Compte créer avec succès !</span>";
                 $customStyle = $this->setCustomStyle('form');
