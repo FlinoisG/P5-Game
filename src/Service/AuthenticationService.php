@@ -13,7 +13,7 @@ use App\Repository\UserRepository;
 use PDO;
 
 /**
- * Auth class for authentification related functions
+ * Auth class for authentication related functions
  */
 class AuthenticationService extends Service
 {
@@ -25,21 +25,28 @@ class AuthenticationService extends Service
      * @param string $providedPassword
      * @return void
      */
-    public function login($providedUsername, $providedPassword)
+    public function login($username, $password)
     {   
         $userRepository = new UserRepository;
         $securityService = new SecurityService;
-        $DBPassword = $userRepository->getPasswordWithUsername($providedUsername);
-        $DBId = $userRepository->getIdWithUsername($providedUsername);
-        $DBNewUser = $userRepository->getNewUserWithUsername($providedUsername);
-        $path = __DIR__ . '/../Service/PasswordService.php';
-        if ($securityService->hash_equals($DBPassword, crypt($providedPassword, $DBPassword))) {
-            $_SESSION['auth'] = $providedUsername;
-            $_SESSION['authId'] = $DBId;
-            $_SESSION['authNewUser'] = $DBNewUser;
-        } else {
-            $DefaultController = new DefaultController();
+
+        $username = $securityService->sanitize($username);
+        $password = $securityService->sanitize($password);
+
+        if ($username === false || $password === false){
             die($DefaultController->error(403));
+        } else {
+            $DBPassword = $userRepository->getPasswordWithUsername($username);
+            $DBId = $userRepository->getIdWithUsername($username);
+            $DBNewUser = $userRepository->getNewUserWithUsername($username);
+            if ($securityService->hash_equals($DBPassword, crypt($password, $DBPassword))) {
+                $_SESSION['auth'] = $username;
+                $_SESSION['authId'] = $DBId;
+                $_SESSION['authNewUser'] = $DBNewUser;
+            } else {
+                $DefaultController = new DefaultController();
+                die($DefaultController->error(403));
+            }
         }
     }
 
@@ -57,12 +64,13 @@ class AuthenticationService extends Service
         $title = '';
         $securityService = new SecurityService;
         $defaultController = new DefaultController;
-        $username = $securityService->sanitize($username);
-        if ($username == false) {
+        if ($username === false) {
             $available = false;
         }
-        $email = $securityService->sanitize($email);
-        if ($email == false) {
+        if ($email === false) {
+            $available = false;
+        }
+        if ($password === false) {
             $available = false;
         }
         if (!$securityService->validateUsername($username)){
@@ -108,8 +116,6 @@ class AuthenticationService extends Service
      * @return void
      */
     public function register($username, $email, $password) {
-        //var_dump(__DIR__);
-        //require('../src/Service/PasswordService.php');
         $userRepository = new UserRepository;
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
         $userRepository->registerUser($username, $email, $hashedPassword);

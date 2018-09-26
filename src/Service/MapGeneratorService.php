@@ -18,7 +18,6 @@ class MapGeneratorService extends Service
      */
     public function getOreMap()
     {
-        //$perlinService = new Perlin();
         $perlinService = new PerlinService;
         $gameConfig = new GameConfig;
 

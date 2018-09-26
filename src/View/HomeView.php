@@ -1,5 +1,6 @@
 <?php ob_start(); ?> 
 <h1>Home</h1>
+<div id="timer" class="<?= $resetDate ?>"><?= $resetTimeLeft ?></div>
 <div id="board">
     <div id="panel">
         <h1 class="userTitle"><?= $_SESSION['auth'] ?></h1>

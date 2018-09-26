@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Service\AuthenticationService;
 use App\Service\sqlQueryService;
 use App\Service\SecurityService;
+use App\Service\HomeService;
 
 class LoginController extends DefaultController
 {
@@ -21,7 +22,7 @@ class LoginController extends DefaultController
         if (isset($_GET['login'])) {
             $username = $_POST["username"];
             $password = $_POST["password"];
-            $authenticationService->login($securityService->sanitize($username), $securityService->sanitize($password));
+            $authenticationService->login(htmlspecialchars($username), htmlspecialchars($password));
             header('Location: ?p=home');
         }
         if (isset($_GET['recovery'])) {
@@ -46,6 +47,7 @@ class LoginController extends DefaultController
         if (isset($_GET['register'])) {
             $authenticationService = new AuthenticationService();
             $securityService = new SecurityService;
+            
             $username = $_POST["username"];
             $email = $_POST["email"];
             $password = $_POST["password"];
@@ -87,8 +89,10 @@ class LoginController extends DefaultController
         if (isset($_GET['token'])){
             $username = $_GET['user'];
             $token = $_GET['token'];
-            //$token = $this->dataValidation($token);
             $token = $securityService->sanitize($token);
+            if ($token == false){
+                die($this->error('403'));
+            }
             
             $authenticationService = new AuthenticationService;
             $user = $authenticationService->checkTokenValidity($username, $token);
@@ -116,7 +120,16 @@ class LoginController extends DefaultController
             die($this->error('500'));
         }
         $authenticationService = new AuthenticationService();
-        $authenticationService->resetPassword($_GET['user'], $_POST['password']);
+        $securityService = new SecurityService;
+
+        $user = $securityService->sanitize($_GET['user']);
+        $password = $securityService->sanitize($_GET['password']);
+
+        if ($user === false || $password === false){
+            die($this->error('403'));
+        }
+
+        $authenticationService->resetPassword($user, $password);
         $title = "Mot de passe réinitialisé";
         $customStyle = $this->setCustomStyle('form');
         $content = "<p>Nouveau mot de passe actualisé.</p>

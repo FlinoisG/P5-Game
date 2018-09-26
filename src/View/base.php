@@ -17,7 +17,7 @@
     </head>
     <body>
     <nav id="nav" class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-      <a class="navbar-brand" href="#">Navbar</a>
+      <a class="navbar-brand" href="?p=home">Carte</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -25,20 +25,11 @@
       <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link" href="?p=home">Home</a>
-          </li>
-          <li class="nav-item">
             <a class="nav-link" href="?p=home.ranking">Classement</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="?p=home">Contact</a>
-          </li>
-          <li class="nav-item">
             <a class="nav-link" href="?p=home">Aide</a>
-          </li>   
-          <li class="nav-item">
-            <a class="nav-link" href="?p=home.phpinfo">phpinfo</a>
-          </li>        
+          </li>      
           <?php
             if (isset($_SESSION['auth'])) {
                 echo '

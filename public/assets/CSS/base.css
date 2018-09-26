@@ -37,6 +37,16 @@ body {
     text-align: center;
 }
 
+#timer{
+    position: absolute;
+    right: 15px;
+    top: 67px;
+    padding: 10px;
+    font-size: 25px;
+    border: 2px solid rgb(66, 66, 66);
+    border-radius: 5px;
+}
+
 .btn-logout{
     float: right;
 }

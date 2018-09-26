@@ -41,11 +41,12 @@ class HomeService extends Service
         $scriptHead .= $this->setScript('moveOrder');
         $scriptHead .= $this->setScript('attackOrder');
         $scriptHead .= $entitiesService->setJavascriptEntities();
-
+        
         $scriptBody = '<script>var oreMapObj = '.$oreMap.'</script>';
         $scriptBody .= $this->setScript('grid');
         $scriptBody .= $mapService->mapInit();
         $scriptBody .= $this->setScript('UI/panelInterface');
+        $scriptBody .= $this->setScript('mapResetCountdownUpdator');
 
         if ($_SESSION) {
             if ($userRepository->getNewUser($_SESSION['authId']) == 1) {

@@ -2,22 +2,23 @@
 
 namespace App\Controller;
 
-use App\Controller\TaskController;
+//use App\Controller\TaskController;
 use App\Service\EntitiesService;
 use App\Service\AvatarService;
-use App\Service\MapGeneratorService;
-use App\Service\MathService;
+//use App\Service\MapGeneratorService;
+//use App\Service\MathService;
 use App\Service\MapService;
 use App\Service\AuthenticationService;
-use App\Service\MiningService;
+//use App\Service\MiningService;
 use App\Service\RankingService;
 use App\Service\GameManagerService;
 use App\Service\HomeService;
-use App\Repository\BaseRepository;
-use App\Repository\MineRepository;
+//use App\Repository\BaseRepository;
+//use App\Repository\MineRepository;
 use App\Repository\UserRepository;
-use App\Repository\TaskRepository;
+//use App\Repository\TaskRepository;
 use App\Repository\LastScoreRepository;
+use DateTime;
 
 class HomeController extends DefaultController
 {
@@ -27,20 +28,26 @@ class HomeController extends DefaultController
         
         if (!isset($_SESSION)) { 
             session_start(); 
-        } 
+        }
         
         $homeService = new HomeService;
+        $entitiesService = new EntitiesService;
+        $userRepository = new UserRepository;
+        $authenticationService = new AuthenticationService;
+        $mapService = new MapService;
         
         $script = $homeService->getHomeScripts();
         
         $scriptHead = $script[0];
         $scriptBody = $script[1];
         $metal = $script[2];
-        
-        $entitiesService = new EntitiesService;
-        $userRepository = new UserRepository;
-        $authenticationService = new AuthenticationService;
-        $mapService = new MapService;
+
+        $resetDate = json_decode(file_get_contents(__DIR__.'/../../deposit/ResetDate.json'), true);
+        $datetime1 = new DateTime();
+        $datetime2 = new DateTime('@'.$resetDate);
+        $interval = $datetime1->diff($datetime2);
+        $elapsed = $interval->format('Fin de partie : %a jours, <span id="timerJS">%h:%i:%S</span>');
+        $resetTimeLeft = $elapsed;
 
         $customStyle = $this->setCustomStyle('panel');     
         $title = 'Home';
