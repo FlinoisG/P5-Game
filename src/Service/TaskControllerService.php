@@ -8,6 +8,7 @@ use App\Service\MathService;
 use App\Service\EntitiesService;
 use App\Service\MapService;
 use App\Service\TaskControllerService;
+use App\Repository\BuildingRepository;
 use App\Repository\BaseRepository;
 use App\Repository\MineRepository;
 use App\Repository\UserRepository;
@@ -39,6 +40,7 @@ class TaskControllerService extends Service
         
         $authenticationService = new AuthenticationService;
         $entitiesService = new EntitiesService;
+        $buildingRepository = new BuildingRepository;
         $baseRepository = new BaseRepository;
         $mineRepository = new MineRepository;
         $userRepository = new UserRepository;
@@ -50,12 +52,9 @@ class TaskControllerService extends Service
         if ($startPlayerId != $_SESSION["authId"]){
             $available = false;
             $cause = "wrong player";
-            //var_dump($startPlayerId);
-            //var_dump($_SESSION["authId"]);
         }
         
         $unitSettings = $gameConfig->getUnitSettings();
-        //$type = $_GET['type'];
         $cost = $unitSettings["cost"][$type."Cost"];
         if ($type == "base" || $type == "mine"){
             $class = "building";
@@ -107,13 +106,17 @@ class TaskControllerService extends Service
         }
         
         if ($available){
-            $buildTime = $unitSettings["buildTime"][$type."BuildTime"];
-            $time = time() + $buildTime;
-            //if (isset($_GET["pos"])){
-            //    $targetPos = $_GET["pos"];
-            //} else {
-            //    $targetPos = null;
-            //}
+            if ($class == 'upgrade'){
+                $buildTimePerUpgrade = $unitSettings["buildTime"][$type."BuildTime"];
+                $unitType = str_replace("Space", "", $type);
+                $buildingSpace = $buildingRepository->getSpace($unitType, $startOriginType, $startOriginId);
+                $buildingSpace++;
+                $upgrade = $buildingSpace/5;
+                $time = time() + ($buildTimePerUpgrade * $upgrade);
+            } else {
+                $buildTime = $unitSettings["buildTime"][$type."BuildTime"];
+                $time = time() + $buildTime;
+            }
             $userRepository->addMetal($_SESSION['authId'], ($cost * -1));
             $authorId = $userRepository->getIdWithUsername($_SESSION['auth']);
             $startTime = 0;
@@ -138,7 +141,6 @@ class TaskControllerService extends Service
             ];
             $task = new TaskEntity($taskProprieties);
             $taskRepository->newTask($task);
-            //var_dump($startOrigin);
             if ($type == 'soldier' || $type == 'soldierSpace'){
                 //header('Location: ?p=home&focus='.$startOrigin.'&soldierTab');
                 return 'Location: ?p=home&focus='.$startOrigin.'&soldierTab';
@@ -330,7 +332,6 @@ class TaskControllerService extends Service
 
         $baseRepository = new BaseRepository;
         $userRepository = new UserRepository;
-        
         $baseRepository->newBase($authId, $pos, 1);
         $userRepository->changeNewUser($authId, 0);
     }

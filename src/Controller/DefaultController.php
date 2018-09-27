@@ -71,31 +71,12 @@ class DefaultController
         return $styleTag;
     }
 
-    /*public function dataValidation($data)
-    {
-        $bannedCommands = [
-            "select",
-            "update",
-            "delete",
-            "insert",
-            "drop",
-            "create"
-        ];
-        $validate = true;
-        for ($i = 0; $i < count($bannedCommands); $i++) {
-            if (strpos(strtolower($data), $bannedCommands[$i])) {
-                $validated = false;
-            }
-        }
-        $data = str_replace("'", "\\'", $data);
-        $data = str_replace('"', '\\"', $data);
-        if (!$validate) {
-            die($this->error("403"));
-        } else {
-            return $data;
-        }
-    }*/
-
+    /**
+     * requires the expired session page 
+     * when an user's session is expired
+     *
+     * @return void
+     */
     public function expiredSession()
     {
         if (!isset($_SESSION)) { 

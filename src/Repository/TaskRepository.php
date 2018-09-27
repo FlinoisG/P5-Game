@@ -105,6 +105,7 @@ class TaskRepository extends Repository
             $query->bindParam(":action", $action, PDO::PARAM_STR);
             $query->execute();
             $tasks = $query->fetchAll();
+            //var_dump($tasks);
         }
         $taskEntities = [];
         for ($i=0; $i < sizeof($tasks); $i++) { 
@@ -122,6 +123,7 @@ class TaskRepository extends Repository
             ];
             $taskEntities[$i] = new TaskEntity($taskParameters);
         }
+        //var_dump($taskEntities);
         return $taskEntities;
     }
 
@@ -191,6 +193,13 @@ class TaskRepository extends Repository
         return $entityArray;
     }
 
+    /**
+     * Update the number of soldier in an attack task.
+     *
+     * @param int $newSoldierAmount
+     * @param int $taskId
+     * @return void
+     */
     public function setAttackSoldiers($newSoldierAmount, $taskId)
     {
         $DBConnection = $this->getDBConnection();

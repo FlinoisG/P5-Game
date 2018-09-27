@@ -376,10 +376,34 @@ panelInterface = {
         var pPercent = document.createElement('p');
         pPercent.textContent = (displayPercent * -1 + 100) + "%"; 
 
+        var healthBarDiv = document.createElement('div');
+        healthBarDiv.className = "progress healthBar";
+
+        var health = timeLeft / buildTime;
+        var healthGreen = health * 200;
+        var healthRed = 200 - (health * 200);
+        var healthBarColor = "rgb("+ healthRed +","+ healthGreen + ",0)";
+
+        var healthText = document.createElement('p');
+        healthText.innerHTML = displayPercent + "%";
+        healthText.className = "healthText";
+
+        var healthBar = document.createElement('div');
+        healthBar.className = "healthBarProgress progress-bar progress-bar-striped progress-bar-animated";
+        healthBar.setAttribute('role', "progressbar");
+        healthBar.setAttribute('aria-valuenow', displayPercent);
+        healthBar.setAttribute('aria-valuemin', 0);
+        healthBar.setAttribute('aria-valuemax', 100);
+        healthBar.style = "width: " + displayPercent + "%; background-color: " + healthBarColor + " !important;";
+
+        healthBarDiv.appendChild(healthBar);
+        healthBarDiv.appendChild(healthText);
+
         document.getElementById('panelInterface').innerHTML = "";
         document.getElementById('panelInterface').appendChild(title);
         document.getElementById('panelInterface').appendChild(pTime);
         document.getElementById('panelInterface').appendChild(pPercent);
+        document.getElementById('panelInterface').appendChild(healthBarDiv);
 
         countDown(pTime, toSelect.time);
     },
@@ -437,6 +461,7 @@ panelInterface = {
 
             var SubOptionText = document.createElement('div');
             SubOptionText.className = 'panelSubText';
+
             if (option.textContent == "regular"){
                 buildTime = (option.buildTime / 60);
                 SubOptionText.innerHTML = "Acheter " + option.type + "<br>Cout: <span id=\"panelText" + option.type + "Cost\">" + option.cost + "</span>metal, <span id=\"panelText" + option.type + "BuildTime\">"+buildTime+"</span>mn";
@@ -449,16 +474,16 @@ panelInterface = {
             } else {
                 SubOptionText.innerHTML = option.textContent;
             }
-
-            if (typeof option.cost !== 'undefined'){
-                if (userMetal < option.cost){
+            
+            var x = setInterval(function() {
+                if (typeof option.cost !== 'undefined' && userMetal < option.cost){
                     buildTime = (option.buildTime / 60);
                     SubOptionText.innerHTML = "Acheter " + option.type + "<br>Cout: <span style=\"color:#FF0000;\"><span id=\"panelText" + option.type + "Cost\">"+option.cost+"</span>metal</span>, <span id=\"panelText" + option.type + "BuildTime\">"+buildTime+"</span>mn";
                     var optionDisabled = document.createElement('div');
                     optionDisabled.className = "workerSpaceCooldown subPanelDisabled";
-
                 }
-            }
+                clearTimeout(x);
+            }, 100);
             
             var optionInner = document.createElement('div');
             optionInner.id = "optionInner"+option.type;

@@ -7,7 +7,7 @@ class WorkerEntity extends DefaultEntity {
         super();
         this.type = 'worker';
         this.class = 'unit';
-        this.cost = 0;
+        this.cost = 100;
         this.buildTime = 0;
         this.imgName = 'unit_slot_worker_finished';
         this.textContent = 'regular';

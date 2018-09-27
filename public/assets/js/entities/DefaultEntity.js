@@ -4,7 +4,8 @@ class DefaultEntity {
 
         var self = this;
         var req = new XMLHttpRequest();
-        req.open("GET", "/public/index.php?p=data.getUnitSettings");
+        req.open("GET", "/public/index.php?p=data.getUnitSettings"); // local
+        //req.open("GET", "/P5-Game/public/index.php?p=data.getUnitSettings"); //server
         req.addEventListener("load", function () {
             var unitSettings = JSON.parse(req.responseText);
             self.unitSettings = unitSettings;

@@ -23,8 +23,8 @@ class GameConfig
     //  Game Settings
     /////////////////////////////
 
-    protected $workerTravelSpeed = 2;
-    protected $defaultTravelSpeed = 2;
+    protected $workerTravelSpeed = 1;
+    protected $defaultTravelSpeed = 1;
     protected $attackInterval = 3600;   // in seconds
 
     /////////////////////////////
@@ -51,12 +51,12 @@ class GameConfig
     protected $mineMaxHP = 100;
     protected $baseInConstructionMaxHP = 100;
     protected $mineInConstructionMaxHP = 100;
-    protected $baseBuildTime = 3600;
-    protected $mineBuildTime = 3600;
-    protected $workerBuildTime = 600;
-    protected $soldierBuildTime = 1800;
-    protected $workerSpaceBuildTime = 600;  // 10min par upgrade
-    protected $soldierSpaceBuildTime = 600; //
+    protected $baseBuildTime = 3;
+    protected $mineBuildTime = 3;
+    protected $workerBuildTime = 3;
+    protected $soldierBuildTime = 3;
+    protected $workerSpaceBuildTime = 3;
+    protected $soldierSpaceBuildTime = 3;
 
     /////////////////////////////
     //  Score

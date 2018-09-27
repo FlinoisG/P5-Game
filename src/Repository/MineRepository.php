@@ -128,6 +128,11 @@ class MineRepository extends BuildingRepository
         $query->execute();
     }
 
+    /**
+     * Delete every entry in the game_mines table
+     *
+     * @return void
+     */
     public function deleteEverything()
     {
         $DBConnection = $this->getDBConnection();

@@ -11,8 +11,10 @@ Map.mainMap = {
 
     mapInit: function(){
         var req = new XMLHttpRequest();
-        req.open("GET", "/public/index.php?p=data.getMapSettings");
+        req.open("GET", "/public/index.php?p=data.getMapSettings"); // local
+        //req.open("GET", "/P5-Game/public/index.php?p=data.getMapSettings"); // server
         req.addEventListener("load", function () {
+            console.log(req.responseText);
             var mapSettings = JSON.parse(req.responseText);
             console.log(mapSettings);
             Map.mainMap.createMap(mapSettings);
@@ -167,7 +169,7 @@ Map.mainMap = {
                     color: 'rgb('+R+', '+G+', '+B+')',
                     radius: 2000
                 }).addTo(this.map);
-                oreMarker.bindPopup('ore.value : ' + ore.value);
+                //oreMarker.bindPopup('ore.value : ' + ore.value);
             });
         }
     },
@@ -359,6 +361,7 @@ Map.mainMap = {
 
                     }
                 } else if (object.type == "baseInConst") {
+                    
                     var now = Math.floor(Date.now() / 1000);
                     if (object.start > now) {
                         opacity = 0.3;
@@ -395,6 +398,7 @@ Map.mainMap = {
                         }                    
                     }
                 } else if (object.type == "mineInConst") {
+                    console.log(object);
                     var now = Math.floor(Date.now() / 1000);
                     if (object.start > now) {
                         opacity = 0.3;

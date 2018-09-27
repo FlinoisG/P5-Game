@@ -99,7 +99,7 @@ class AuthenticationService extends Service
             $content = '<h1>Un compte avec cet e-mail existe déjà</h1>';
             die(require('../src/View/base.php'));
         }
-        if ($available == true) {
+        if ($available === true) {
             $this->register($username, $email, $password);
             return true;
         } else {

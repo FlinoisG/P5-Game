@@ -4,7 +4,7 @@ class SoldierSpaceEntity extends DefaultEntity {
         super();
         this.type = 'soldierSpace';
         this.class = 'upgrade';
-        this.cost = 0;
+        this.cost = 100;
         this.buildTime = 0;
         this.imgName = 'unit_slot_base';
         this.textContent = 'regular';

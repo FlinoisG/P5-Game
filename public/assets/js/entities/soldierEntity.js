@@ -7,7 +7,7 @@ class SoldierEntity extends DefaultEntity {
         super();
         this.type = 'soldier';
         this.class = 'unit';
-        this.cost = 50;
+        this.cost = 100;
         this.buildTime = 3;
         this.imgName = 'unit_slot_soldier_finished';
         this.textContent = 'regular';

@@ -43,6 +43,9 @@ class TaskEntity
 			}
 			if (isset($args['targetPos'])) {
                 $this->setTargetPos($args['targetPos']);
+            }
+            if (isset($args['startTime'])) {
+                $this->setStartTime($args['startTime']);
 			}
 			if (isset($args['endTime'])) {
                 $this->setEndTime($args['endTime']);

@@ -19,7 +19,7 @@ class MapService extends Service
      *
      * @return string 
      */
-    public function mapInit($objs = null) //À compléter
+    public function mapInit($objs = null)
     {
         
         $authenticationService = new AuthenticationService;

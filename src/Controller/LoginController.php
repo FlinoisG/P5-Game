@@ -12,6 +12,11 @@ class LoginController extends DefaultController
 
     private $script;
 
+    /**
+    * requires the login page
+    *
+    * @return void
+    */
     public function login()
     {
         $authenticationService = new AuthenticationService();
@@ -37,14 +42,21 @@ class LoginController extends DefaultController
         require('../src/View/LoginView.php');
     }
 
+    /**
+     * Require the registration page
+     *
+     * @return void
+     */
     public function register()
     {
+        
         if (!isset($_SESSION)) { 
             session_start(); 
         } 
         $homeService = new HomeService;
         $scriptBody = $homeService->setScript("RegisterScript");
         if (isset($_GET['register'])) {
+            
             $authenticationService = new AuthenticationService();
             $securityService = new SecurityService;
             
@@ -75,6 +87,11 @@ class LoginController extends DefaultController
         
     }
 
+    /**
+     * requires the password recovery page
+     *
+     * @return void
+     */
     public function recovery()
     {
         if (!isset($_SESSION)) { 
@@ -114,6 +131,11 @@ class LoginController extends DefaultController
         }        
     }
 
+    /**
+     * requires the password update page
+     *
+     * @return void
+     */
     public function newPassword()
     {
         if ($_POST == []) {
@@ -137,6 +159,13 @@ class LoginController extends DefaultController
         require('../src/View/base.php');
     }
 
+    /**
+     * Requires the "no corresponding email" when
+     * an user enter an unknow email in the password 
+     * recovery page
+     *
+     * @return void
+     */
     public function noEmail()
     {
         if (!isset($_SESSION)) { 

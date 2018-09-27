@@ -7,6 +7,11 @@ use App\Config\GameConfig;
 class DataController extends DefaultController
 {
 
+    /**
+     * Returns unit settings from gameConfig
+     *
+     * @return string
+     */
     public function getUnitSettings()
     {
         $gameConfig = new GameConfig;
@@ -15,6 +20,11 @@ class DataController extends DefaultController
         return $unitSettings;
     }
 
+    /**
+     * Returns map settings from gameConfig
+     *
+     * @return string
+     */
     public function getMapSettings()
     {
         $gameConfig = new GameConfig;

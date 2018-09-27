@@ -56,6 +56,12 @@ class BaseRepository extends BuildingRepository
         return $obj;
     }
 
+    /**
+     * Get the "main" propriety int the bases's table with it's id
+     *
+     * @param int $id
+     * @return void
+     */
     public function getMain($id)
     {
         $DBConnection = $this->getDBConnection();
@@ -94,6 +100,11 @@ class BaseRepository extends BuildingRepository
         $query->execute();
     }
 
+    /**
+     * Delete every entry in the game_bases table
+     *
+     * @return void
+     */
     public function deleteEverything()
     {
         $DBConnection = $this->getDBConnection();

@@ -18,6 +18,11 @@ use App\Config\GameConfig;
 class TaskController extends DefaultController
 {
 
+    /**
+     * Request TaskControllerService if user can buy unit
+     *
+     * @return void
+     */
     public function buy()
     {
         if (!isset($_SESSION)) { 
@@ -39,6 +44,16 @@ class TaskController extends DefaultController
         }
     }
     
+    /**
+     * Request TaskControllerService if user can move unit
+     *
+     * @param string $type
+     * @param string $startOrigin
+     * @param string $target
+     * @param integer $amount
+     * @param boolean $isBuilding
+     * @return void
+     */
     public function moveUnit($type=null, $startOrigin=null, $target=null, $amount=1, $isBuilding=false)
     {
         if (!isset($_SESSION)) { 
@@ -60,6 +75,14 @@ class TaskController extends DefaultController
         
     }
 
+    /**
+     * Request TaskControllerService if user can attack
+     *
+     * @param string $startOrigin
+     * @param string $target
+     * @param integer $amount
+     * @return void
+     */
     public function attack($startOrigin=null, $target=null, $amount=1)
     {
         if (!isset($_SESSION)) { 
@@ -81,6 +104,12 @@ class TaskController extends DefaultController
         
     }
 
+    /**
+     * Request TaskControllerService if user 
+     * can create his first base
+     *
+     * @return void
+     */
     public function newUserBase()
     {
         if (!isset($_SESSION)) { 

@@ -7,12 +7,19 @@ use App\Service\TaskService;
 use App\Service\MiningService;
 use App\Service\GameManagerService;
 
+echo    
+"//////////////////////////////////
+//// Cron " . date("d/m/Y H:i:s") . "
+//////////////////////////////////\n";
+
 $taskRepository = new TaskRepository;
 $taskService = new TaskService;
 $miningService = new MiningService;
 $gameManagerService = new GameManagerService;
 
-$resetDate = json_decode(file_get_contents('deposit/ResetDate.json'), true);
+$file = file_get_contents(__DIR__.'/deposit/ResetDate.json');
+$resetDate = json_decode($file, true);
+
 if ($resetDate < time()){
     $gameManagerService->createNewGame();
     $endOfWeek = strtotime('next Sunday', time()) + 86400;

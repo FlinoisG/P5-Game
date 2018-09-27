@@ -10,6 +10,11 @@ use App\Repository\UserRepository;
 class LastScoreRepository extends Repository
 {
 
+    /**
+     * Gets everything from the game_lastScore table
+     *
+     * @return void
+     */
     public function getLastWinners()
     {
         $sqlQueryService = new sqlQueryService();
@@ -25,6 +30,14 @@ class LastScoreRepository extends Repository
         return $lastScoresArray;
     }
 
+    /**
+     * Update the playerId and score propriety in game_lastScore table
+     *
+     * @param int $firstId
+     * @param int $secondId
+     * @param int $thirdId
+     * @return void
+     */
     public function setLastWinners($firstId, $secondId, $thirdId)
     {
         $userRepository = new UserRepository;

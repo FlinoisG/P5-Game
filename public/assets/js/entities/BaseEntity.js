@@ -23,7 +23,7 @@ class BaseEntity extends DefaultEntity {
         this.content = content;
         this.workerSpace = workerSpace;
         this.soldierSpace = soldierSpace;
-        this.cost = 0;
+        this.cost = 200;
         this.buildTime = 0;
         this.imgName = 'unit_slot_base';
         this.textContent = 'regular';

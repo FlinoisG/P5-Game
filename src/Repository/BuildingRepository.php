@@ -10,6 +10,13 @@ use App\Service\sqlQueryService;
 class BuildingRepository extends Repository
 {
 
+    /**
+     * Get the "playerId" propriety int the building table with it's id
+     *
+     * @param [type] $buildingId
+     * @param [type] $buildingType
+     * @return void
+     */
     public function getPlayerId($buildingId, $buildingType)
     {
         $DBConnection = $this->getDBConnection();
@@ -221,6 +228,13 @@ class BuildingRepository extends Repository
         }
     }
 
+    /**
+     * Get the "main" propriety int the bases's table with it's id
+     *
+     * @param [type] $id
+     * @param [type] $buildingType
+     * @return void
+     */
     public function getHP($id, $buildingType)
     {
         $DBConnection = $this->getDBConnection();
@@ -239,6 +253,14 @@ class BuildingRepository extends Repository
         return $buildingHP[0];
     }
 
+    /**
+     * Update the HP propriety in a building database with it's id
+     *
+     * @param int $buildingHP
+     * @param int $id
+     * @param string $buildingType
+     * @return void
+     */
     public function setHP($buildingHP, $id, $buildingType)
     {
         $DBConnection = $this->getDBConnection();
@@ -267,9 +289,6 @@ class BuildingRepository extends Repository
      */
     public function addSpace($unitType, $buildingType, $buildingId, $amount=5)
     {
-        //$arr = explode(",", $origin);
-        //$originType = $arr[0];
-        //$originId = $arr[1];
         $space = $this->getSpace($unitType, $buildingType, $buildingId);
         $space = $space + $amount;
         $DBConnection = $this->getDBConnection();
@@ -371,6 +390,14 @@ class BuildingRepository extends Repository
         return $pos['player'];
     }
 
+    /**
+     * Update the "player" propriety in a building database with it's id
+     *
+     * @param int $baseId
+     * @param string $buildingType
+     * @param int $newUserId
+     * @return void
+     */
     public function setOwner($baseId, $buildingType, $newUserId)
     {
         $userRepository = new UserRepository;

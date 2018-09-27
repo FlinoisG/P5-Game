@@ -21,7 +21,7 @@ class MineEntity extends DefaultEntity {
         this.content = content;
         this.workerSpace = workerSpace;
         this.soldierSpace = soldierSpace;
-        this.cost = 0;
+        this.cost = 150;
         this.buildTime = 0;
         this.imgName = 'unit_slot_mine';
         this.textContent = 'regular',

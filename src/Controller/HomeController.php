@@ -2,27 +2,25 @@
 
 namespace App\Controller;
 
-//use App\Controller\TaskController;
 use App\Service\EntitiesService;
 use App\Service\AvatarService;
-//use App\Service\MapGeneratorService;
-//use App\Service\MathService;
 use App\Service\MapService;
 use App\Service\AuthenticationService;
-//use App\Service\MiningService;
 use App\Service\RankingService;
 use App\Service\GameManagerService;
 use App\Service\HomeService;
-//use App\Repository\BaseRepository;
-//use App\Repository\MineRepository;
 use App\Repository\UserRepository;
-//use App\Repository\TaskRepository;
 use App\Repository\LastScoreRepository;
 use DateTime;
 
 class HomeController extends DefaultController
 {
 
+    /**
+     * Requires the home page
+     *
+     * @return void
+     */
     public function home()
     {
         
@@ -64,6 +62,11 @@ class HomeController extends DefaultController
         
     }
 
+    /**
+     * requires the user settings page
+     *
+     * @return void
+     */
     public function settings() 
     {
         if (!isset($_SESSION)) { 
@@ -73,6 +76,26 @@ class HomeController extends DefaultController
         require('../src/View/UserSettingsView.php');
     }
 
+    /**
+     * ??????????????????????????????
+     *
+     * @return void
+     */
+    public function avatarUpload() 
+    {
+        if (!isset($_SESSION)) { 
+            session_start(); 
+        }
+        $avatarService = new AvatarService;
+        $avatarService->avatarUpload($_FILES);
+        header('Location: ?p=home');
+    }
+
+    /**
+     * requires the ranking page
+     *
+     * @return void
+     */
     public function ranking() 
     {
         if (!isset($_SESSION)) { 
@@ -102,21 +125,7 @@ class HomeController extends DefaultController
         require('../src/View/RankingView.php');
     }
 
-    public function phpinfo() 
-    {
-        die(phpinfo());
-    }
-
-    public function avatarUpload() 
-    {
-        if (!isset($_SESSION)) { 
-            session_start(); 
-        }
-        $avatarService = new AvatarService;
-        $avatarService->avatarUpload($_FILES);
-        header('Location: ?p=home');
-    }
-
+    //debug
     public function endGame()
     {
         if (!isset($_SESSION)) { 
@@ -124,10 +133,6 @@ class HomeController extends DefaultController
         }
         $gameManagerService = new GameManagerService;
         $gameManagerService->createNewGame();
-    }
-
-    public function testArea(){
-        
     }
 
 }
