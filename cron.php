@@ -23,7 +23,7 @@ $resetDate = json_decode($file, true);
 if ($resetDate < time()){
     $gameManagerService->createNewGame();
     $endOfWeek = strtotime('next Sunday', time()) + 86400;
-    $fp = fopen('deposit/ResetDate.json', 'w');
+    $fp = fopen(__DIR__.'/deposit/ResetDate.json', 'w');
     fwrite($fp, $endOfWeek);
     fclose($fp);
 } else {
