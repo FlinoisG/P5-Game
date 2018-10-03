@@ -34,6 +34,7 @@ class DefaultController
         require('../src/View/ErrorView.php');
     }
 
+    /*
     public function customError ($error)
     {
         if (!isset($_SESSION)) { 
@@ -44,6 +45,7 @@ class DefaultController
         $errorDesc = "Accès refusé";
         require('../src/View/ErrorView.php');
     }
+    */
 
     /**
      * if $_GET['p'] is not set, die with a 404 error
@@ -59,24 +61,38 @@ class DefaultController
         }
     }
 
-    /*public function setScript ($getScript)
-    {
-        $scriptTag = "<script src=\"assets/js/" . $getScript . ".js\"></script>";
-        return $scriptTag;
-    }*/
-
     public function setCustomStyle ($getStyle)
     {
         $styleTag = "<link href=\"assets/CSS/" . $getStyle . ".css\" rel=\"stylesheet\">";
         return $styleTag;
     }
 
-    /**
-     * requires the expired session page 
-     * when an user's session is expired
-     *
-     * @return void
-     */
+    /*public function dataValidation($data)
+    {
+        $bannedCommands = [
+            "select",
+            "update",
+            "delete",
+            "insert",
+            "drop",
+            "create"
+        ];
+        $validate = true;
+        for ($i = 0; $i < count($bannedCommands); $i++) {
+            if (strpos(strtolower($data), $bannedCommands[$i])) {
+                $validated = false;
+            }
+        }
+        $data = str_replace("'", "\\'", $data);
+        $data = str_replace('"', '\\"', $data);
+        if (!$validate) {
+            die($this->error("403"));
+        } else {
+            return $data;
+        }
+    }*/
+
+    /*
     public function expiredSession()
     {
         if (!isset($_SESSION)) { 
@@ -84,6 +100,6 @@ class DefaultController
         }
         $title = 'Session expirée';
         require('../src/View/ExpiredSessionView.php');
-    }
+    }*/
 
 }

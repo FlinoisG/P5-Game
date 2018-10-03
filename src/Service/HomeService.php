@@ -7,15 +7,29 @@ use App\Service\EntitiesService;
 use App\Service\MapService;
 use App\Repository\UserRepository;
 
+/**
+ * prepare scripts for the home page
+ */
 class HomeService extends Service
 {
 
+    /**
+     * Returns a script tag
+     *
+     * @param string $script script name
+     * @return void
+     */
     public function setScript($script)
     {
         $scriptTag = "<script src=\"assets/js/" . $script . ".js\"></script>";
         return $scriptTag;
     }
     
+    /**
+     * Generate the javascript part of the home page
+     *
+     * @return array
+     */
     public function getHomeScripts()
     {
         $entitiesService = new EntitiesService;
@@ -35,6 +49,7 @@ class HomeService extends Service
         $scriptHead .= $this->setScript('panelUnitCountdown'); 
         $scriptHead .= $this->setScript('numberSelector'); 
         $scriptHead .= $this->setScript('MiningAnimation'); 
+        $scriptHead .= $this->setScript('unitMovementUpdator'); 
         $scriptHead .= $this->setScript('Leaflet_Plugins/MovingMarker'); 
         $scriptHead .= '<script>var waterMapObj = '.$waterMap.'</script>'; 
         $scriptHead .= $this->setScript('buildOrder');

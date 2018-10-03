@@ -19,7 +19,7 @@ class MapService extends Service
      *
      * @return string 
      */
-    public function mapInit($objs = null)
+    public function mapInit($objs = null) //À compléter
     {
         
         $authenticationService = new AuthenticationService;
@@ -41,6 +41,8 @@ class MapService extends Service
         $usernames = $userRepository->getAllUsername();
 
         foreach ($buildingTasks as $task) {
+            //var_dump($task->getStartTime());
+            //var_dump($task);
             array_push($objects, [
                 "type"=>$task->getSubject()."InConst",
                 "pos"=>$task->getTargetPos(),
@@ -155,7 +157,7 @@ class MapService extends Service
             }            
             $pos = json_decode($object["pos"]);
             if ($pos === null){
-                var_dump($object);   
+                //var_dump($object);   
             }
             if ($object['type'] == 'base') {
                 $result .= '{

@@ -11,11 +11,11 @@ class BuildingRepository extends Repository
 {
 
     /**
-     * Get the "playerId" propriety int the building table with it's id
+     * Get PlayerId from game_bases or game_mines at specified id
      *
-     * @param [type] $buildingId
-     * @param [type] $buildingType
-     * @return void
+     * @param int $buildingId
+     * @param string $buildingType "base" or "mine"
+     * @return int value of PlayerId
      */
     public function getPlayerId($buildingId, $buildingType)
     {
@@ -90,7 +90,7 @@ class BuildingRepository extends Repository
      * @param string $unitType worker or soldier
      * @param mixed $id Id of the building
      * @param string $buildingType Type of building (base/mine)
-     * @return void
+     * @return int value of free space inside a building
      */
     public function getSpaceLeft($unitType, $id, $buildingType = null)
     {
@@ -134,7 +134,7 @@ class BuildingRepository extends Repository
      * @param string $unitType worker or soldier
      * @param mixed $id Id of the building
      * @param string $buildingType Type of building (base/mine)
-     * @return void
+     * @return int value of worker or soldier
      */
     public function getUnits($unitType, $id, $buildingType = null)
     {
@@ -175,8 +175,8 @@ class BuildingRepository extends Repository
      * Get the position of a building
      *
      * @param int $id Id of the building
-     * @param string $buildingType base or mine, type of building
-     * @return void
+     * @param string $buildingType "base" or "mine"
+     * @return string value of pos
      */
     public function getPos($id, $buildingType = null)
     {
@@ -229,13 +229,13 @@ class BuildingRepository extends Repository
     }
 
     /**
-     * Get the "main" propriety int the bases's table with it's id
+     * Get HP from game_bases or game_mines at specified id
      *
-     * @param [type] $id
-     * @param [type] $buildingType
-     * @return void
+     * @param int $buildingId
+     * @param string $buildingType "base" or "mine"
+     * @return int HP value
      */
-    public function getHP($id, $buildingType)
+    public function getHP($buildingId, $buildingType)
     {
         $DBConnection = $this->getDBConnection();
         if ($buildingType === "base") {
@@ -247,21 +247,21 @@ class BuildingRepository extends Repository
             die();
         }
         $query = $DBConnection->prepare($statement);
-        $query->bindParam(':id', $id, PDO::PARAM_INT);
+        $query->bindParam(':id', $buildingId, PDO::PARAM_INT);
         $query->execute();
         $buildingHP = $query->fetch();
         return $buildingHP[0];
     }
 
     /**
-     * Update the HP propriety in a building database with it's id
+     * Set HP in game_bases or game_mines at specified id
      *
-     * @param int $buildingHP
-     * @param int $id
-     * @param string $buildingType
+     * @param int $buildingHP New health value of the building
+     * @param int $buildingId
+     * @param string $buildingType "base" or "mine"
      * @return void
      */
-    public function setHP($buildingHP, $id, $buildingType)
+    public function setHP($buildingHP, $buildingId, $buildingType)
     {
         $DBConnection = $this->getDBConnection();
         if ($buildingType === "base") {
@@ -274,7 +274,7 @@ class BuildingRepository extends Repository
         }
         $query = $DBConnection->prepare($statement);
         $query->bindParam(':buildingHP', $buildingHP, PDO::PARAM_INT);
-        $query->bindParam(':id', $id, PDO::PARAM_INT);
+        $query->bindParam(':id', $buildingId, PDO::PARAM_INT);
         $query->execute();
     }
 
@@ -289,6 +289,9 @@ class BuildingRepository extends Repository
      */
     public function addSpace($unitType, $buildingType, $buildingId, $amount=5)
     {
+        //$arr = explode(",", $origin);
+        //$originType = $arr[0];
+        //$originId = $arr[1];
         $space = $this->getSpace($unitType, $buildingType, $buildingId);
         $space = $space + $amount;
         $DBConnection = $this->getDBConnection();
@@ -353,7 +356,6 @@ class BuildingRepository extends Repository
             return false;
             die();
         }
-        //$id = (int)$id;
         $query = $DBConnection->prepare($statement);
         $query->bindParam(":id", $buildingId, PDO::PARAM_INT);
         $query->execute();
@@ -391,14 +393,14 @@ class BuildingRepository extends Repository
     }
 
     /**
-     * Update the "player" propriety in a building database with it's id
+     * Set "owner" in game_bases or game_mines at specified id
      *
      * @param int $baseId
-     * @param string $buildingType
+     * @param string $buildingType base or mine
      * @param int $newUserId
      * @return void
      */
-    public function setOwner($baseId, $buildingType, $newUserId)
+    public function setOwner($buidingId, $buildingType, $newUserId)
     {
         $userRepository = new UserRepository;
         $newUsername = $userRepository->getUsernameWithId($newUserId);
@@ -415,7 +417,7 @@ class BuildingRepository extends Repository
         $query = $DBConnection->prepare($statement);
         $query->bindParam(':newUsername', $newUsername, PDO::PARAM_STR);
         $query->bindParam(':newUserId', $newUserId, PDO::PARAM_INT);
-        $query->bindParam(':id', $baseId, PDO::PARAM_INT);
+        $query->bindParam(':id', $buidingId, PDO::PARAM_INT);
         $query->execute();
     }
 

@@ -11,9 +11,9 @@ class LastScoreRepository extends Repository
 {
 
     /**
-     * Gets everything from the game_lastScore table
+     * Get data from game_lastScore and store it into an array, and return that array
      *
-     * @return void
+     * @return array
      */
     public function getLastWinners()
     {
@@ -31,7 +31,8 @@ class LastScoreRepository extends Repository
     }
 
     /**
-     * Update the playerId and score propriety in game_lastScore table
+     * Set the last three winners and their 
+     * score into a specific table
      *
      * @param int $firstId
      * @param int $secondId

@@ -8,9 +8,9 @@ class DataController extends DefaultController
 {
 
     /**
-     * Returns unit settings from gameConfig
+     * Returns an array containing the game's unit settings
      *
-     * @return string
+     * @return array
      */
     public function getUnitSettings()
     {
@@ -21,9 +21,9 @@ class DataController extends DefaultController
     }
 
     /**
-     * Returns map settings from gameConfig
+     * Returns an array containing the game's map settings
      *
-     * @return string
+     * @return array
      */
     public function getMapSettings()
     {

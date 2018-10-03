@@ -363,7 +363,11 @@ panelInterface = {
         var buildTime = toSelect.time - toSelect.start;
         var timeLeft = toSelect.time - now;
         var displayTime = timestampToTime(timeLeft);
-
+        console.log(toSelect);
+        console.log(toSelect.time);
+        console.log(timeLeft);
+        console.log(now);
+        //toSelect.time   timeLeft    now
         var displayPercent = (Math.floor((timeLeft / buildTime) * 100));
         if (displayPercent < 0) displayPercent = 100;
 
@@ -373,8 +377,8 @@ panelInterface = {
         var pTime = document.createElement('p');
         pTime.textContent = displayTime; 
 
-        var pPercent = document.createElement('p');
-        pPercent.textContent = (displayPercent * -1 + 100) + "%"; 
+        //var pPercent = document.createElement('p');
+        displayPercent = (displayPercent * -1) + 100; 
 
         var healthBarDiv = document.createElement('div');
         healthBarDiv.className = "progress healthBar";
@@ -402,7 +406,7 @@ panelInterface = {
         document.getElementById('panelInterface').innerHTML = "";
         document.getElementById('panelInterface').appendChild(title);
         document.getElementById('panelInterface').appendChild(pTime);
-        document.getElementById('panelInterface').appendChild(pPercent);
+        //document.getElementById('panelInterface').appendChild(pPercent);
         document.getElementById('panelInterface').appendChild(healthBarDiv);
 
         countDown(pTime, toSelect.time);
@@ -481,6 +485,7 @@ panelInterface = {
                     SubOptionText.innerHTML = "Acheter " + option.type + "<br>Cout: <span style=\"color:#FF0000;\"><span id=\"panelText" + option.type + "Cost\">"+option.cost+"</span>metal</span>, <span id=\"panelText" + option.type + "BuildTime\">"+buildTime+"</span>mn";
                     var optionDisabled = document.createElement('div');
                     optionDisabled.className = "workerSpaceCooldown subPanelDisabled";
+                    optionInner.appendChild(optionDisabled);
                 }
                 clearTimeout(x);
             }, 100);
@@ -496,7 +501,7 @@ panelInterface = {
             subPanelMain.appendChild(panelSubOption);
 
             if (userMetal < option.cost){
-                optionInner.appendChild(optionDisabled);
+                //optionInner.appendChild(optionDisabled);
             }
 
         });

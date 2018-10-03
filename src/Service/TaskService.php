@@ -33,7 +33,7 @@ class TaskService extends Service
         $mapService = new MapService;
         
         foreach ($tasks as $task) {
-            var_dump($task);
+            //var_dump($task);
             if ($task->getEndTime() < time()) {
                 echo $task->getId() . " " . $task->getAction() . " " . $task->getSubject() . "\n";
                 if ($task->getAction() === "buy") {
@@ -47,10 +47,10 @@ class TaskService extends Service
                     foreach ($tasks as $taskBis) {
                         if ($taskBis->getAction() === "attack" && $taskBis->getTargetOrigin() === $task->getTargetOrigin()) {
                             $taskSoldierAmount = explode(",", $task->getSubject())[1];
-                            var_dump($taskSoldierAmount);
+                            //var_dump($taskSoldierAmount);
                             $taskBisSoldierAmount = explode(",", $taskBis->getSubject())[1];
                             $newSoldierAmount = $taskBisSoldierAmount + $taskSoldierAmount;
-                            var_dump($newSoldierAmount);
+                            //var_dump($newSoldierAmount);
                             $taskRepository->setAttackSoldiers($newSoldierAmount, $taskBis->getId());
                             $attackAvailable = false;
                         }
@@ -67,9 +67,9 @@ class TaskService extends Service
     }
     
     /**
-     * Undocumented function
+     * handling buy tasks
      *
-     * @param [type] $task
+     * @param object $task
      * @return void
      */
     public function buyTask($task)
@@ -93,6 +93,12 @@ class TaskService extends Service
         $userRepository->addScore($task->getAuthor(), $score);
     }
 
+    /**
+     * Handling build tasks
+     *
+     * @param object $task
+     * @return void
+     */
     public function buildTask($task)
     {
         $mineRepository = new MineRepository;
@@ -112,6 +118,12 @@ class TaskService extends Service
         $userRepository->addScore($task->getAuthor(), $score);
     }
 
+    /**
+     * Handling unit movement tasks
+     *
+     * @param object $task
+     * @return void
+     */
     public function moveTask($task)
     {
         if ($task->getTargetOrigin() != "") {
@@ -125,6 +137,12 @@ class TaskService extends Service
         }
     }
 
+    /**
+     * Handling movement of attacking unit tasks
+     *
+     * @param object $task
+     * @return void
+     */
     public function attackMoveTask($task)
     {
         if ($task->getTargetOrigin() != "") {
@@ -132,6 +150,12 @@ class TaskService extends Service
         }
     }
     
+    /**
+     * Handling attack tasks
+     *
+     * @param object $task
+     * @return void
+     */
     public function attackTask($task)
     {
         $baseRepository = new BaseRepository;

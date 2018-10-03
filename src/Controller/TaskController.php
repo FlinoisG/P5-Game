@@ -3,23 +3,24 @@
 namespace App\Controller;
 
 use App\Controller\HomeController;
-use App\Service\AuthenticationService;
-use App\Service\MathService;
-use App\Service\EntitiesService;
-use App\Service\MapService;
+//use App\Service\AuthenticationService;
+//use App\Service\MathService;
+//use App\Service\EntitiesService;
+//use App\Service\MapService;
 use App\Service\TaskControllerService;
-use App\Repository\BaseRepository;
-use App\Repository\MineRepository;
+//use App\Repository\BaseRepository;
+//use App\Repository\MineRepository;
 use App\Repository\UserRepository;
-use App\Repository\TaskRepository;
-use App\Entity\TaskEntity;
-use App\Config\GameConfig;
+//use App\Repository\TaskRepository;
+//use App\Entity\TaskEntity;
+//use App\Config\GameConfig;
 
 class TaskController extends DefaultController
 {
 
     /**
-     * Request TaskControllerService if user can buy unit
+     * Calls the buy function from TaskControllerService 
+     * to handle the buy request, then redirect to the home page.
      *
      * @return void
      */
@@ -45,13 +46,9 @@ class TaskController extends DefaultController
     }
     
     /**
-     * Request TaskControllerService if user can move unit
+     * Calls the moveUnit function from TaskControllerService 
+     * to handle the unit movement request, then redirect to the home page.
      *
-     * @param string $type
-     * @param string $startOrigin
-     * @param string $target
-     * @param integer $amount
-     * @param boolean $isBuilding
      * @return void
      */
     public function moveUnit($type=null, $startOrigin=null, $target=null, $amount=1, $isBuilding=false)
@@ -76,11 +73,9 @@ class TaskController extends DefaultController
     }
 
     /**
-     * Request TaskControllerService if user can attack
+     * Calls the attack function from TaskControllerService 
+     * to handle the attack request, then redirect to the home page.
      *
-     * @param string $startOrigin
-     * @param string $target
-     * @param integer $amount
      * @return void
      */
     public function attack($startOrigin=null, $target=null, $amount=1)
@@ -105,8 +100,8 @@ class TaskController extends DefaultController
     }
 
     /**
-     * Request TaskControllerService if user 
-     * can create his first base
+     * Calls the newUserBase function from TaskControllerService 
+     * to instantly create a new base, then redirect to the home page.
      *
      * @return void
      */

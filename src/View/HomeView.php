@@ -4,7 +4,7 @@
 <div id="board">
     <div id="panel">
         <h1 class="userTitle"><?= $_SESSION['auth'] ?></h1>
-        <img class="userAvatar" src="../deposit/User_Avatar/<?= $_SESSION['auth'] ?>.png" class="panelUserAvatar" alt="User Avatar">
+        <img class="userAvatar" src="../deposit/User_Avatar/<?= $avatar ?>" class="panelUserAvatar" alt="User Avatar">
         <p>Metal : <?= $metal ?></p>
         <div id="panelInterface"></div>
     </div>

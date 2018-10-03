@@ -21,6 +21,11 @@ class UserEntity
 		$this->hydrate($args);
     }
 
+	/**
+     * Hydrate the entity with specified arguments
+     *
+     * @param array $args
+     */
 	private function hydrate ($args)
 	{
         if (is_array($args)){

@@ -57,7 +57,7 @@ class BaseRepository extends BuildingRepository
     }
 
     /**
-     * Get the "main" propriety int the bases's table with it's id
+     * Get "main" from game_bases at specified id
      *
      * @param int $id
      * @return void
@@ -101,7 +101,7 @@ class BaseRepository extends BuildingRepository
     }
 
     /**
-     * Delete every entry in the game_bases table
+     * Delets every entry in game_bases
      *
      * @return void
      */

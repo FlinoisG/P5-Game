@@ -3,7 +3,9 @@
 namespace App\Service;
 
 use App\Model\Service;
-
+/**
+ * not used
+ */
 class NotificationService extends Service
 {
 

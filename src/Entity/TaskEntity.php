@@ -20,6 +20,11 @@ class TaskEntity
 		$this->hydrate($args);
     }
 
+    /**
+     * Hydrate the entity with specified arguments
+     *
+     * @param array $args
+     */
 	private function hydrate ($args)
 	{
 		if (is_array($args)){
@@ -43,12 +48,12 @@ class TaskEntity
 			}
 			if (isset($args['targetPos'])) {
                 $this->setTargetPos($args['targetPos']);
-            }
-            if (isset($args['startTime'])) {
-                $this->setStartTime($args['startTime']);
 			}
 			if (isset($args['endTime'])) {
                 $this->setEndTime($args['endTime']);
+            }
+            if (isset($args['startTime'])) {
+                $this->setStartTime($args['startTime']);
 			}
 			if (isset($args['author'])) {
                 $this->setAuthor($args['author']);

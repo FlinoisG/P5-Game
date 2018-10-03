@@ -94,6 +94,7 @@ class AvatarService
             $src = imagecreatefrompng($file);
         } else {
             $src = imagecreatefromjpeg($file);
+            //$src = imagepng(imagecreatefromstring(file_get_contents($file)), "output.png");
         }
         $dst = imagecreatetruecolor($newwidth, $newheight);
         imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);

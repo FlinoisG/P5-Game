@@ -49,6 +49,13 @@ class HomeController extends DefaultController
 
         $customStyle = $this->setCustomStyle('panel');     
         $title = 'Home';
+        
+        if (file_exists("../deposit/User_Avatar/".$_SESSION['auth'].".jpg")){
+            $avatar = $_SESSION['auth'].".jpg";
+        } else {
+            $avatar = $_SESSION['auth'].".png";
+        }
+        
         if (isset($_GET['logout'])) {
             session_destroy(); 
             header('Location: ?p=home');
@@ -77,7 +84,8 @@ class HomeController extends DefaultController
     }
 
     /**
-     * ??????????????????????????????
+     * Used to call the avatar upload 
+     * function and redirect to home page
      *
      * @return void
      */

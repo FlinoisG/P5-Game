@@ -24,10 +24,15 @@
                 <?php
                 $count = 1;
                 foreach ($scoreRanking as $key => $value) {
+                    if (file_exists("../deposit/User_Avatar/".$key.".jpg")){
+                        $avatar = $key.".jpg";
+                    } else {
+                        $avatar = $key.".png";
+                    }
                     echo "
                     <tr>
                     <td>".$count."</td>
-                    <td class=\"centered\"><img src=\"../deposit/User_Avatar/".$key.".png\" class=\"smallAvatar\"></td>
+                    <td class=\"centered\"><img src=\"../deposit/User_Avatar/".$avatar."\" class=\"smallAvatar\"></td>
                     <td>".$key."</td>
                     <td>".$value."</td>
                     </tr>";
@@ -49,10 +54,15 @@
                 <?php
                 $count = 1;
                 foreach ($bestScoreRanking as $key => $value) {
+                    if (file_exists("../deposit/User_Avatar/".$key.".jpg")){
+                        $avatar = $key.".jpg";
+                    } else {
+                        $avatar = $key.".png";
+                    }
                     echo "
                     <tr>
                     <td>".$count."</td>
-                    <td class=\"centered\"><img src=\"../deposit/User_Avatar/".$key.".png\" class=\"smallAvatar\"></td>
+                    <td class=\"centered\"><img src=\"../deposit/User_Avatar/".$avatar."\" class=\"smallAvatar\"></td>
                     <td>".$key."</td>
                     <td>".$value."</td>
                     </tr>";
@@ -74,10 +84,15 @@
                 <?php
                 $count = 1;
                 foreach ($totalScoreRanking as $key => $value) {
+                    if (file_exists("../deposit/User_Avatar/".$key.".jpg")){
+                        $avatar = $key.".jpg";
+                    } else {
+                        $avatar = $key.".png";
+                    }
                     echo "
                     <tr>
                         <td>".$count."</td>
-                        <td class=\"centered\"><img src=\"../deposit/User_Avatar/".$key.".png\" class=\"smallAvatar\"></td>
+                        <td class=\"centered\"><img src=\"../deposit/User_Avatar/".$avatar."\" class=\"smallAvatar\"></td>
                         <td>".$key."</td>
                         <td>".$value."</td>
                     </tr>";

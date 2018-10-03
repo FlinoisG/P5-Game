@@ -11,8 +11,8 @@ Map.mainMap = {
 
     mapInit: function(){
         var req = new XMLHttpRequest();
-        req.open("GET", "/public/index.php?p=data.getMapSettings"); // local
-        //req.open("GET", "/P5-Game/public/index.php?p=data.getMapSettings"); // server
+        //req.open("GET", "/public/index.php?p=data.getMapSettings"); // local
+        req.open("GET", "/P5-Game/public/index.php?p=data.getMapSettings"); // server
         req.addEventListener("load", function () {
             console.log(req.responseText);
             var mapSettings = JSON.parse(req.responseText);
@@ -177,6 +177,7 @@ Map.mainMap = {
     setObjectMap: function(){
         
         if (typeof objectMapObj !== 'undefined') {
+            //console.log(objectMapObj);
             objectMapObj.forEach(object => {
                 x = gridToCoordinates(object.x, 0, 'x');
                 y = gridToCoordinates(0, object.y, 'y');
@@ -453,7 +454,7 @@ Map.mainMap = {
                     var moveDuration = object.time - object.start;
                     var moveNow = (Math.floor(Date.now() / 1000)) - object.start;
                     var percent = 100*moveNow/moveDuration;
-                    var workerPos = getPosFromDist(posStart, posEnd, percent);
+                    //var workerPos = getPosFromDist(posStart, posEnd, percent);
                     if (moveNow < moveDuration) {
 
                         // Add line
@@ -468,7 +469,7 @@ Map.mainMap = {
                        
                         // Add marker
                         var newPos = getPosFromDist(posStart, posEnd, percent);
-                        var distence = gridDistance(posStart, posEnd);
+                        var distence = gridDistance(newPos, posEnd);
                         var speed = 5000; // ????
                         var travelTime = (distence * speed);
 
@@ -482,6 +483,7 @@ Map.mainMap = {
                             workerEntity.onClick(e);
                         });
                         //unitMovementUpdator(workerMarker, posStart, posEnd, object.start, object.time);
+                        //test
                         
                     }                    
                     if (relation == "owned"){

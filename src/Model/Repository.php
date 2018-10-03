@@ -14,7 +14,8 @@ abstract class Repository
     private $password;
 
     /**
-     * Stores database
+     * Get database connection informations 
+     * and stores them into itself
      */
     public function __construct()
     {
@@ -26,6 +27,11 @@ abstract class Repository
         $this->password = $configs['password'];
     }
 
+    /**
+     * create e new instance od PDO and stores it into itself
+     *
+     * @return void
+     */
     protected function getDBConnection()
     {
         

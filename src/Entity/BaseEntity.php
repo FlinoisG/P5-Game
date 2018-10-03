@@ -18,11 +18,17 @@ class BaseEntity
     protected $cost;
     protected $maxHP;
 
+    
     public function __construct($args)
     {
         $this->hydrate($args);
     }
 
+    /**
+     * Hydrate the entity with specified arguments
+     *
+     * @param array $args
+     */
     private function hydrate($args)
     {
         if (is_array($args)){

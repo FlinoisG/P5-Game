@@ -129,7 +129,7 @@ class MineRepository extends BuildingRepository
     }
 
     /**
-     * Delete every entry in the game_mines table
+     * Delets every entry in game_mines
      *
      * @return void
      */

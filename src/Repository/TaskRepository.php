@@ -105,10 +105,11 @@ class TaskRepository extends Repository
             $query->bindParam(":action", $action, PDO::PARAM_STR);
             $query->execute();
             $tasks = $query->fetchAll();
-            //var_dump($tasks);
         }
         $taskEntities = [];
+        //echo "<pre>";
         for ($i=0; $i < sizeof($tasks); $i++) { 
+            //var_dump("startTime : ".$tasks[$i]["startTime"]);
             $taskParameters = [
                 'id'=>$tasks[$i]["id"], 
                 'action'=>$tasks[$i]["action"], 
@@ -123,7 +124,9 @@ class TaskRepository extends Repository
             ];
             $taskEntities[$i] = new TaskEntity($taskParameters);
         }
+        //echo "<pre>";
         //var_dump($taskEntities);
+        //echo "</pre>";
         return $taskEntities;
     }
 
@@ -194,7 +197,7 @@ class TaskRepository extends Repository
     }
 
     /**
-     * Update the number of soldier in an attack task.
+     * Change the number of soldiers in an attack task
      *
      * @param int $newSoldierAmount
      * @param int $taskId
@@ -211,6 +214,11 @@ class TaskRepository extends Repository
         $query->execute();
     }
 
+    /**
+     * Delets every entry in game_tasks
+     *
+     * @return void
+     */
     public function deleteEverything()
     {
         $DBConnection = $this->getDBConnection();

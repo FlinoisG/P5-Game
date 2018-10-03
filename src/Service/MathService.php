@@ -105,7 +105,7 @@ class MathService extends Service
      *
      * @param array $a Coordinate (ex: [0.05, -1.05])
      * @param array $b Coordinate (ex: [0.05, -1.05])
-     * @return void
+     * @return int distance
      */
     public function getDistance($a, $b)
     {
@@ -124,7 +124,7 @@ class MathService extends Service
      * @param array $startPos
      * @param array $targetPos
      * @param string $unitType
-     * @return void
+     * @return int duration
      */
     public function calculateTravelDuration($startPos, $targetPos, $unitType)
     {

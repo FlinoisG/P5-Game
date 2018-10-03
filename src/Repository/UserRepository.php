@@ -202,6 +202,12 @@ class UserRepository extends Repository
         return $response;
     }
 
+    /**
+     * Get "score" from game_users at specified id
+     *
+     * @param int $userId
+     * @return void
+     */
     public function getScore($userId)
     {
         $DBConnection = $this->getDBConnection();
@@ -212,6 +218,13 @@ class UserRepository extends Repository
         return $response[0];
     }
 
+    /**
+     * Update "score" with at new value at specified id
+     *
+     * @param int $userId
+     * @param int $newScore
+     * @return void
+     */
     public function setScore($userId, $newScore)
     {
         $DBConnection = $this->getDBConnection();
@@ -221,6 +234,12 @@ class UserRepository extends Repository
         $query->execute();
     }
 
+    /**
+     * Get "bestScore" from game_users at specified id
+     *
+     * @param int $userId
+     * @return void
+     */
     public function getBestScore($userId)
     {
         $DBConnection = $this->getDBConnection();
@@ -231,6 +250,13 @@ class UserRepository extends Repository
         return $response[0];
     }
 
+    /**
+     * Update "bestScore" with at new value at specified id
+     *
+     * @param int $userId
+     * @param int $newBestScore
+     * @return void
+     */
     public function setBestScore($userId, $newBestScore)
     {
         $DBConnection = $this->getDBConnection();
@@ -242,6 +268,12 @@ class UserRepository extends Repository
         $query->execute();
     }
 
+    /**
+     * Get "totalScore" from game_users at specified id
+     *
+     * @param int $userId
+     * @return void
+     */
     public function getTotalScore($userId)
     {
         $DBConnection = $this->getDBConnection();
@@ -296,7 +328,7 @@ class UserRepository extends Repository
      * token that will be sent to user in case he
      * forgot his password
      * @param string $resetExpiration 
-     * @param [type] $email
+     * @param string $email
      * @return void
      */
     public function updateToken($hashedResetToken, $resetExpiration, $email)
@@ -358,6 +390,13 @@ class UserRepository extends Repository
         return (int)$response[0];
     }
 
+    /**
+     * Update "metal" in game_users table at specified id
+     *
+     * @param int $userId
+     * @param int $newMetalAmount
+     * @return void
+     */
     public function setMetal($userId, $newMetalAmount)
     {
         $DBConnection = $this->getDBConnection();
@@ -404,6 +443,13 @@ class UserRepository extends Repository
         $query->execute();
     }
 
+    /**
+     * Adds score to a user's account
+     *
+     * @param int $userId
+     * @param int $score
+     * @return void
+     */
     public function addScore($userId, $score)
     {
         $userScore = $this->getScore($userId);

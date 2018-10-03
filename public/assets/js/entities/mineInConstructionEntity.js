@@ -2,7 +2,7 @@ class MineInConstEntity extends DefaultEntity {
     
     constructor(ownerName='', relation='neutral', start=0, time=0, ) {
         super();
-        this.type = 'baseInConst';
+        this.type = 'mineInConst';
         this.class = 'building';
         this.ownerName = ownerName;
         this.relation = relation;

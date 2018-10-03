@@ -139,7 +139,7 @@ class AttackService
                     'endTime'=>$travelTimestamp, 
                     'author'=>$task->getAuthor()
                 ];
-                var_dump($targetBuilding);
+                //var_dump($targetBuilding);
                 $newAttackTask = new TaskEntity($taskParameters);
                 $taskRepository->newTask($newAttackTask);
             }
