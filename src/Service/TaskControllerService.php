@@ -49,13 +49,11 @@ class TaskControllerService extends Service
         $startPlayerId = $baseRepository->getPlayerId($startOriginId, $startOriginType);
         if ($startPlayerId != $_SESSION["authId"]){
             $available = false;
-            $cause = "wrong player";
-            //var_dump($startPlayerId);
-            //var_dump($_SESSION["authId"]);
+            //$cause = "wrong player";
+            $notifNumber = 00;
         }
         
         $unitSettings = $gameConfig->getUnitSettings();
-        //$type = $_GET['type'];
         $cost = $unitSettings["cost"][$type."Cost"];
         if ($type == "base" || $type == "mine"){
             $class = "building";
@@ -67,7 +65,8 @@ class TaskControllerService extends Service
         $playerMetal = $userRepository->getMetal($_SESSION['authId']);
         if ($userRepository->getNewUser($_SESSION['authId']) != 1 && $playerMetal < $cost) {
             $available = false;
-            $cause = "not enough metal";
+            //$cause = "not enough metal";
+            $notifNumber = 01;
         }
         if ($class == 'unit') {
             $action = "buy";
@@ -88,6 +87,7 @@ class TaskControllerService extends Service
             if ($slots > $space) {
                 $available = false;
                 $cause = "space";
+                $notifNumber = 02;
             }
         } else if ($class == 'building') {
             $action = "build";
@@ -97,12 +97,14 @@ class TaskControllerService extends Service
             if ($upgradeInConstruct){
                 $available = false;
                 $cause = "already upgrading";
+                $notifNumber = 03;
             }
             $shortType = str_replace("Space","",$type);
             $space = $baseRepository->getSpace($shortType, $startOriginType, $startOriginId);
             if ($space >= 99) {
                 $available = false;
                 $cause = "can't upgrade anymore";
+                $notifNumber = 04;
             }
         }
         
@@ -142,8 +144,8 @@ class TaskControllerService extends Service
                 return 'Location: ?p=home&focus='.$startOrigin;
             }
         } else {
-            echo $cause;
-            //header('Location: ?p=home&focus='.$origin.'&soldierTab');
+            //echo $cause;
+            return 'Location: ?p=home&focus='.$origin.'&notif='.$notifNumber;
         }
     }
 

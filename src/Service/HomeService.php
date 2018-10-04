@@ -88,4 +88,35 @@ class HomeService extends Service
         return [$scriptHead, $scriptBody, $metal];
     }
 
+    public function notification ($notificationNumber)
+    {
+        switch ($notificationNumber) {
+            case 00:
+                $color = "#FF0000";
+                $message = "Impossible dans ce batiment";
+                break;
+            case 01:
+                $color = "#FF0000";
+                $message = "Pas assez de metal !";
+                break;
+            case 02:
+                $color = "#FF0000";
+                $message = "Pas asser de place dans ce batiment";
+                break;
+            case 03:
+                $color = "#FF0000";
+                $message = "Impossible dans ce batiment";
+                break;
+            default:
+                $color = "#FF0000";
+                $message = "Erreur : Code de notification inconu";
+                break;
+        }
+
+        $notification = "<div class=\"notificationWindow\" id=\"notificationWindow\" style=\"color : " . $color . ";\">" . $message . "</div>";
+
+        return $notification;
+
+    }
+
 }

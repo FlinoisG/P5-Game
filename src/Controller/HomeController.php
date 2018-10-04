@@ -40,6 +40,10 @@ class HomeController extends DefaultController
         $scriptBody = $script[1];
         $metal = $script[2];
 
+        if (isset($_GET["notif"])){
+            $notification = $homeService->notification($_GET["notif"]);
+        }
+
         $resetDate = json_decode(file_get_contents(__DIR__.'/../../deposit/ResetDate.json'), true);
         $datetime1 = new DateTime();
         $datetime2 = new DateTime('@'.$resetDate);

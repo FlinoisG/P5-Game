@@ -1,4 +1,9 @@
 <?php ob_start(); ?> 
+<?php
+    if (isset($notification)){
+        echo $notification;
+    }
+?>
 <h1>Home</h1>
 <div id="timer" class="<?= $resetDate ?>"><?= $resetTimeLeft ?></div>
 <div id="board">

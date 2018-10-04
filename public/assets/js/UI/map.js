@@ -11,8 +11,8 @@ Map.mainMap = {
 
     mapInit: function(){
         var req = new XMLHttpRequest();
-        //req.open("GET", "/public/index.php?p=data.getMapSettings"); // local
-        req.open("GET", "/P5-Game/public/index.php?p=data.getMapSettings"); // server
+        req.open("GET", "/public/index.php?p=data.getMapSettings"); // local
+        //req.open("GET", "/P5-Game/public/index.php?p=data.getMapSettings"); // server
         req.addEventListener("load", function () {
             console.log(req.responseText);
             var mapSettings = JSON.parse(req.responseText);
