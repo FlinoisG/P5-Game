@@ -2,10 +2,7 @@
 
 namespace App\Controller;
 
-use App\Service\EntitiesService;
 use App\Service\AvatarService;
-use App\Service\MapService;
-use App\Service\AuthenticationService;
 use App\Service\RankingService;
 use App\Service\GameManagerService;
 use App\Service\HomeService;
@@ -29,10 +26,6 @@ class HomeController extends DefaultController
         }
         
         $homeService = new HomeService;
-        $entitiesService = new EntitiesService;
-        $userRepository = new UserRepository;
-        $authenticationService = new AuthenticationService;
-        $mapService = new MapService;
         
         $script = $homeService->getHomeScripts();
         
@@ -54,10 +47,12 @@ class HomeController extends DefaultController
         $customStyle = $this->setCustomStyle('panel');     
         $title = 'Home';
         
-        if (file_exists("../deposit/User_Avatar/".$_SESSION['auth'].".jpg")){
-            $avatar = $_SESSION['auth'].".jpg";
-        } else {
-            $avatar = $_SESSION['auth'].".png";
+        if (isset($_SESSION['auth'])){
+            if (file_exists("../deposit/User_Avatar/".$_SESSION['auth'].".jpg")){
+                $avatar = $_SESSION['auth'].".jpg";
+            } else {
+                $avatar = $_SESSION['auth'].".png";
+            }
         }
         
         if (isset($_GET['logout'])) {
@@ -71,6 +66,27 @@ class HomeController extends DefaultController
             require('../src/View/VisitorHomeView.php');
         }
         
+    }
+
+    /**
+     * requires the help page
+     *
+     * @return void
+     */
+    public function help() 
+    {
+        if (!isset($_SESSION)) { 
+            session_start(); 
+        }
+        $title = 'Aide';
+        $customStyle = $this->setCustomStyle('help');
+        require('../src/View/HelpView.php');
+    }
+
+    public function test()
+    {
+        $lastScoreRepository = new LastScoreRepository;
+        $lastScoreRepository->setLastWinners(5, 7, 8);
     }
 
     /**

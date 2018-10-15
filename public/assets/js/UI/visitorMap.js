@@ -10,19 +10,34 @@ const Map = {"tilemap": Tilelayers.Stamen};
 Map.mainMap = {
 
     mapInit: function(){
-        var rdm = Math.floor(Math.random() * Math.floor(objectMapObj.length));
-        var rdm2 = Math.floor(Math.random() * Math.floor(objectMapObj.length));
-        this.map = L.map('mapid', {
-            minZoom: 1,
-            maxZoom: 18,
-            maxBounds: [
-                //south west
-                [32.7, -11.3269],
-                //north east
-                [61.37567, 32.39868]
+        if (objectMapObj.length > 0){
+            var rdm = Math.floor(Math.random() * Math.floor(objectMapObj.length));
+            var rdm2 = Math.floor(Math.random() * Math.floor(objectMapObj.length));
+
+            this.map = L.map('mapid', {
+                minZoom: 1,
+                maxZoom: 18,
+                maxBounds: [
+                    //south west
+                    [32.7, -11.3269],
+                    //north east
+                    [61.37567, 32.39868]
                 ], 
-            maxBoundsViscosity: 1.0
-        }).setView([gridToCoordinates(0, objectMapObj[rdm].y, "y"), gridToCoordinates(objectMapObj[rdm].x, 0, "x")], 6);   
+                maxBoundsViscosity: 1.0
+            }).setView([gridToCoordinates(0, objectMapObj[rdm].y, "y"), gridToCoordinates(objectMapObj[rdm].x, 0, "x")], 6);   
+        } else {
+            this.map = L.map('mapid', {
+                minZoom: 1,
+                maxZoom: 18,
+                maxBounds: [
+                    //south west
+                    [32.7, -11.3269],
+                    //north east
+                    [61.37567, 32.39868]
+                ], 
+                maxBoundsViscosity: 1.0
+            }).setView([gridToCoordinates(0, 131.48, "y"), gridToCoordinates(224.83, 0, "x")], 2);  
+        }
         
         this.map.dragging.disable();
         this.map.touchZoom.disable();
@@ -35,12 +50,21 @@ Map.mainMap = {
         this.setOreMap();
         this.setObjectMap();
         this.setTileLayer();
-        this.map.setView([gridToCoordinates(0, objectMapObj[rdm2].y, "y"), gridToCoordinates(objectMapObj[rdm2].x, 0, "x")], 6, {
-            "animate": true,
-            "pan": {
-              "duration": 400
-            }
-        });
+        if (objectMapObj.length > 0){
+            this.map.setView([gridToCoordinates(0, objectMapObj[rdm2].y, "y"), gridToCoordinates(objectMapObj[rdm2].x, 0, "x")], 6, {
+                "animate": true,
+                "pan": {
+                "duration": 400
+                }
+            });
+        } else {
+            this.map.setView([gridToCoordinates(0, 131.48, "y"), gridToCoordinates(224.83, 0, "x")], 6, {
+                "animate": true,
+                "pan": {
+                "duration": 400
+                }
+            });
+        }
     },
 
     setMarkers: function(){

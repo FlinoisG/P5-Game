@@ -107,6 +107,10 @@ class HomeService extends Service
                 $color = "#FF0000";
                 $message = "Impossible dans ce batiment";
                 break;
+            case 04:
+                $color = "#FF0000";
+                $message = "Pas assez d'unités";
+                break;
             default:
                 $color = "#FF0000";
                 $message = "Erreur : Code de notification inconu";

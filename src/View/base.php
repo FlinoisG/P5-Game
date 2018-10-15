@@ -28,7 +28,7 @@
             <a class="nav-link" href="?p=home.ranking">Classement</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="?p=home">Aide</a>
+            <a class="nav-link" href="?p=home.help">Aide</a>
           </li>      
           <?php
             if (isset($_SESSION['auth'])) {

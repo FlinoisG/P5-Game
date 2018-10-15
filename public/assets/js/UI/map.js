@@ -177,7 +177,7 @@ Map.mainMap = {
     setObjectMap: function(){
         
         if (typeof objectMapObj !== 'undefined') {
-            //console.log(objectMapObj);
+            console.log(objectMapObj);
             objectMapObj.forEach(object => {
                 x = gridToCoordinates(object.x, 0, 'x');
                 y = gridToCoordinates(0, object.y, 'y');
@@ -470,7 +470,7 @@ Map.mainMap = {
                         // Add marker
                         var newPos = getPosFromDist(posStart, posEnd, percent);
                         var distence = gridDistance(newPos, posEnd);
-                        var speed = 5000; // ????
+                        var speed = 3000; // ????
                         var travelTime = (distence * speed);
 
                         var workerMarker = L.Marker.movingMarker([newPos, posEnd], [travelTime], {
@@ -533,7 +533,7 @@ Map.mainMap = {
                         
                         var newPos = getPosFromDist(posStart, posEnd, percent);
                         var distence = gridDistance(posStart, posEnd);
-                        var speed = 5000; // ????
+                        var speed = 3000; // ????
                         var travelTime = (distence * speed);
 
                         var soldierMarker = L.Marker.movingMarker([newPos, posEnd], [travelTime], {

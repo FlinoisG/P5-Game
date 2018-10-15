@@ -79,11 +79,11 @@ panelInterface = {
 
             var workerTabButton = document.createElement('div');
             workerTabButton.className = "workerTab slotTab disabledLink";
-            workerTabButton.textContent = "workers";
+            workerTabButton.textContent = "Ouvriers";
             
             var soldierTabButton = document.createElement('div');
             soldierTabButton.className = "soldierTab slotTab link";
-            soldierTabButton.textContent = "soldiers";
+            soldierTabButton.textContent = "Soldats";
 
             var panelSlots = document.createElement('div');
             panelSlots.id = "panelSlots";
@@ -234,11 +234,11 @@ panelInterface = {
 
         var workerTabButton = document.createElement('div');
         workerTabButton.className = "soldierTab slotTab link";
-        workerTabButton.textContent = "workers";
+        workerTabButton.textContent = "Ouvriers";
         
         var soldierTabButton = document.createElement('div');
         soldierTabButton.className = "soldierTab slotTab disabledLink";
-        soldierTabButton.textContent = "soldiers";        
+        soldierTabButton.textContent = "Soldats";        
 
         var freeSlots = toSelect.soldierSpace +1;
 
@@ -378,7 +378,7 @@ panelInterface = {
         pTime.textContent = displayTime; 
 
         //var pPercent = document.createElement('p');
-        displayPercent = (displayPercent * -1) + 100; 
+        displayPercent = (displayPercent * -1 + 100); 
 
         var healthBarDiv = document.createElement('div');
         healthBarDiv.className = "progress healthBar";

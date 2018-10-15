@@ -394,14 +394,14 @@ class UserRepository extends Repository
      * Update "metal" in game_users table at specified id
      *
      * @param int $userId
-     * @param int $newMetalAmount
+     * @param int $metalAmount
      * @return void
      */
-    public function setMetal($userId, $newMetalAmount)
+    public function setMetal($userId, $metalAmount)
     {
         $DBConnection = $this->getDBConnection();
-        $query = $DBConnection->prepare("UPDATE game_users SET metal = :newMetalAmount WHERE id = :id");
-        $query->bindParam(":newMetalAmount", $newBestScore, PDO::PARAM_INT);
+        $query = $DBConnection->prepare("UPDATE game_users SET metal = :metalAmount WHERE id = :id");
+        $query->bindParam(":metalAmount", $metalAmount, PDO::PARAM_INT);
         $query->bindParam(":id", $userId, PDO::PARAM_INT);
         $query->execute();
     }

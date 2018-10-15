@@ -96,14 +96,14 @@ class TaskControllerService extends Service
             $upgradeInConstruct = $taskRepository->getEntityInConst($type, $startOriginType, $startOriginId);
             if ($upgradeInConstruct){
                 $available = false;
-                $cause = "already upgrading";
+                //$cause = "already upgrading";
                 $notifNumber = 03;
             }
             $shortType = str_replace("Space","",$type);
             $space = $baseRepository->getSpace($shortType, $startOriginType, $startOriginId);
             if ($space >= 99) {
                 $available = false;
-                $cause = "can't upgrade anymore";
+                //$cause = "can't upgrade anymore";
                 $notifNumber = 04;
             }
         }
@@ -180,7 +180,8 @@ class TaskControllerService extends Service
         $startPlayerId = $baseRepository->getPlayerId($startOriginId, $startOriginType);
         if ($startPlayerId != $_SESSION["auth"]){
             $available = false;
-            $cause = "wrong player";
+            //$cause = "wrong player";
+            $notifNumber = 00;
         }
         
         if (preg_match('/[\[]/', $target)) {
@@ -210,9 +211,13 @@ class TaskControllerService extends Service
         }
         $spaceLeft = $baseRepository->getSpaceLeft($type, $targetId, $targetBuilding);
         if ($owner !== false && $_SESSION["auth"] != $owner){
-            echo 'wrong owner';
+            //echo 'wrong owner';
+            $available = false;
+            $notifNumber = 00;
         } else if (!$isBuilding && $spaceLeft < $amount){
-            echo 'pas asser de place. ' . $spaceLeft . " ";
+            $notifNumber = 02;
+            $available = false;
+            //echo 'pas asser de place. ' . $spaceLeft . " ";
         } else if ($originUnits >= $amount){
             $baseRepository->addUnits($type, $originId, $negAmount, $originBuilding);
             $startPos = $baseRepository->getPos($startOriginId, $startOriginType);
@@ -236,7 +241,13 @@ class TaskControllerService extends Service
                 return 'Location: ?p=home&focus='.$startOrigin;
             }
         } else {
-            echo 'pas asser d\'unitées';
+            //echo 'pas asser d\'unitées';
+            $notifNumber = 04;
+            $available = false;
+        }
+
+        if (!$available){
+            return 'Location: ?p=home&focus='.$startOrigin.'&notif='.$notifNumber;
         }
         
     }

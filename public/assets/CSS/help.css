@@ -1,0 +1,70 @@
+body{
+    overflow: hidden;
+}
+
+#helpMenuTitle{
+    border: 2px solid #2c2c2c;
+    border-radius: 3px 3px 0 0;
+    font-size: 16px;
+    height: auto;
+    margin: 0 auto;
+    padding: 20px 16px;
+    width: 980px;
+    background-color: #1a1a1a;
+    text-align: left;
+    font-weight: bold;
+}
+
+#helpMain{
+    display: flex;
+    height: auto;
+    margin: 0px auto 25px;
+    overflow: hidden;
+    width: 980px;
+    border: 2px solid #2c2c2c;
+    border-radius: 0 0 3px 3px;
+    border-top: none;
+    background-color: #1a1a1a;
+}
+
+#helpMenu{
+    border-right: 2px solid #2c2c2c;
+    width: 260px;
+    min-height: 800px;
+}
+
+.helpUl{
+    padding: 0px;
+    margin: 0px;
+    list-style: none;
+}
+
+.helpLi{
+    padding: 16px;
+    font-size: 14px;
+    list-style: none;
+    cursor: pointer;
+}
+
+.helpLi:hover{
+    background-color: rgb(36, 36, 36);
+    color: rgb(201, 201, 201);
+}
+
+a{
+    text-decoration: none;
+    color: white;
+    list-style: none;
+}
+
+a:hover{
+    color: white;
+    text-decoration: none;
+}
+
+#helpPage{
+    width: 640px;
+    padding: 32px; 
+    text-align: left;
+    overflow: scroll;
+}

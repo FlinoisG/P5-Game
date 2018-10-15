@@ -55,17 +55,6 @@ body {
     padding-top: 20px;
 }
 
-#notificationWindow{
-    position: absolute;
-    left: calc(50% - 500px);
-    top: 70px;
-    width: 1000px;
-    border: 1px solid red;
-    animation-name: notificationWindowAnimation;
-    animation-duration: 6s;
-    animation-fill-mode: forwards;
-}
-
 .form-deny {
     border: 2px solid red;
 }
@@ -186,20 +175,10 @@ body {
     }
 }
 
-@keyframes notificationWindowAnimation {
-    75% {
-        top: 70px;
-    }
-    80% {
-        top: 72px;
-        opacity: 1;
-    }
-    100% {
-        top: 0px;
-        opacity: 0;
-    }
-}
-
 .centered{
     text-align: center;
+}
+
+.disabled{
+    display: none;
 }
