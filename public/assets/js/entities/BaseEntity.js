@@ -14,6 +14,7 @@ class BaseEntity extends DefaultEntity {
         super();
         this.id = id;
         this.type = 'base';
+        this.displayText = 'Base';
         this.main = main;
         this.class = 'building';
         this.ownerName = ownerName;

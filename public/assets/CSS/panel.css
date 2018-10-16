@@ -219,9 +219,6 @@
 .newUserText{
     text-align: justify;
 }
-
-.newUserPanelText{
-}
  
 .numberSelectorMain{
     position:absolute;
@@ -248,6 +245,14 @@
     width: 24px;
     height: 24px;
 } 
+
+.numberSelectorTotalNum{
+    margin-left: 0px;
+}
+
+.numberSelectorCenter{
+    width: 36px;
+}
 
 .numberSelectorHandle{
     background-color: #252525; 

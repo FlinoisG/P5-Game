@@ -6,6 +6,7 @@ class SoldierEntity extends DefaultEntity {
     ) {
         super();
         this.type = 'soldier';
+        this.displayText = 'Soldat';
         this.class = 'unit';
         this.cost = 100;
         this.buildTime = 3;

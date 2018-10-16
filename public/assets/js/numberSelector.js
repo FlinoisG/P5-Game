@@ -31,10 +31,19 @@ function numberSelector(target, maxNumber, type) {
             numberSelectorLeft.className = "numberSelectorElem numberSelectorHandle numberSelectorLeft";
             numberSelectorLeft.textContent = "<";
 
-            var numberSelectorNumber = document.createElement('div');
+            var numberSelectorCenter = document.createElement('div');
+            numberSelectorCenter.id = "";
+            numberSelectorCenter.className = "numberSelectorElem numberSelectorCenter";
+
+            var numberSelectorNumber = document.createElement('span');
             numberSelectorNumber.id = selectorNumber;
-            numberSelectorNumber.className = "numberSelectorElem numberSelectorNumber";
+            numberSelectorNumber.className = "numberSelectorNumber";
             numberSelectorNumber.textContent = "1";
+
+            var numberSelectorTotalNum = document.createElement('span');
+            numberSelectorTotalNum.id = "numberSelectorTotalNum";
+            numberSelectorTotalNum.className = "numberSelectorTotalNum";
+            numberSelectorTotalNum.textContent = "/" + maxNumber;
 
             var numberSelectorRight = document.createElement('div');
             numberSelectorRight.id = "numberSelectorRight";
@@ -46,6 +55,7 @@ function numberSelector(target, maxNumber, type) {
             numberSelectorExtraRight.className = "numberSelectorElem numberSelectorHandle numberSelectorExtraRight";
             numberSelectorExtraRight.textContent = ">>";
 
+        /*
         var numberSelectorText = document.createElement('span');
         numberSelectorText.id = "numberSelectorText";
         numberSelectorText.className = "numberSelectorText";
@@ -55,6 +65,7 @@ function numberSelector(target, maxNumber, type) {
         numberSelectorTotalNum.id = "numberSelectorTotalNum";
         numberSelectorTotalNum.className = "numberSelectorTotalNum";
         numberSelectorTotalNum.textContent = maxNumber;
+        */
 
     numberSelectorExtraLeft.addEventListener('click', function(){
         var number = Number(numberSelectorNumber.innerText);
@@ -92,16 +103,19 @@ function numberSelector(target, maxNumber, type) {
         }
     });
 
+    numberSelectorCenter.appendChild(numberSelectorNumber);
+    numberSelectorCenter.appendChild(numberSelectorTotalNum);
+
     numberSelector.appendChild(numberSelectorExtraLeft);
     numberSelector.appendChild(numberSelectorLeft);
-    numberSelector.appendChild(numberSelectorNumber);
+    numberSelector.appendChild(numberSelectorCenter);
     numberSelector.appendChild(numberSelectorRight);
     numberSelector.appendChild(numberSelectorExtraRight);
 
     numberSelectorMain.appendChild(numberSelectorTitle);
     numberSelectorMain.appendChild(numberSelector);
-    numberSelectorMain.appendChild(numberSelectorText);
-    numberSelectorMain.appendChild(numberSelectorTotalNum);
+    //numberSelectorMain.appendChild(numberSelectorText);
+    //numberSelectorMain.appendChild(numberSelectorTotalNum);
 
     target.appendChild(numberSelectorMain);
 

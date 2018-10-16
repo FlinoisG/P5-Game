@@ -13,6 +13,7 @@ class MineEntity extends DefaultEntity {
         super();
         this.id = id;
         this.type = 'mine';
+        this.displayText = 'Mine';
         this.class = 'building';
         this.ownerName = ownerName;
         this.relation = relation;

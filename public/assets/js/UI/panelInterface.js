@@ -49,7 +49,7 @@ panelInterface = {
             this.tab = "workerTab";
 
             var title = document.createElement('h4');
-            title.textContent = '#' + toSelect.id + " " + toSelect.type;
+            title.textContent = toSelect.displayText;
 
             var healthBarDiv = document.createElement('div');
             healthBarDiv.className = "progress healthBar";
@@ -220,7 +220,7 @@ panelInterface = {
             }
         } else {
             var title = document.createElement('h4');
-            title.textContent = '#' + toSelect.id + " " + toSelect.type + " de " + toSelect.ownerName;
+            title.textContent = toSelect.displayText + " de " + toSelect.ownerName;
             document.getElementById('panelInterface').innerHTML = "";
             document.getElementById('panelInterface').appendChild(title);
         }     
@@ -468,7 +468,7 @@ panelInterface = {
 
             if (option.textContent == "regular"){
                 buildTime = (option.buildTime / 60);
-                SubOptionText.innerHTML = "Acheter " + option.type + "<br>Cout: <span id=\"panelText" + option.type + "Cost\">" + option.cost + "</span>metal, <span id=\"panelText" + option.type + "BuildTime\">"+buildTime+"</span>mn";
+                SubOptionText.innerHTML = "Acheter " + option.displayText + "<br>Cout: <span id=\"panelText" + option.type + "Cost\">" + option.cost + "</span> métal, <span id=\"panelText" + option.type + "BuildTime\">"+buildTime+"</span> sec.";
             } else if (option.textContent == "numberSelector"){
                 if (this.tab == "workerTab"){
                     numberSelector(SubOptionText, toSelect.content.workers, option.type);

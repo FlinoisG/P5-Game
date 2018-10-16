@@ -3,6 +3,7 @@ class WorkerSpaceEntity extends DefaultEntity {
     constructor() {
         super();
         this.type = 'workerSpace';
+        this.displayText = 'Stockage pour ouvriers';
         this.class = 'upgrade';
         this.cost = 100;
         this.buildTime = 0;
