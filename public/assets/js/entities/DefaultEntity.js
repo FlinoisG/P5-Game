@@ -4,8 +4,11 @@ class DefaultEntity {
 
         var self = this;
         var req = new XMLHttpRequest();
-        req.open("GET", "/public/index.php?p=data.getUnitSettings"); // local
-        //req.open("GET", "/P5-Game/public/index.php?p=data.getUnitSettings"); //server
+        var url = "/P5-Game/public/index.php?p=data.getUnitSettings"
+        if (location.hostname === "localhost" || location.hostname === "127.0.0.1"){
+            url = "/public/index.php?p=data.getUnitSettings";
+        }
+        req.open("GET", url);
         req.addEventListener("load", function () {
             var unitSettings = JSON.parse(req.responseText);
             self.unitSettings = unitSettings;
