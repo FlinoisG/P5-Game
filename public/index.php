@@ -6,6 +6,8 @@ require_once "../src/lib/password.php";
 use App\Controller\DefaultController;
 use App\Controller\testController;
 
+// Le router prends le paramètre get "p" et le coupe en deux au niveau du point.
+// la première partie sera le controller et la seconde l'action du controller.
 if (isset($_GET['p'])) {
     $routeTemp = explode('.', $_GET['p']);
     if (count($routeTemp) === 2) {
@@ -21,6 +23,9 @@ if (isset($_GET['p'])) {
     ];
 }
 
+// Si $_GET['p'] ne contiens qu'un controlleur et pas d'action, 
+// l'action utilisée sera une action "par défaut" du controlleur qui
+// portera le même nom que ce dernier.
 if (sizeOf($routeTemp) == 1) {
     $controller = $routeTemp[0];
     $routeTemp = [
@@ -29,6 +34,7 @@ if (sizeOf($routeTemp) == 1) {
     ];
 };
 
+//
 $controller = "\\App\\Controller\\" . ucfirst($routeTemp['controller']) . "Controller";
 if (class_exists($controller, true)) {
     $controller = new $controller();

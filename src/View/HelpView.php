@@ -34,13 +34,29 @@
         Interface
     </div>
     <div id="content2">
-        oui oui oui oui oui oui oui oui oui oui oui oui oui oui 
+        Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text 
+        Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text 
+        Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text 
+        Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text
+
+        Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text 
+        Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text 
+        Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text 
+        Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text
     </div>
     <div id="title3">
         Règles
     </div>
     <div id="content3">
-        non non non non non non non non non non non non non 
+        Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text 
+        Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text 
+        Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text 
+        Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text
+
+        Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text 
+        Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text 
+        Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text 
+        Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text Placeholder Text
     </div>
 </div>
 <script src="assets/js/helpPageScript.js"></script>

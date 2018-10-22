@@ -51,18 +51,18 @@ class GameConfig
     protected $mineMaxHP = 100;
     protected $baseInConstructionMaxHP = 100;
     protected $mineInConstructionMaxHP = 100;
-    protected $baseBuildTime = 3600;
+    protected $baseBuildTime = 3600;        // Temps en seconde
     protected $mineBuildTime = 3600;
     protected $workerBuildTime = 600;
     protected $soldierBuildTime = 1800;
-    protected $workerSpaceBuildTime = 600;  // 10min par upgrade
-    protected $soldierSpaceBuildTime = 600; //
+    protected $workerSpaceBuildTime = 600;
+    protected $soldierSpaceBuildTime = 600; 
 
     /////////////////////////////
     //  Score
     /////////////////////////////
 
-    protected $metalHarvestScore = 0.1; // 0.1 = 1pts per imetal gathered
+    protected $metalHarvestScore = 0.1; // 0.1 = 1pts per metal gathered
     protected $baseBuildingScore = 200;
     protected $mineBuildingScore = 150;
     protected $workerBuildingScore = 100;
@@ -72,11 +72,6 @@ class GameConfig
     protected $baseDestroyingScore = 200;
     protected $mineDestroyingScore = 150;
     protected $soldierKillingScore= 50;
-
-
-
-
-
 
     /**
      * Get the value of workerTravelSpeed
